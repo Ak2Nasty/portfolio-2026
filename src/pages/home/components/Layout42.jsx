@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 export function Layout42() {
   const [hasDownloaded, setHasDownloaded] = useState(false);
@@ -31,8 +31,18 @@ export function Layout42() {
     }
   };
 
+  const sectionRef = useRef(null);
+  
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start 70%", "center center"]
+  });
+
+  const firstLineWidth = useTransform(scrollYProgress, [0, 0.5], ["0%", "100%"]);
+  const secondLineWidth = useTransform(scrollYProgress, [0.5, 1], ["0%", "100%"]);
+
   return (
-    <section id="about" className="w-full px-6 md:px-12 lg:px-16 pt-12 md:pt-20 lg:pt-24 pb-6 md:pb-12 lg:pb-16 relative z-20 bg-[#0C0C0B]">
+    <section ref={sectionRef} id="about" className="w-full px-6 md:px-12 lg:px-16 pt-12 md:pt-20 lg:pt-24 pb-6 md:pb-12 lg:pb-16 relative z-20 bg-[#0C0C0B]">
       <div className="max-w-[120rem] mx-auto">
         <motion.div 
           initial="hidden"
@@ -46,18 +56,23 @@ export function Layout42() {
             <div className="font-['Outfit'] font-semibold text-[10px] md:text-[11px] tracking-[0.25em] text-[#a3a3a3] uppercase mb-6 md:mb-[2.5rem] leading-none">
               ABOUT / 01
             </div>
-            <h3 className="font-['Outfit'] text-[34px] md:text-[46px] lg:text-[54px] font-bold leading-[1.05] text-[#f4f4f4] tracking-[0.03em] max-w-[650px] uppercase">
+            <h3 className="font-monument text-[34px] md:text-[46px] lg:text-[54px] font-bold leading-[1.05] text-[#f4f4f4] tracking-[0.03em] max-w-[650px] uppercase">
               MARKETING<br />
               BUILT THROUGH<br />
-              <span className="relative inline-block whitespace-nowrap pb-1">
-                REAL-WORLD EXECUTION
-                <motion.span
-                  initial={{ width: "0%" }}
-                  whileInView={{ width: "100%" }}
-                  viewport={{ once: true, margin: "0px 0px -30% 0px" }}
-                  transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                  className="absolute left-0 bottom-[-2px] h-[1px] bg-[#f4f4f4]/40"
-                ></motion.span>
+              <span className="relative inline-block pb-1 pr-2">
+                REAL-WORLD
+                <motion.div
+                  style={{ width: firstLineWidth }}
+                  className="absolute left-[-4px] top-0 bottom-1 bg-[#f4f4f4] mix-blend-difference z-10 origin-left"
+                />
+              </span>
+              <br />
+              <span className="relative inline-block pb-1 pr-2">
+                EXECUTION
+                <motion.div
+                  style={{ width: secondLineWidth }}
+                  className="absolute left-[-4px] top-0 bottom-1 bg-[#f4f4f4] mix-blend-difference z-10 origin-left"
+                />
               </span>
             </h3>
 
@@ -78,7 +93,7 @@ export function Layout42() {
               Experience across <strong className="font-medium text-[#f4f4f4]">digital marketing, global events, campaign execution, marketing analytics</strong>, and <strong className="font-medium text-[#f4f4f4]">brand strategy</strong> through <strong className="font-medium text-[#f4f4f4]">corporate, consulting</strong>, and <strong className="font-medium text-[#f4f4f4]"><span className="whitespace-nowrap">consumer-facing environments</span></strong>.
             </p>
             <p className="font-['Outfit'] text-[17px] md:text-[20px] leading-[1.75] font-light text-[#c2c2c2] max-w-[600px]">
-              I've worked across <strong className="font-medium text-[#f4f4f4]">event coordination</strong>, <strong className="font-medium text-[#f4f4f4]">social media campaigns</strong>, <strong className="font-medium text-[#f4f4f4]">copywriting</strong>, <strong className="font-medium text-[#f4f4f4]">client communication</strong>, and <strong className="font-medium text-[#f4f4f4]">content strategy</strong> — balancing <strong className="font-medium text-[#f4f4f4]">critical thinking</strong>, with <strong className="font-medium text-[#f4f4f4]">seamless execution</strong>.
+              I've worked closely with <strong className="font-medium text-[#f4f4f4]">event coordination</strong>, <strong className="font-medium text-[#f4f4f4]">social media campaigns</strong>, <strong className="font-medium text-[#f4f4f4]">copywriting</strong>, <strong className="font-medium text-[#f4f4f4]">client communication</strong>, and <strong className="font-medium text-[#f4f4f4]">content strategy</strong> — balancing <strong className="font-medium text-[#f4f4f4]">critical thinking</strong>, with <strong className="font-medium text-[#f4f4f4]">seamless execution</strong>.
             </p>
             <p className="font-['Outfit'] text-[17px] md:text-[20px] leading-[1.75] font-light text-[#c2c2c2] max-w-[600px]">
               My approach is <strong className="font-medium text-[#f4f4f4]">systems-driven</strong>, <strong className="font-medium text-[#f4f4f4]">research-oriented</strong>, with a strong focus on <strong className="font-medium text-[#f4f4f4]">constant learning, adaptability</strong>, and <strong className="font-medium text-[#f4f4f4]">creative problem solving</strong>.

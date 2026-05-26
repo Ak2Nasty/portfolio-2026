@@ -11,7 +11,7 @@ export function Navbar13() {
     >
       <div className="max-w-[120rem] mx-auto flex justify-end items-center">
         <ul className="flex gap-6 md:gap-10 font-['Outfit'] text-[9px] md:text-[11px] tracking-[0.15em] text-gray-400 uppercase">
-          {["ABOUT", "EXPERIENCE", "WORK SAMPLES", "CONTACT"].map((item, index) => (
+          {["HOME", "ABOUT", "EDUCATION", "EXPERIENCE", "WORK SAMPLES", "CONTACT"].map((item, index) => (
             <li key={item}>
               <a 
                 href={`#${item.toLowerCase().replace(" ", "-")}`} 

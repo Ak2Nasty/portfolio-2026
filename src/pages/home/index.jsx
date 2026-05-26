@@ -2,6 +2,7 @@ import React from "react";
 import { Navbar13 } from "./components/Navbar13";
 import { Header88 } from "./components/Header88";
 import { Layout42 } from "./components/Layout42";
+import { EducationTimeline } from "./components/EducationTimeline";
 import { Career12 } from "./components/Career12";
 import { Career12_1 } from "./components/Career12_1";
 import { Cta19 } from "./components/Cta19";
@@ -14,6 +15,7 @@ export default function Page() {
       <Navbar13 />
       <Header88 />
       <Layout42 />
+      <EducationTimeline />
       <Career12 />
       <Career12_1 />
       <Cta19 />
