@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 400">
+  <style>
+    .title { font-family: 'Arial', sans-serif; font-size: 72px; font-weight: 900; fill: #ffffff; letter-spacing: -2px; }
+    .tm { font-family: 'Arial', sans-serif; font-size: 20px; font-weight: 600; fill: #ffffff; }
+    .subtitle { font-family: 'Arial', sans-serif; font-size: 18px; font-weight: 600; fill: #ffffff; letter-spacing: 5px; text-transform: uppercase; }
+    .est { font-family: 'Arial', sans-serif; font-size: 14px; font-weight: 400; fill: #ffffff; letter-spacing: 2px; }
+    .divider { stroke: #ffffff; stroke-width: 2; opacity: 0.3; }
+    .block { fill: none; stroke: #ffffff; stroke-width: 6; stroke-linejoin: round; }
+  </style>
+  
+  <!-- Blocks Graphic (Drawn as outlines to prevent blob-merging when rendered pure white) -->
+  <g transform="translate(190, 30) scale(1.1)">
+    <!-- Blue horizontal block -->
+    <rect x="40" y="100" width="80" height="35" class="block" />
+    
+    <!-- Red vertical block -->
+    <rect x="40" y="0" width="35" height="85" class="block" />
+    
+    <!-- Yellow tilted block -->
+    <g transform="translate(-15, 80) rotate(45)">
+      <rect x="0" y="0" width="80" height="35" class="block" />
+    </g>
+  </g>
+  
+  <text x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" class="title">EssEmm<tspan class="tm" dy="-30">TM</tspan></text>
+  
+  <line x1="175" y1="310" x2="325" y2="310" class="divider" />
+  
+  <text x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" class="subtitle">Symbol of Trust</text>
+  <text x="50%" y="96%" dominant-baseline="middle" text-anchor="middle" class="est">ESTD. 1993</text>
+</svg>

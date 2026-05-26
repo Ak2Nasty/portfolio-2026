@@ -1,0 +1,183 @@
+import React from "react";
+import { motion } from "framer-motion";
+
+export function Career12() {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 1, ease: [0.16, 1, 0.3, 1] }
+    }
+  };
+
+  const experiences = [
+    {
+      company: "D2L",
+      logo: "/d2l-inverted.png",
+      role: "Customer Marketing & Events Coordinator",
+      summary: "Contributed to global event operations and cross-functional marketing initiatives, supporting a large-scale event vendor transition through strategic evaluation, stakeholder communication, Power BI reporting, and trade show coordination.",
+      metadata: "VANCOUVER, BC • CO-OP • SEP 2023 - DEC 2023",
+      link: "#"
+    },
+    {
+      company: "OKHC",
+      logo: "/okhc-logo.png",
+      logoClass: "grayscale invert contrast-200",
+      role: "Marketing & Communications Consultant",
+      summary: "Led communications, strategic marketing, and website redesign development for a non-profit consulting engagement through client outreach, marketing audits, social media strategy, stakeholder communication, and content development.",
+      metadata: "KELOWNA, BC • UBC CAPSTONE • JAN 2025 - APR 2025",
+      link: "#"
+    },
+    {
+      company: "Foot Locker",
+      logo: "/footlocker-seeklogo.png",
+      logoClass: "grayscale invert contrast-200",
+      role: "Sales Associate",
+      summary: "Delivered client-focused customer experiences in a high-volume retail environment through product recommendations, visual merchandising, inventory coordination, and fast-paced frontline operations.",
+      metadata: "KELOWNA, BC • RETAIL OPERATIONS • NOV 2025 - PRESENT",
+      link: "#"
+    },
+    {
+      company: "UBC Management Student Association",
+      logo: "/msa-logo.png",
+      logoClass: "grayscale invert contrast-200",
+      role: "President, Marketing Club",
+      summary: "Led digital content, social media strategy, sponsorship partnerships, and campus-wide event execution through cross-channel promotional campaigns, budget coordination, and brand-aligned marketing initiatives.",
+      metadata: "KELOWNA, BC • STUDENT LEADERSHIP • AUG 2022 - APR 2023",
+      link: "#"
+    },
+    {
+      company: "Nestlé Nespresso",
+      logo: "/nespresso-idr.svg",
+      logoClass: "brightness-0 invert",
+      role: "Sales Associate",
+      summary: "Delivered brand-focused customer experiences through product demonstrations, consumer engagement, visual merchandising, and personalized sales communication, contributing to an 8% increase in sales performance.",
+      metadata: "KELOWNA, BC • CONSUMER ENGAGEMENT • NOV 2022 - APR 2023",
+      link: "#"
+    },
+    {
+      company: "CUBS Vancouver",
+      logo: "/cubs-logo.png",
+      logoClass: "grayscale invert contrast-200 scale-[1.7] origin-right translate-x-20",
+      role: "Graphic Designer",
+      summary: "Developed social media campaigns, copywriting, and visual content for community-focused education initiatives through content strategy, digital design, and creative communication.",
+      metadata: "VANCOUVER, BC (REMOTE) • CREATIVE MARKETING • AUG 2022 - DEC 2022",
+      link: "#"
+    },
+    {
+      company: "Mindtree",
+      logo: "/mindtree-logo.svg",
+      logoClass: "brightness-0 invert",
+      role: "Acquisitions Student Intern",
+      summary: "Supported post-acquisition communications and organizational change initiatives through stakeholder coordination, internal communication strategy, operational research, and cross-functional collaboration.",
+      metadata: "BANGALORE, INDIA • CORPORATE STRATEGY • SEP 2019 - JAN 2020",
+      link: "#"
+    },
+    {
+      company: "EssEmm Corporation",
+      logo: "/essemm-logo.svg",
+      logoClass: "brightness-0 invert",
+      role: "Marketing Student Intern",
+      summary: "Conducted market research, strategic analysis, and customer insight reporting to support distribution strategy, product positioning, and e-commerce recommendations through data-driven marketing initiatives.",
+      metadata: "COIMBATORE, INDIA • MARKETING STRATEGY • JUN 2019 - SEP 2019",
+      link: "#"
+    }
+  ];
+
+  return (
+    <section id="experience" className="w-full px-6 md:px-12 lg:px-16 pt-16 md:pt-24 pb-24 md:pb-32 lg:pb-40 relative z-20 bg-[#0C0C0B]">
+      <div className="max-w-[120rem] mx-auto">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "0px 0px -20% 0px" }}
+          variants={containerVariants}
+          className="flex flex-col lg:flex-row gap-16 lg:gap-24"
+        >
+          
+          {/* Left: Section Header */}
+          <motion.div variants={itemVariants} className="w-full lg:w-[45%] flex flex-col gap-6 md:gap-8 justify-start">
+            <div className="flex flex-col gap-3 md:gap-4">
+              <span className="font-['Outfit'] font-semibold text-[10px] md:text-[11px] tracking-[0.25em] text-[#a3a3a3] uppercase">
+                EXPERIENCE / 02
+              </span>
+              <h3 className="font-['Outfit'] text-[34px] md:text-[46px] lg:text-[54px] font-bold leading-[1.05] text-[#f4f4f4] tracking-[0.03em] uppercase">
+                EXECUTION ARCHIVE
+              </h3>
+            </div>
+            
+            <p className="font-['Outfit'] text-[12px] md:text-[14px] leading-[1.8] font-medium tracking-[0.15em] text-[#8a8a8a] max-w-[400px] uppercase">
+              A CURATED LOOK AT THE PROJECTS, CAMPAIGNS, AND SYSTEMS I&apos;VE HELPED BUILD.
+            </p>
+          </motion.div>
+          
+          {/* Right: Experience List */}
+          <div className="w-full lg:w-[55%] flex flex-col">
+            {experiences.map((exp, index) => (
+              <motion.div 
+                key={index}
+                variants={itemVariants}
+                className="group border-t border-[#2a2a2a] py-10 md:py-14 flex flex-row justify-between items-stretch gap-8 first:border-t-0 lg:first:border-t"
+              >
+                <div className="flex flex-col gap-5 flex-1">
+                  {/* Header (Company & Role) */}
+                  <div className="flex flex-col gap-1.5">
+                    <h4 className="font-['Outfit'] font-bold text-[28px] md:text-[36px] text-[#f4f4f4] uppercase tracking-tight leading-none">
+                      {exp.company}
+                    </h4>
+                    <h5 className="font-['Outfit'] text-[18px] md:text-[22px] text-[#e5e5e5] font-light">
+                      {exp.role}
+                    </h5>
+                  </div>
+
+                  {/* Summary */}
+                  <p className="font-['Outfit'] text-[15px] md:text-[17px] leading-[1.7] font-light text-[#c2c2c2] max-w-[600px] my-1">
+                    {exp.summary}
+                  </p>
+
+                  {/* Metadata */}
+                  <p className="font-['Outfit'] text-[10px] md:text-[11px] tracking-[0.25em] text-[#a3a3a3] uppercase">
+                    {exp.metadata}
+                  </p>
+
+                  {/* CTA */}
+                  <a 
+                    href={exp.link}
+                    className="mt-4 flex items-center gap-3 font-['Outfit'] text-[10px] md:text-[11px] font-semibold tracking-[0.2em] text-[#f4f4f4] uppercase transition-all duration-300 hover:text-[#22c55e] w-fit group/cta"
+                  >
+                    VIEW PROJECT 
+                    <span className="transition-transform duration-300 group-hover/cta:translate-x-1.5">→</span>
+                  </a>
+                </div>
+
+                {/* Logo Watermark */}
+                {exp.logo && (
+                  <div className="flex flex-shrink-0 items-center justify-center w-[120px] md:w-[200px] lg:w-[250px] pointer-events-none opacity-30 transition-opacity duration-700 group-hover:opacity-50 select-none pl-4 mix-blend-screen">
+                    <img 
+                      src={exp.logo} 
+                      alt="" 
+                      className={`w-full h-auto object-contain ${exp.logoClass || "brightness-0 invert"}`}
+                      draggable="false"
+                    />
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
