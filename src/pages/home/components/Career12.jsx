@@ -1,5 +1,5 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React from 'react';
+import { motion } from 'framer-motion';
 
 export function Career12() {
   const containerVariants = {
@@ -33,8 +33,8 @@ export function Career12() {
     },
     {
       company: "OKHC",
-      logo: "/okhc-logo.png",
-      logoClass: "grayscale invert contrast-200",
+      logo: "/okhc-logo-transparent.png",
+      logoClass: "brightness-0 invert",
       role: "Marketing & Communications Consultant",
       summary: "Led communications, strategic marketing, and website redesign development for a non-profit consulting engagement through client outreach, marketing audits, social media strategy, stakeholder communication, and content development.",
       metadata: "KELOWNA, BC • UBC CAPSTONE • JAN 2025 - APR 2025",
@@ -108,7 +108,7 @@ export function Career12() {
         >
           
           {/* Left: Section Header */}
-          <motion.div variants={itemVariants} className="w-full lg:w-[45%] flex flex-col gap-6 md:gap-8 justify-start">
+          <motion.div variants={itemVariants} className="w-full lg:w-[45%] flex flex-col gap-6 md:gap-8 justify-start lg:sticky lg:top-[15vh] h-fit">
             <div className="flex flex-col gap-3 md:gap-4">
               <span className="font-['Outfit'] font-semibold text-[10px] md:text-[11px] tracking-[0.25em] text-[#a3a3a3] uppercase">
                 EXPERIENCE / 02
@@ -124,47 +124,55 @@ export function Career12() {
           </motion.div>
           
           {/* Right: Experience List */}
-          <div className="w-full lg:w-[55%] flex flex-col">
-            {experiences.map((exp, index) => (
+          <div className="w-full lg:w-[55%] flex flex-col relative" style={{ paddingBottom: '25vh' }}>
+            {experiences.map((exp, index) => {
+              const topOffset = `calc(15vh + ${index * 20}px)`;
+              return (
               <motion.div 
                 key={index}
                 variants={itemVariants}
-                className="group border-t border-[#2a2a2a] py-10 md:py-14 flex flex-row justify-between items-stretch gap-8 first:border-t-0 lg:first:border-t"
+                style={{ top: topOffset }}
+                // Enforces uniform height so bottoms never poke out, adjusted for laptop breakpoints
+                className="group sticky flex flex-col md:flex-row justify-between items-stretch gap-6 md:gap-8 bg-[#0a0a0a] border border-[#2a2a2a] rounded-2xl p-8 lg:p-10 2xl:p-12 mb-[10vh] lg:mb-[25vh] shadow-[0_0_50px_rgba(255,255,255,0.03)] h-[650px] sm:h-[550px] lg:h-[500px] 2xl:h-[450px] overflow-hidden transition-shadow duration-500 hover:shadow-[0_0_60px_rgba(255,255,255,0.06)]"
               >
-                <div className="flex flex-col gap-5 flex-1">
-                  {/* Header (Company & Role) */}
-                  <div className="flex flex-col gap-1.5">
-                    <h4 className="font-['Outfit'] font-bold text-[28px] md:text-[36px] text-[#f4f4f4] uppercase tracking-tight leading-none">
-                      {exp.company}
-                    </h4>
-                    <h5 className="font-['Outfit'] text-[18px] md:text-[22px] text-[#e5e5e5] font-light">
-                      {exp.role}
-                    </h5>
+                <div className="flex flex-col gap-5 flex-1 relative z-10 justify-between">
+                  <div>
+                    {/* Header (Company & Role) */}
+                    <div className="flex flex-col gap-1.5">
+                      <h4 className="font-['Outfit'] font-bold text-[28px] md:text-[36px] text-[#f4f4f4] uppercase tracking-tight leading-none">
+                        {exp.company}
+                      </h4>
+                      <h5 className="font-['Outfit'] text-[18px] md:text-[22px] text-[#e5e5e5] font-light">
+                        {exp.role}
+                      </h5>
+                    </div>
+
+                    {/* Summary */}
+                    <p className="font-['Outfit'] text-[15px] md:text-[17px] leading-[1.7] font-light text-[#c2c2c2] max-w-[600px] mt-6 mb-2">
+                      {exp.summary}
+                    </p>
                   </div>
 
-                  {/* Summary */}
-                  <p className="font-['Outfit'] text-[15px] md:text-[17px] leading-[1.7] font-light text-[#c2c2c2] max-w-[600px] my-1">
-                    {exp.summary}
-                  </p>
+                  <div>
+                    {/* Metadata */}
+                    <p className="font-['Outfit'] text-[10px] md:text-[11px] tracking-[0.25em] text-[#a3a3a3] uppercase">
+                      {exp.metadata}
+                    </p>
 
-                  {/* Metadata */}
-                  <p className="font-['Outfit'] text-[10px] md:text-[11px] tracking-[0.25em] text-[#a3a3a3] uppercase">
-                    {exp.metadata}
-                  </p>
-
-                  {/* CTA */}
-                  <a 
-                    href={exp.link}
-                    className="mt-4 flex items-center gap-3 font-['Outfit'] text-[10px] md:text-[11px] font-semibold tracking-[0.2em] text-[#f4f4f4] uppercase transition-all duration-300 hover:text-[#22c55e] w-fit group/cta"
-                  >
-                    VIEW PROJECT 
-                    <span className="transition-transform duration-300 group-hover/cta:translate-x-1.5">→</span>
-                  </a>
+                    {/* CTA */}
+                    <a 
+                      href={exp.link}
+                      className="mt-4 flex items-center gap-3 font-['Outfit'] text-[10px] md:text-[11px] font-semibold tracking-[0.2em] text-[#f4f4f4] uppercase transition-all duration-300 hover:text-[#22c55e] w-fit group/cta"
+                    >
+                      VIEW PROJECT 
+                      <span className="transition-transform duration-300 group-hover/cta:translate-x-1.5">→</span>
+                    </a>
+                  </div>
                 </div>
 
                 {/* Logo Watermark */}
                 {exp.logo && (
-                  <div className="flex flex-shrink-0 items-center justify-center w-[120px] md:w-[200px] lg:w-[250px] pointer-events-none opacity-30 transition-opacity duration-700 group-hover:opacity-50 select-none pl-4 mix-blend-screen">
+                  <div className="flex flex-shrink-0 items-center justify-center w-[100px] md:w-[150px] lg:w-[180px] xl:w-[200px] 2xl:w-[250px] pointer-events-none select-none pl-4 transition-all duration-700 opacity-90 group-hover:opacity-100 mix-blend-screen drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] group-hover:drop-shadow-[0_0_25px_rgba(255,255,255,0.2)]">
                     <img 
                       src={exp.logo} 
                       alt="" 
@@ -174,7 +182,8 @@ export function Career12() {
                   </div>
                 )}
               </motion.div>
-            ))}
+              );
+            })}
           </div>
         </motion.div>
       </div>
