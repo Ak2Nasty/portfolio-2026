@@ -74,7 +74,7 @@ export function Header88() {
               }
             }}
           >
-            AKSHATHDAYAN
+            <span className="block md:inline mb-1 md:mb-0">AKSHATH</span><span className="block md:inline">DAYAN</span>
           </motion.span>
           <motion.span 
             className="block bg-clip-text"
