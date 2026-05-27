@@ -54,6 +54,7 @@ export function Navbar13() {
         {/* LINKS */}
         <ul className="flex flex-wrap items-center justify-center gap-0.5 sm:gap-1 lg:gap-2">
           {navItems.map((item, index) => {
+            const Icon = item.icon;
             return (
               <li 
                 key={item.label} 
@@ -67,7 +68,7 @@ export function Navbar13() {
                   className="relative z-10 px-2 py-1.5 md:px-2.5 lg:px-4 lg:py-2 inline-flex items-center justify-center gap-1.5 font-['Outfit'] text-[9px] md:text-[9.5px] lg:text-[10px] tracking-[0.1em] lg:tracking-[0.15em] font-medium text-gray-400 hover:text-white transition-colors duration-300 uppercase whitespace-nowrap"
                 >
                   <span className="hidden md:inline">{item.label}</span>
-                  {item.icon && <item.icon className="w-4 h-4 md:hidden" strokeWidth={1.5} />}
+                  {Icon && <Icon className="w-4 h-4 md:hidden" strokeWidth={1.5} />}
                 </a>
                 <AnimatePresence>
                   {hoveredIndex === index && (
