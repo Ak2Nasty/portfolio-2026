@@ -67,7 +67,7 @@ export function Navbar13() {
                   onClick={(e) => handleClick(e, item)}
                   className="relative z-10 px-2 py-1.5 md:px-2.5 lg:px-4 lg:py-2 inline-flex items-center justify-center gap-1.5 font-['Outfit'] text-[9px] md:text-[9.5px] lg:text-[10px] tracking-[0.1em] lg:tracking-[0.15em] font-medium text-gray-400 hover:text-white transition-colors duration-300 uppercase whitespace-nowrap"
                 >
-                  <span className="hidden md:inline">{item.label}</span>
+                  <span className="max-md:hidden">{item.label}</span>
                   {Icon && <Icon className="w-4 h-4 md:hidden" strokeWidth={1.5} />}
                 </a>
                 <AnimatePresence>
