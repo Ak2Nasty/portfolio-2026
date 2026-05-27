@@ -41,12 +41,12 @@ export function Navbar13() {
       transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
       className="absolute top-0 left-0 right-0 z-[999] w-full px-4 md:px-6 lg:px-12 pt-6 lg:pt-8 flex justify-center"
     >
-      <div className="w-full max-w-[80rem] flex flex-wrap items-center justify-center md:justify-between bg-[#121211]/40 border border-white/[0.05] backdrop-blur-md rounded-[2rem] px-3 md:px-6 lg:px-8 py-2 lg:py-3.5 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
+      <div className="w-full max-w-[80rem] flex items-center justify-between bg-[#121211]/40 border border-white/[0.05] backdrop-blur-md rounded-[2rem] px-3 md:px-6 lg:px-8 py-2 lg:py-3.5 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
         
         {/* LOGO */}
         <div 
           onClick={(e) => handleClick(e, 'home')}
-          className="hidden md:block font-monument text-[11px] lg:text-[13px] tracking-[0.15em] lg:tracking-[0.2em] font-black text-[#f4f4f4] uppercase cursor-pointer select-none"
+          className="font-monument text-[11px] lg:text-[13px] tracking-[0.15em] lg:tracking-[0.2em] font-black text-[#f4f4f4] uppercase cursor-pointer select-none"
         >
           AKSHATH<span className="text-[#a3a3a3]">.</span>
         </div>
