@@ -111,16 +111,28 @@ export function Career12() {
           <motion.div variants={itemVariants} className="w-full lg:w-[45%] flex flex-col gap-6 md:gap-8 justify-start lg:sticky lg:top-[15vh] h-fit">
             <div className="flex flex-col gap-3 md:gap-4">
               <span className="font-['Outfit'] font-semibold text-[10px] md:text-[11px] tracking-[0.25em] text-[#a3a3a3] uppercase">
-                EXECUTION / 03
+                EXPERIENCE / 03
               </span>
               <h3 className="font-monument text-[34px] md:text-[46px] lg:text-[54px] font-bold leading-[1.05] text-[#f4f4f4] tracking-[0.03em] uppercase">
                 EXECUTION ARCHIVE
               </h3>
             </div>
             
-            <p className="font-['Outfit'] text-[12px] md:text-[14px] leading-[1.8] font-medium tracking-[0.15em] text-[#8a8a8a] max-w-[400px] uppercase">
+            <p className="font-['Outfit'] text-[12px] md:text-[14px] leading-[1.8] font-medium tracking-[0.15em] text-[#8a8a8a] max-w-[400px] uppercase mb-6">
               A CURATED LOOK AT THE PROJECTS, CAMPAIGNS, AND SYSTEMS I&apos;VE HELPED BUILD.
             </p>
+
+            <a 
+              href="#work-samples"
+              className="group relative flex items-center justify-center gap-3 w-fit px-8 py-3.5 bg-[#0a0a0a]/50 border border-white/[0.1] rounded-full overflow-hidden transition-all duration-500 hover:bg-white/[0.04] hover:border-white/[0.15] hover:shadow-[0_0_25px_rgba(255,255,255,0.05)] backdrop-blur-sm cursor-pointer"
+            >
+              <span className="relative z-10 font-['Outfit'] text-[11px] tracking-[0.2em] font-medium text-gray-300 group-hover:text-white uppercase transition-colors">
+                View Work Samples
+              </span>
+              <span className="relative z-10 text-gray-500 transition-all duration-300 group-hover:translate-x-1 group-hover:text-white">
+                →
+              </span>
+            </a>
           </motion.div>
           
           {/* Right: Experience List */}
@@ -133,7 +145,7 @@ export function Career12() {
                 variants={itemVariants}
                 style={{ top: topOffset }}
                 // Enforces uniform height so bottoms never poke out, adjusted for laptop breakpoints
-                className="group sticky flex flex-col md:flex-row justify-between items-stretch gap-6 md:gap-8 bg-[#0a0a0a] border border-[#2a2a2a] rounded-2xl p-8 lg:p-10 2xl:p-12 mb-[10vh] lg:mb-[25vh] shadow-[0_0_50px_rgba(255,255,255,0.03)] h-[650px] sm:h-[550px] lg:h-[500px] 2xl:h-[450px] overflow-hidden transition-shadow duration-500 hover:shadow-[0_0_60px_rgba(255,255,255,0.06)]"
+                className="group sticky flex flex-col md:flex-row justify-between items-stretch gap-6 md:gap-8 bg-[#0a0a0a] border border-[#2a2a2a] rounded-2xl p-8 lg:p-10 2xl:p-12 mb-[10vh] lg:mb-[25vh] shadow-[0_0_15px_rgba(255,255,255,0.05)] h-[650px] sm:h-[550px] lg:h-[500px] 2xl:h-[450px] overflow-hidden transition-shadow duration-500 hover:shadow-[0_0_25px_rgba(255,255,255,0.15)]"
               >
                 <div className="flex flex-col gap-5 flex-1 relative z-10 justify-between">
                   <div>

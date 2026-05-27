@@ -23,19 +23,19 @@ export function Footer4() {
           </a>
           <ul className="grid grid-flow-row grid-cols-1 items-start justify-center justify-items-center gap-6 md:grid-flow-col md:grid-cols-[max-content] md:justify-center md:justify-items-start">
             <li className="font-semibold">
-              <a href="#">Home</a>
+              <a href="#home" className="hover:text-white transition-colors">Home</a>
             </li>
             <li className="font-semibold">
-              <a href="#">Experience</a>
+              <a href="#experience" className="hover:text-white transition-colors">Experience</a>
             </li>
             <li className="font-semibold">
-              <a href="#">About</a>
+              <a href="#about" className="hover:text-white transition-colors">About</a>
             </li>
             <li className="font-semibold">
-              <a href="#">Contact</a>
+              <a href="#contact" className="hover:text-white transition-colors">Contact</a>
             </li>
             <li className="font-semibold">
-              <a href="#">Work</a>
+              <a href="#skills" className="hover:text-white transition-colors">Skills</a>
             </li>
           </ul>
           <div className="flex items-start justify-start justify-items-center gap-x-3 lg:justify-self-end">

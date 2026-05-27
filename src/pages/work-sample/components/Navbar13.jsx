@@ -91,7 +91,6 @@ export function Navbar13() {
             <div
               ref={useActive.menuRef}
               className="flex w-full flex-col border border-t-0 border-border-primary bg-background-primary p-5 md:p-8 lg:w-auto lg:flex-row lg:border-none lg:bg-none lg:p-0"
-              ref={useActive.menuRef}
             >
               <a
                 href="#"
@@ -122,7 +121,6 @@ export function Navbar13() {
             ref={useActive.buttonRef}
             className="-mr-2 flex size-12 flex-col items-center justify-center justify-self-end lg:hidden"
             onClick={useActive.toggleMobileMenu}
-            ref={useActive.buttonRef}
           >
             <motion.span
               className="my-[3px] h-0.5 w-6 bg-black"

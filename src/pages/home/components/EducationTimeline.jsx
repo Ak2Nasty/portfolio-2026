@@ -71,7 +71,7 @@ export function EducationTimeline() {
           <span className="font-['Outfit'] font-semibold text-[10px] tracking-[0.25em] text-[#a3a3a3] uppercase">
             EDUCATION / 02
           </span>
-          <h2 className="text-3xl font-bold font-monument tracking-wide text-[#f4f4f4]">
+          <h2 className="font-monument text-[28px] sm:text-[36px] md:text-[42px] xl:text-[50px] font-bold leading-[1.08] text-[#f4f4f4] tracking-[0.03em] uppercase max-w-[760px]">
             LEARNING CURVE
           </h2>
           <p className="font-['Outfit'] text-[12px] md:text-[14px] leading-[1.8] font-medium tracking-[0.15em] text-[#8a8a8a] max-w-[400px] uppercase">
@@ -125,7 +125,7 @@ export function EducationTimeline() {
             <span className="font-['Outfit'] font-semibold text-[11px] tracking-[0.25em] text-[#a3a3a3] uppercase">
               EDUCATION / 02
             </span>
-            <h2 className="text-4xl xl:text-5xl font-bold font-monument tracking-wide text-[#f4f4f4]">
+            <h2 className="font-monument text-[28px] sm:text-[36px] md:text-[42px] xl:text-[50px] font-bold leading-[1.08] text-[#f4f4f4] tracking-[0.03em] uppercase max-w-[760px]">
               LEARNING CURVE
             </h2>
             <p className="font-['Outfit'] text-[12px] md:text-[14px] leading-[1.8] font-medium tracking-[0.15em] text-[#8a8a8a] max-w-[500px] uppercase mt-2">

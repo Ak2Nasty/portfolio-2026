@@ -4,11 +4,6 @@ import { ChevronDown } from "lucide-react";
 
 export function Header88() {
   const [isReducedMotion, setIsReducedMotion] = useState(false);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const smoothX = useSpring(mouseX, { damping: 50, stiffness: 200 });
-  const smoothY = useSpring(mouseY, { damping: 50, stiffness: 200 });
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -20,21 +15,7 @@ export function Header88() {
     return () => mediaQuery.removeEventListener("change", handleMediaChange);
   }, []);
 
-  useEffect(() => {
-    if (isReducedMotion || window.innerWidth <= 768) return;
 
-    const handleMouseMove = (e) => {
-      // Normalize to -1 to 1
-      const x = (e.clientX / window.innerWidth - 0.5) * 2;
-      const y = (e.clientY / window.innerHeight - 0.5) * 2;
-      // Max movement 3px for that subtle microscopic drift
-      mouseX.set(x * 3);
-      mouseY.set(y * 3);
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY, isReducedMotion]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -68,18 +49,51 @@ export function Header88() {
       <div className="flex-1 flex flex-col justify-center px-6 md:px-12 lg:px-16 w-full max-w-[120rem] mx-auto relative z-10">
         
         {/* Role Label */}
-        <motion.div variants={itemVariants} className="font-['Outfit'] text-[9px] md:text-[11px] tracking-[0.2em] text-gray-400 uppercase mb-4 md:mb-6">
+        <motion.div variants={itemVariants} className="font-['Outfit'] text-[9px] md:text-[11px] tracking-[0.2em] text-gray-300 uppercase mb-4 md:mb-6">
           DIGITAL MARKETING • EVENT OPERATIONS • BRAND STRATEGY
         </motion.div>
 
         {/* Massive Name */}
         <motion.h1 
           variants={itemVariants} 
-          style={isReducedMotion ? {} : { x: smoothX, y: smoothY }}
-          className="font-monument text-[10vw] md:text-[8vw] leading-[1.05] text-[#f4f4f4] m-0 p-0 tracking-normal"
+          className="font-monument text-[10vw] md:text-[8vw] leading-[1.05] m-0 p-0 tracking-normal cursor-default z-10"
         >
-          <span className="block mb-1 md:mb-2">AKSHATHDAYAN</span>
-          <span className="block">SURESH</span>
+          <motion.span 
+            className="block mb-1 md:mb-2 bg-clip-text"
+            style={{ 
+              backgroundImage: "linear-gradient(90deg, #f4f4f4 0%, #ffffff 30%, #555555 50%, #ffffff 70%, #f4f4f4 100%)",
+              backgroundSize: "200% auto"
+            }}
+            initial={{ backgroundPosition: "200% center", color: "#f4f4f4" }}
+            whileHover={{ 
+              color: "rgba(244, 244, 244, 0)",
+              backgroundPosition: "-200% center",
+              transition: { 
+                backgroundPosition: { duration: 3, ease: "linear", repeat: Infinity }, 
+                color: { duration: 0.4 } 
+              }
+            }}
+          >
+            AKSHATHDAYAN
+          </motion.span>
+          <motion.span 
+            className="block bg-clip-text"
+            style={{ 
+              backgroundImage: "linear-gradient(90deg, #f4f4f4 0%, #ffffff 30%, #555555 50%, #ffffff 70%, #f4f4f4 100%)",
+              backgroundSize: "200% auto"
+            }}
+            initial={{ backgroundPosition: "200% center", color: "#f4f4f4" }}
+            whileHover={{ 
+              color: "rgba(244, 244, 244, 0)",
+              backgroundPosition: "-200% center",
+              transition: { 
+                backgroundPosition: { duration: 3, ease: "linear", repeat: Infinity }, 
+                color: { duration: 0.4 } 
+              }
+            }}
+          >
+            SURESH
+          </motion.span>
         </motion.h1>
 
         {/* Education Metadata */}
@@ -96,12 +110,12 @@ export function Header88() {
         
         {/* Left Side: Positioning & Location */}
         <div className="flex flex-col gap-6 md:gap-10 max-w-[45%] min-w-[300px]">
-          <motion.p variants={itemVariants} className="font-['Outfit'] text-[10px] md:text-[12px] leading-[1.8] text-gray-400 uppercase tracking-widest">
+          <motion.p variants={itemVariants} className="font-['Outfit'] text-[10px] md:text-[12px] leading-[1.8] text-gray-300 uppercase tracking-widest">
             BUSINESS MANAGEMENT GRADUATE WITH EXPERIENCE ACROSS DIGITAL MARKETING, GLOBAL EVENTS, DIGITAL CAMPAIGNS, MARKETING ANALYTICS, AND BRAND STRATEGY.
           </motion.p>
-          <motion.div variants={itemVariants} className="font-['Outfit'] text-[9px] md:text-[11px] tracking-[0.2em] text-gray-500 uppercase flex items-center gap-2">
+          <motion.div variants={itemVariants} className="font-['Outfit'] text-[9px] md:text-[11px] tracking-[0.2em] text-gray-200 uppercase flex items-center gap-2">
             BASED IN TORONTO, CANADA
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 md:w-4 md:h-4 opacity-80" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#ef4444] drop-shadow-[0_0_6px_rgba(239,68,68,0.7)]" xmlns="http://www.w3.org/2000/svg">
               <path d="M12.051 0L9.444 6.78l-5.637-.626 2.656 5.864-6.463 2.112 7.027 3.328-1.503 3.972 6.012-1.922.385 4.492h1.493l.4-4.524 6.014 1.954-1.542-4.004 7.085-3.328-6.495-2.112 2.673-5.864-5.67.626L12.051 0z" />
             </svg>
           </motion.div>
@@ -114,36 +128,32 @@ export function Header88() {
             <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-[#22c55e] shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
             <span className="font-['Outfit'] text-[9px] md:text-[10px] uppercase tracking-widest text-[#22c55e] pt-[1px] md:pt-[2px]">AVAILABLE FOR WORK</span>
           </motion.div>
-
           {/* Scroll Cue */}
           <motion.div variants={itemVariants} className="font-['Outfit'] text-[9px] md:text-[11px] tracking-[0.2em] text-gray-300 uppercase flex items-center gap-2 cursor-default drop-shadow-[0_0_8px_rgba(209,213,219,0.5)]">
             SCROLL TO ENTER PORTFOLIO
-            <div className="relative w-4 h-4">
-              {/* Tracer 2 */}
+            <div className="flex flex-col -space-y-1.5 md:-space-y-2 pt-0.5">
+              {/* Top Arrow */}
               <motion.div 
-                animate={isReducedMotion ? {} : { y: [0, 7, 0], opacity: [0.1, 0.3, 0.1] }}
-                transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut", delay: 0.3 }}
-                className="absolute inset-0 flex items-center justify-center"
+                animate={isReducedMotion ? {} : { opacity: [0.1, 1, 0.1], y: [0, 2, 0] }}
+                transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", delay: 0 }}
               >
-                <ChevronDown className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                <ChevronDown className="w-3.5 h-3.5 md:w-4 md:h-4" strokeWidth={2.5} />
               </motion.div>
               
-              {/* Tracer 1 */}
+              {/* Middle Arrow */}
               <motion.div 
-                animate={isReducedMotion ? {} : { y: [0, 7, 0], opacity: [0.3, 0.6, 0.3] }}
-                transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut", delay: 0.15 }}
-                className="absolute inset-0 flex items-center justify-center"
+                animate={isReducedMotion ? {} : { opacity: [0.1, 1, 0.1], y: [0, 2, 0] }}
+                transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", delay: 0.2 }}
               >
-                <ChevronDown className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                <ChevronDown className="w-3.5 h-3.5 md:w-4 md:h-4" strokeWidth={2.5} />
               </motion.div>
 
-              {/* Main Arrow */}
+              {/* Bottom Arrow */}
               <motion.div 
-                animate={isReducedMotion ? {} : { y: [0, 7, 0], opacity: [0.7, 1, 0.7] }}
-                transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
-                className="absolute inset-0 flex items-center justify-center"
+                animate={isReducedMotion ? {} : { opacity: [0.1, 1, 0.1], y: [0, 2, 0] }}
+                transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", delay: 0.4 }}
               >
-                <ChevronDown className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                <ChevronDown className="w-3.5 h-3.5 md:w-4 md:h-4" strokeWidth={2.5} />
               </motion.div>
             </div>
           </motion.div>

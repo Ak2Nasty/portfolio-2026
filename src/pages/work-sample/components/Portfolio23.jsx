@@ -111,7 +111,6 @@ export function Portfolio23() {
             ref={useActive.refs[0]}
             style={useActive.computedStyles[0]}
             className="grid grid-cols-1 gap-x-20 gap-y-6 border border-border-primary p-6 md:grid-cols-[3fr_4fr] md:gap-y-20 md:p-8 lg:p-12"
-            ref={useActive.refs[0]}
           >
             <div className="flex flex-col justify-between">
               <div>
@@ -168,7 +167,6 @@ export function Portfolio23() {
             ref={useActive.refs[1]}
             style={useActive.computedStyles[1]}
             className="grid grid-cols-1 gap-x-20 gap-y-6 border border-border-primary p-6 md:grid-cols-[3fr_4fr] md:gap-y-20 md:p-8 lg:p-12"
-            ref={useActive.refs[1]}
           >
             <div className="flex flex-col justify-between">
               <div>
@@ -225,7 +223,6 @@ export function Portfolio23() {
             ref={useActive.refs[2]}
             style={useActive.computedStyles[2]}
             className="grid grid-cols-1 gap-x-20 gap-y-6 border border-border-primary p-6 md:grid-cols-[3fr_4fr] md:gap-y-20 md:p-8 lg:p-12"
-            ref={useActive.refs[2]}
           >
             <div className="flex flex-col justify-between">
               <div>
