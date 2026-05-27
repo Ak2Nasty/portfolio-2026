@@ -1,28 +1,34 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export function Navbar13() {
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const navItems = [
     { label: "HOME", id: "home" },
     { label: "ABOUT", id: "about" },
     { label: "EDUCATION", id: "education" },
-    { 
-      label: "EXPERIENCE", 
-      id: "experience",
-      dropdown: [
-        { label: "WORK SAMPLES", id: "work-samples" }
-      ]
-    },
+    { label: "EXPERIENCE", id: "experience" },
+    { label: "WORK", id: "work-samples", href: "/work-sample" },
     { label: "SKILLS", id: "skills" },
     { label: "CONTACT", id: "contact" }
   ];
 
-  const handleClick = (e, id) => {
+  const handleClick = (e, item) => {
     e.preventDefault();
-    const element = document.getElementById(id);
+    if (item.href) {
+      navigate(item.href);
+      return;
+    }
+    if (location.pathname !== "/") {
+      navigate(`/#${item.id}`);
+      return;
+    }
+    const element = document.getElementById(item.id);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
@@ -57,13 +63,10 @@ export function Navbar13() {
               >
                 <a 
                   href={`#${item.id}`} 
-                  onClick={(e) => handleClick(e, item.id)}
+                  onClick={(e) => handleClick(e, item)}
                   className="relative z-10 px-3 py-1.5 sm:px-4 sm:py-2 inline-flex items-center gap-1.5 font-['Outfit'] text-[9px] sm:text-[10px] tracking-[0.15em] font-medium text-gray-400 hover:text-white transition-colors duration-300 uppercase whitespace-nowrap"
                 >
                   {item.label}
-                  {item.dropdown && (
-                    <ChevronDown className="w-3 h-3 opacity-60 group-hover:opacity-100 transition-opacity" strokeWidth={2.5} />
-                  )}
                 </a>
                 <AnimatePresence>
                   {hoveredIndex === index && (
@@ -77,27 +80,6 @@ export function Navbar13() {
                     />
                   )}
                 </AnimatePresence>
-
-                {/* DROPDOWN */}
-                {item.dropdown && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                    <div className="flex flex-col bg-[#0a0a0a]/95 backdrop-blur-xl border border-white/[0.08] rounded-xl p-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
-                      {item.dropdown.map(subItem => (
-                        <a 
-                          key={subItem.label}
-                          href={`#${subItem.id}`}
-                          onClick={(e) => {
-                            handleClick(e, subItem.id);
-                            setHoveredIndex(null);
-                          }}
-                          className="px-4 py-2.5 rounded-lg font-['Outfit'] text-[9px] sm:text-[10px] font-medium tracking-[0.15em] text-gray-400 hover:text-white hover:bg-white/[0.06] transition-all whitespace-nowrap uppercase text-center"
-                        >
-                          {subItem.label}
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </li>
             );
           })}

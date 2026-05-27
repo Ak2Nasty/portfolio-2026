@@ -7,6 +7,7 @@
 :root {
   background-color: #0C0C0B;
   color: #f4f4f4;
+  --scrollbar-alpha: 0.03;
 }
 
 body {
@@ -30,4 +31,26 @@ body {
     font-family: 'Monument Extended Ultrabold', 'Montserrat', sans-serif;
     font-weight: 800;
   }
+}
+
+/* Custom Glass Scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(12, 12, 11, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, var(--scrollbar-alpha)); 
+  border: 3px solid rgba(12, 12, 11, 0.3);
+  border-radius: 12px;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border: 3px solid #0C0C0B;
 }

@@ -115,7 +115,7 @@ export function EducationTimeline() {
       */}
       <div 
         ref={containerRef} 
-        className="w-full relative"
+        className="max-lg:hidden w-full relative"
         style={{ height: "250vh" }}
       >
         <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden px-6 md:px-16 xl:px-24">

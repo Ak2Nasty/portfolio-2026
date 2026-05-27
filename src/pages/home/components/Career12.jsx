@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 export function Career12() {
   const containerVariants = {
@@ -29,7 +30,7 @@ export function Career12() {
       role: "Customer Marketing & Events Coordinator",
       summary: "Contributed to global event operations and cross-functional marketing initiatives, leading a large-scale event vendor transition through strategic evaluation, stakeholder communication, Power BI reporting, and trade show coordination.",
       metadata: "VANCOUVER, BC • CO-OP • SEP 2023 - DEC 2023",
-      link: "#"
+      link: "/work-sample#d2l"
     },
     {
       company: "OKHC",
@@ -38,7 +39,7 @@ export function Career12() {
       role: "Marketing & Communications Consultant",
       summary: "Led communications, strategic marketing, and website redesign development for a non-profit consulting engagement through client outreach, marketing audits, social media strategy, stakeholder communication, and content development.",
       metadata: "KELOWNA, BC • UBC CAPSTONE • JAN 2025 - APR 2025",
-      link: "#"
+      link: "/work-sample#okhc"
     },
     {
       company: "Foot Locker",
@@ -47,7 +48,7 @@ export function Career12() {
       role: "Sales Associate",
       summary: "Delivered client-focused customer experiences in a high-volume retail environment through product recommendations, visual merchandising, inventory coordination, and fast-paced frontline operations.",
       metadata: "KELOWNA, BC • RETAIL OPERATIONS • NOV 2025 - PRESENT",
-      link: "#"
+      link: null
     },
     {
       company: "UBC Management Student Association",
@@ -56,7 +57,7 @@ export function Career12() {
       role: "President, Marketing Club",
       summary: "Led digital content, social media strategy, sponsorship partnerships, and campus-wide event execution through cross-channel promotional campaigns, budget coordination, and brand-aligned marketing initiatives.",
       metadata: "KELOWNA, BC • STUDENT LEADERSHIP • AUG 2022 - APR 2023",
-      link: "#"
+      link: "/work-sample#marketing-club"
     },
     {
       company: "Nestlé Nespresso",
@@ -65,7 +66,7 @@ export function Career12() {
       role: "Sales Associate",
       summary: "Delivered brand-focused customer experiences through product demonstrations, consumer engagement, visual merchandising, and personalized sales communication, contributing to an 8% increase in sales performance.",
       metadata: "KELOWNA, BC • CONSUMER ENGAGEMENT • NOV 2022 - APR 2023",
-      link: "#"
+      link: null
     },
     {
       company: "CUBS Vancouver",
@@ -74,7 +75,7 @@ export function Career12() {
       role: "Graphic Designer",
       summary: "Developed social media campaigns, copywriting, and visual content for community-focused education initiatives through content strategy, digital design, and creative communication.",
       metadata: "VANCOUVER, BC (REMOTE) • CREATIVE MARKETING • AUG 2022 - DEC 2022",
-      link: "#"
+      link: "/work-sample#cubs"
     },
     {
       company: "Mindtree",
@@ -83,7 +84,7 @@ export function Career12() {
       role: "Acquisitions Student Intern",
       summary: "Supported post-acquisition communications and organizational change initiatives through stakeholder coordination, internal communication strategy, operational research, and cross-functional collaboration.",
       metadata: "BANGALORE, INDIA • CORPORATE STRATEGY • SEP 2019 - JAN 2020",
-      link: "#"
+      link: "/work-sample#mindtree"
     },
     {
       company: "EssEmm Corporation",
@@ -92,7 +93,7 @@ export function Career12() {
       role: "Marketing Student Intern",
       summary: "Conducted market research, strategic analysis, and customer insight reporting to support distribution strategy, product positioning, and e-commerce recommendations through data-driven marketing initiatives.",
       metadata: "COIMBATORE, INDIA • MARKETING STRATEGY • JUN 2019 - SEP 2019",
-      link: "#"
+      link: "/work-sample#essemm"
     }
   ];
 
@@ -122,8 +123,8 @@ export function Career12() {
               A CURATED LOOK AT THE PROJECTS, CAMPAIGNS, AND SYSTEMS I&apos;VE HELPED BUILD.
             </p>
 
-            <a 
-              href="#work-samples"
+            <Link 
+              to="/work-sample"
               className="group relative flex items-center justify-center gap-3 w-fit px-8 py-3.5 bg-[#0a0a0a]/50 border border-white/[0.1] rounded-full overflow-hidden transition-all duration-500 hover:bg-white/[0.04] hover:border-white/[0.15] hover:shadow-[0_0_25px_rgba(255,255,255,0.05)] backdrop-blur-sm cursor-pointer"
             >
               <span className="relative z-10 font-['Outfit'] text-[11px] tracking-[0.2em] font-medium text-gray-300 group-hover:text-white uppercase transition-colors">
@@ -132,7 +133,7 @@ export function Career12() {
               <span className="relative z-10 text-gray-500 transition-all duration-300 group-hover:translate-x-1 group-hover:text-white">
                 →
               </span>
-            </a>
+            </Link>
           </motion.div>
           
           {/* Right: Experience List */}
@@ -172,13 +173,15 @@ export function Career12() {
                     </p>
 
                     {/* CTA */}
-                    <a 
-                      href={exp.link}
-                      className="mt-4 flex items-center gap-3 font-['Outfit'] text-[10px] md:text-[11px] font-semibold tracking-[0.2em] text-[#f4f4f4] uppercase transition-all duration-300 hover:text-[#22c55e] w-fit group/cta"
-                    >
-                      VIEW PROJECT 
-                      <span className="transition-transform duration-300 group-hover/cta:translate-x-1.5">→</span>
-                    </a>
+                    {exp.link && (
+                      <Link 
+                        to={exp.link}
+                        className="mt-4 flex items-center gap-3 font-['Outfit'] text-[10px] md:text-[11px] font-semibold tracking-[0.2em] text-[#f4f4f4] uppercase transition-all duration-300 hover:text-[#22c55e] w-fit group/cta"
+                      >
+                        VIEW PROJECT 
+                        <span className="transition-transform duration-300 group-hover/cta:translate-x-1.5">→</span>
+                      </Link>
+                    )}
                   </div>
                 </div>
 
