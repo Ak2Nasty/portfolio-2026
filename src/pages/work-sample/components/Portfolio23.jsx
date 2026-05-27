@@ -85,7 +85,7 @@ export function Portfolio23() {
   const [selectedFile, setSelectedFile] = useState(null);
   const location = useLocation();
 
-  // Scroll to hash on load if present
+  // Scroll to hash on load if present, otherwise scroll to top
   useEffect(() => {
     if (location.hash) {
       const id = location.hash.replace("#", "");
@@ -95,8 +95,10 @@ export function Portfolio23() {
           element.scrollIntoView({ behavior: "smooth" });
         }
       }, 500);
+    } else {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     }
-  }, [location.hash]);
+  }, [location.pathname, location.hash]);
 
   return (
     <section className="w-full min-h-screen bg-[#0C0C0B] pt-32 pb-24 relative z-10 selection:bg-white/20">
@@ -137,23 +139,25 @@ export function Portfolio23() {
               >
                 
                 {/* Left: Company Details */}
-                <div className="lg:w-1/3 flex flex-col gap-4">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-8 h-[1px] bg-white/20" />
-                    <span className="font-['Outfit'] font-semibold text-[10px] tracking-[0.2em] text-[#a3a3a3] uppercase">
-                      {String(idx + 1).padStart(2, '0')}
-                    </span>
+                <div className="lg:w-1/3 flex flex-col gap-6">
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-8 h-[1px] bg-white/20" />
+                      <span className="font-['Outfit'] font-semibold text-[10px] tracking-[0.2em] text-[#a3a3a3] uppercase">
+                        {String(idx + 1).padStart(2, '0')}
+                      </span>
+                    </div>
+                    <h2 className="font-['Outfit'] font-bold text-[32px] md:text-[40px] text-[#f4f4f4] uppercase tracking-tight leading-none mb-1">
+                      {section.company}
+                    </h2>
+                    <h3 className="font-['Outfit'] text-[16px] md:text-[18px] text-[#22c55e] font-light mb-1.5">
+                      {section.role}
+                    </h3>
+                    <p className="font-['Outfit'] text-[10px] md:text-[11px] font-semibold tracking-[0.2em] text-[#8a8a8a] uppercase">
+                      {section.metadata}
+                    </p>
                   </div>
-                  <h2 className="font-['Outfit'] font-bold text-[32px] md:text-[40px] text-[#f4f4f4] uppercase tracking-tight leading-none">
-                    {section.company}
-                  </h2>
-                  <p className="font-['Outfit'] text-[10px] md:text-[11px] font-semibold tracking-[0.2em] text-[#8a8a8a] uppercase mt-2 mb-1">
-                    {section.metadata}
-                  </p>
-                  <h3 className="font-['Outfit'] text-[16px] md:text-[18px] text-[#22c55e] font-light">
-                    {section.role}
-                  </h3>
-                  <p className="font-['Outfit'] text-[15px] leading-[1.7] font-light text-[#c2c2c2] mt-4">
+                  <p className="font-['Outfit'] text-[15px] leading-[1.7] font-light text-[#c2c2c2]">
                     {section.context}
                   </p>
                 </div>
