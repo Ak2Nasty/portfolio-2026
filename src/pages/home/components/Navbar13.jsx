@@ -23,7 +23,7 @@ export function Navbar13() {
     const timer = setTimeout(() => {
       timerExpired.current = true;
       setShowGreeting(false);
-    }, 5500);
+    }, 4000);
     return () => clearTimeout(timer);
   }, []);
 
