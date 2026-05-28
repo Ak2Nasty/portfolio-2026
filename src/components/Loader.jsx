@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLocation } from "react-router-dom";
 
 export function Loader() {
-  const [isLoading, setIsLoading] = useState(true);
+  const location = useLocation();
+  const validRoutes = ["/", "/work-sample"];
+  const is404 = !validRoutes.includes(location.pathname);
+  const [isLoading, setIsLoading] = useState(!is404);
 
   useEffect(() => {
+    if (is404) return; // Don't run loader logic on 404 page
+
     // Prevent scrolling while loading
     document.body.style.overflow = "hidden";
     
@@ -18,7 +24,7 @@ export function Loader() {
       clearTimeout(timer);
       document.body.style.overflow = "auto";
     };
-  }, []);
+  }, [is404]);
 
   return (
     <AnimatePresence>
