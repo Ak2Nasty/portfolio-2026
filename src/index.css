@@ -55,3 +55,9 @@ body {
   border: 3px solid #0C0C0B;
 }
 
+
+/* Hide navbar during glitch animation */
+body.is-glitching nav,
+body.is-glitching header {
+  display: none !important;
+}

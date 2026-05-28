@@ -182,6 +182,7 @@ export function Portfolio23() {
 
   const triggerMetaGlitch = () => {
     setIsGlitching(true);
+    document.body.classList.add('is-glitching');
     setTimeout(() => {
       window.location.href = '/';
     }, 2500);
@@ -344,7 +345,7 @@ export function Portfolio23() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="fixed inset-0 z-[999] flex flex-col items-center justify-center bg-black"
+            className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-black"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}

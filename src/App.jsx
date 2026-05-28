@@ -4,6 +4,7 @@ import { ReactLenis } from 'lenis/react';
 import Home from "./pages/home";
 import WorkSample from "./pages/work-sample";
 import { Loader } from "./components/Loader";
+import { EasterEggs } from "./components/EasterEggs";
 
 function App() {
   useEffect(() => {
@@ -51,6 +52,7 @@ function App() {
 
   return (
     <ReactLenis root options={{ lerp: 0.08, smoothWheel: true }}>
+      <EasterEggs />
       <Loader />
       <Router>
         <Routes>
