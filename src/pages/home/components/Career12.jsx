@@ -66,7 +66,7 @@ export function Career12() {
       role: "Sales Associate",
       summary: "Delivered brand-focused customer experiences through product demonstrations, consumer engagement, visual merchandising, and personalized sales communication, contributing to an 8% increase in sales performance.",
       metadata: "KELOWNA, BC • CONSUMER ENGAGEMENT • NOV 2022 - APR 2023",
-      link: null
+      link: "/work-sample#nespresso"
     },
     {
       company: "CUBS Vancouver",
@@ -94,11 +94,20 @@ export function Career12() {
       summary: "Conducted market research, strategic analysis, and customer insight reporting to support distribution strategy, product positioning, and e-commerce recommendations through data-driven marketing initiatives.",
       metadata: "COIMBATORE, INDIA • MARKETING STRATEGY • JUN 2019 - SEP 2019",
       link: "/work-sample#essemm"
+    },
+    {
+      company: "Shure",
+      logo: "/shure-logo.svg",
+      logoClass: "brightness-0 invert scale-[2] md:scale-100 origin-bottom-right -translate-y-4 -translate-x-4 md:translate-y-0 md:translate-x-0",
+      role: "1st Place Winner",
+      summary: "Developed an award-winning strategic marketing proposal for Shure's expansion in India, analyzing target demographics and competitors to recommend localized sales strategies.",
+      metadata: "BANGALORE, INDIA • ACADEMIC PROJECT • MAR 2019",
+      link: "/work-sample#shure"
     }
   ];
 
   return (
-    <section id="experience" className="w-full px-6 md:px-12 lg:px-16 pt-16 md:pt-24 pb-24 md:pb-32 lg:pb-40 relative z-20 bg-[#0C0C0B]">
+    <section id="experience" className="w-full px-6 md:px-12 lg:px-16 pt-8 md:pt-12 pb-10 md:pb-16 lg:pb-20 relative z-20 bg-[#0C0C0B] border-t border-white/[0.05]">
       <div className="max-w-[120rem] mx-auto">
         <motion.div 
           initial="hidden"
@@ -120,7 +129,7 @@ export function Career12() {
             </div>
             
             <p className="font-['Outfit'] text-[12px] md:text-[14px] leading-[1.8] font-medium tracking-[0.15em] text-[#8a8a8a] max-w-[400px] uppercase mb-6">
-              A CURATED LOOK AT THE PROJECTS, CAMPAIGNS, AND SYSTEMS I&apos;VE HELPED BUILD.
+              A TRACK RECORD OF IMPACT ACROSS MARKETING, CORPORATE STRATEGY, AND LEADERSHIP ROLES.
             </p>
 
             <Link 
@@ -145,30 +154,28 @@ export function Career12() {
                 key={index}
                 variants={itemVariants}
                 style={{ top: topOffset }}
-                // Enforces uniform height so bottoms never poke out, adjusted for laptop breakpoints
-                className="group sticky flex flex-col md:flex-row justify-between items-stretch gap-6 md:gap-8 bg-[#0a0a0a] border border-[#2a2a2a] rounded-2xl p-8 lg:p-10 2xl:p-12 mb-[10vh] lg:mb-[25vh] shadow-[0_0_15px_rgba(255,255,255,0.05)] h-[650px] sm:h-[550px] lg:h-[500px] 2xl:h-[450px] overflow-hidden transition-shadow duration-500 hover:shadow-[0_0_25px_rgba(255,255,255,0.15)]"
+                className="group sticky flex flex-row justify-between items-stretch bg-[#0a0a0a] border border-[#2a2a2a] rounded-2xl p-6 sm:p-8 lg:p-10 2xl:p-12 mb-[10vh] lg:mb-[25vh] shadow-[0_0_15px_rgba(255,255,255,0.05)] h-auto min-h-[400px] md:h-[480px] lg:h-[450px] overflow-hidden transition-shadow duration-500 hover:shadow-[0_0_25px_rgba(255,255,255,0.15)]"
               >
                 <div className="flex flex-col gap-5 flex-1 relative z-10 justify-between">
                   <div>
                     {/* Header (Company & Role) */}
                     <div className="flex flex-col gap-1.5">
-                      <h4 className="font-['Outfit'] font-bold text-[28px] md:text-[36px] text-[#f4f4f4] uppercase tracking-tight leading-none">
+                      <h4 className="font-['Outfit'] font-bold text-[24px] sm:text-[28px] md:text-[36px] text-[#f4f4f4] uppercase tracking-tight leading-none">
                         {exp.company}
                       </h4>
-                      <h5 className="font-['Outfit'] text-[18px] md:text-[22px] text-[#e5e5e5] font-light">
+                      <h5 className="font-['Outfit'] text-[16px] sm:text-[18px] md:text-[20px] text-[#e5e5e5] font-medium tracking-wide">
                         {exp.role}
                       </h5>
                     </div>
 
-                    {/* Summary */}
-                    <p className="font-['Outfit'] text-[15px] md:text-[17px] leading-[1.7] font-light text-[#c2c2c2] max-w-[600px] mt-6 mb-2">
+                    <p className="font-['Outfit'] text-[13px] sm:text-[14px] md:text-[16px] leading-[1.8] font-light text-[#b3b3b3] max-w-[600px] mt-4 sm:mt-6 mb-2">
                       {exp.summary}
                     </p>
                   </div>
 
                   <div>
                     {/* Metadata */}
-                    <p className="font-['Outfit'] text-[10px] md:text-[11px] tracking-[0.25em] text-[#a3a3a3] uppercase">
+                    <p className="font-['Outfit'] text-[9px] sm:text-[10px] md:text-[11px] tracking-[0.2em] md:tracking-[0.25em] text-[#666] uppercase">
                       {exp.metadata}
                     </p>
 
@@ -176,7 +183,7 @@ export function Career12() {
                     {exp.link && (
                       <Link 
                         to={exp.link}
-                        className="mt-4 flex items-center gap-3 font-['Outfit'] text-[10px] md:text-[11px] font-semibold tracking-[0.2em] text-[#f4f4f4] uppercase transition-all duration-300 hover:text-[#22c55e] w-fit group/cta"
+                        className="mt-4 flex items-center gap-3 font-['Outfit'] text-[10px] md:text-[11px] font-semibold tracking-[0.2em] text-[#f4f4f4] uppercase transition-all duration-300 hover:text-[#16a34a] w-fit group/cta"
                       >
                         VIEW PROJECT 
                         <span className="transition-transform duration-300 group-hover/cta:translate-x-1.5">→</span>
@@ -187,7 +194,7 @@ export function Career12() {
 
                 {/* Logo Watermark */}
                 {exp.logo && (
-                  <div className="flex flex-shrink-0 items-center justify-center w-[100px] md:w-[150px] lg:w-[180px] xl:w-[200px] 2xl:w-[250px] pointer-events-none select-none pl-4 transition-all duration-700 opacity-90 group-hover:opacity-100 mix-blend-screen drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] group-hover:drop-shadow-[0_0_25px_rgba(255,255,255,0.2)]">
+                  <div className="absolute -right-10 -bottom-10 md:relative md:right-0 md:bottom-0 flex flex-shrink-0 items-center justify-center w-[200px] sm:w-[250px] md:w-[150px] lg:w-[180px] xl:w-[200px] 2xl:w-[250px] pointer-events-none select-none md:pl-4 transition-all duration-700 opacity-[0.08] md:opacity-90 group-hover:opacity-[0.15] md:group-hover:opacity-100 mix-blend-screen drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] group-hover:drop-shadow-[0_0_25px_rgba(255,255,255,0.2)] z-0">
                     <img 
                       src={exp.logo} 
                       alt="" 

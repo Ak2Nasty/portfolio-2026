@@ -19,11 +19,11 @@ export default function Page() {
       if (element) {
         // slight delay to ensure components are mounted
         setTimeout(() => {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 100);
+          element.scrollIntoView({ behavior: "instant", block: "start" });
+        }, 10);
       }
     } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: "instant" });
     }
   }, [location]);
 

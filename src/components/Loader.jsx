@@ -42,14 +42,25 @@ export function Loader() {
             <h1 className="font-monument text-[28px] sm:text-[36px] md:text-[50px] font-bold text-[#f4f4f4] tracking-[0.2em] uppercase">
               WELCOME
             </h1>
-            <div className="w-full h-1.5 md:h-2 bg-white/[0.05] rounded-full mt-2 relative border border-white/[0.05]">
-              <motion.div 
+            <motion.div
+              initial={{ 
+                borderColor: "rgba(255, 255, 255, 0.05)",
+                boxShadow: "0 0 0px rgba(255, 255, 255, 0)"
+              }}
+              animate={{ 
+                borderColor: "rgba(255, 255, 255, 0.8)",
+                boxShadow: "0 0 20px rgba(255, 255, 255, 0.2)"
+              }}
+              transition={{ duration: 1.5, ease: "easeInOut" }}
+              className="w-full h-1.5 md:h-2 bg-white/[0.05] rounded-full mt-2 relative border overflow-hidden"
+            >
+              <motion.div
                 initial={{ width: "0%" }}
                 animate={{ width: "100%" }}
                 transition={{ duration: 1.5, ease: "easeInOut" }}
-                className="absolute top-0 left-0 h-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.8),_0_0_30px_rgba(255,255,255,0.4)] rounded-full"
+                className="absolute top-0 left-0 h-full bg-white rounded-full"
               />
-            </div>
+            </motion.div>
           </motion.div>
         </motion.div>
       )}

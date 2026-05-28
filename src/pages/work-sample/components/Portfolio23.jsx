@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { SecureFileViewer } from "./SecureFileViewer";
-import { FileText, Image as ImageIcon, Lock } from "lucide-react";
-import { useLocation } from "react-router-dom";
+import { FileText, Image as ImageIcon, Lock, Terminal } from "lucide-react";
+import { useLocation, Link } from "react-router-dom";
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -11,11 +11,21 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 
 const WORK_SECTIONS = [
   {
+    id: "portfolio-meta",
+    company: "Akshathdayan",
+    role: "Lead Developer & Designer",
+    metadata: "127.0.0.1 • INDEPENDENT PROJECT • PRESENT",
+    context: "A highly interactive, cinematic project built from the ground up to showcase my journey and technical capabilities.",
+    files: [
+      { id: "meta-1", title: "My Newest Project", type: "meta", url: "self" },
+    ]
+  },
+  {
     id: "d2l",
     company: "D2L",
     role: "Customer Marketing & Events Coordinator",
     metadata: "VANCOUVER, BC • CO-OP • SEP 2023 - DEC 2023",
-    context: "Strategic evaluation, vendor transition plans, and event coordination documentation.",
+    context: "Comprehensive documentation, vendor transition strategies, and execution plans for 'Project Event in a Box'.",
     files: [
       { id: "d2l-1", title: "Project EIAB", type: "pdf", url: "/work-samples/d2l/project-eiab.pdf" },
     ]
@@ -25,7 +35,7 @@ const WORK_SECTIONS = [
     company: "OKHC",
     role: "Marketing & Communications Consultant",
     metadata: "KELOWNA, BC • UBC CAPSTONE • JAN 2025 - APR 2025",
-    context: "Comprehensive marketing audits, social media strategies, and website redesign concepts.",
+    context: "Comprehensive consulting capstone delivering strategic marketing audits, digital rebranding, and stakeholder communication assets.",
     files: [
       { id: "okhc-1", title: "Capstone Final Report", type: "pdf", url: "/work-samples/okhc/capstone-full-report.pdf" },
       { id: "okhc-2", title: "Capstone Final Presentation", type: "pdf", url: "/work-samples/okhc/okhc-final-presentation.pdf" },
@@ -42,30 +52,58 @@ const WORK_SECTIONS = [
     metadata: "KELOWNA, BC • STUDENT LEADERSHIP • AUG 2022 - APR 2023",
     context: "Brand-aligned promotional campaigns, sponsorship decks, and campus-wide event planning.",
     files: [
-      { id: "mc-1", title: "Annual Sponsorship Deck", type: "pdf", url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" },
-      { id: "mc-2", title: "Campaign Launch Assets", type: "image", url: "https://images.unsplash.com/photo-1557838923-2985c318be48?auto=format&fit=crop&q=80&w=800" },
-      { id: "mc-3", title: "Budget & Strategy Doc", type: "pdf", url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" },
+      { 
+        id: "mc-1", 
+        title: "Logo Design Assets", 
+        type: "gallery", 
+        urls: [
+          "/work-samples/marketing-club/logo-mark.jpg",
+          "/work-samples/marketing-club/logo-recovered.jpg",
+          "/work-samples/marketing-club/logo-transparent-1.png"
+        ] 
+      },
+      { 
+        id: "mc-2", 
+        title: "Event Posters", 
+        type: "gallery", 
+        urls: [
+          "/work-samples/marketing-club/speak-up-event.jpg",
+          "/work-samples/marketing-club/banner.jpg"
+        ] 
+      },
+      { 
+        id: "mc-3", 
+        title: "Marketing Mondays", 
+        type: "gallery", 
+        urls: [
+          "/work-samples/marketing-club/mm-1.jpg",
+          "/work-samples/marketing-club/mm-2.jpg",
+          "/work-samples/marketing-club/mm-3.0.jpg",
+          "/work-samples/marketing-club/mm-3.1.jpg",
+          "/work-samples/marketing-club/mm-3.2.jpg",
+          "/work-samples/marketing-club/mm-3.3.jpg",
+          "/work-samples/marketing-club/mm-4.jpg",
+          "/work-samples/marketing-club/mm-5.jpg",
+          "/work-samples/marketing-club/mm-6.jpg",
+          "/work-samples/marketing-club/mm-7.jpg",
+          "/work-samples/marketing-club/mm-8.jpg",
+          "/work-samples/marketing-club/mm-9.jpg",
+          "/work-samples/marketing-club/mm-10.jpg"
+        ] 
+      },
     ]
   },
   {
-    id: "mindtree",
-    company: "Mindtree",
-    role: "Acquisitions Student Intern",
-    metadata: "BANGALORE, INDIA • CORPORATE STRATEGY • SEP 2019 - JAN 2020",
-    context: "Internal communication strategies and post-acquisition organizational reporting.",
+    id: "nespresso",
+    company: "Nestlé Nespresso",
+    role: "Sales Associate",
+    metadata: "KELOWNA, BC • CONSUMER ENGAGEMENT • NOV 2022 - APR 2023",
+    context: "A comprehensive digital marketing portfolio featuring market segmentation, audience targeting, PPC keyword strategies, and targeted ad creation.",
     files: [
-      { id: "mt-1", title: "Post-Acquisition Comms Plan", type: "pdf", url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" },
-      { id: "mt-2", title: "Stakeholder Alignment Chart", type: "image", url: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800" },
-    ]
-  },
-  {
-    id: "essemm",
-    company: "EssEmm Corporation",
-    role: "Marketing Student Intern",
-    metadata: "COIMBATORE, INDIA • MARKETING STRATEGY • JUN 2019 - SEP 2019",
-    context: "Data-driven market research, e-commerce recommendations, and product positioning analysis.",
-    files: [
-      { id: "sm-1", title: "E-Commerce Market Analysis", type: "pdf", url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" },
+      { id: "nes-1", title: "Marketing Plan", type: "pdf", url: "/work-samples/nespresso/Marketing-Plan.pdf" },
+      { id: "nes-2", title: "Audience Targeting", type: "pdf", url: "/work-samples/nespresso/Audience-Targeting-and-Strategy.pdf" },
+      { id: "nes-3", title: "PPC Keyword Strategy", type: "pdf", url: "/work-samples/nespresso/PPC-Keyword-Project.pdf" },
+      { id: "nes-4", title: "Ad Creation Project", type: "pdf", url: "/work-samples/nespresso/Ad-Creation-Project.pdf" },
     ]
   },
   {
@@ -75,8 +113,64 @@ const WORK_SECTIONS = [
     metadata: "VANCOUVER, BC (REMOTE) • CREATIVE MARKETING • AUG 2022 - DEC 2022",
     context: "Developed social media campaigns, copywriting, and visual content for community-focused education initiatives.",
     files: [
-      { id: "cb-1", title: "Social Media Campaign Grids", type: "image", url: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800" },
-      { id: "cb-2", title: "Brand Identity Guidelines", type: "pdf", url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" },
+      { 
+        id: "cb-1", 
+        title: "Social Media Posts", 
+        type: "gallery", 
+        urls: [
+          "/work-samples/cubs/Posts/1.jpg",
+          "/work-samples/cubs/Posts/2.jpg",
+          "/work-samples/cubs/Posts/3.jpg",
+          "/work-samples/cubs/Posts/4.jpg",
+          "/work-samples/cubs/Posts/5.jpg",
+          "/work-samples/cubs/Posts/0.1.jpg",
+          "/work-samples/cubs/Posts/0.2.jpg",
+          "/work-samples/cubs/Posts/0.3.jpg",
+          "/work-samples/cubs/Posts/0.4.jpg"
+        ] 
+      },
+      { 
+        id: "cb-2", 
+        title: "Brand Assets", 
+        type: "gallery", 
+        urls: [
+          "/work-samples/cubs/Brand Assets/CUBS Text Logo.jpg",
+          "/work-samples/cubs/Brand Assets/1.jpg",
+          "/work-samples/cubs/Brand Assets/2.jpg",
+          "/work-samples/cubs/CUBS Text Logo no background.png",
+          "/work-samples/cubs/CUBS white logo.jpg"
+        ] 
+      }
+    ]
+  },
+  {
+    id: "mindtree",
+    company: "Mindtree",
+    role: "Acquisitions Student Intern",
+    metadata: "BANGALORE, INDIA • CORPORATE STRATEGY • SEP 2019 - JAN 2020",
+    context: "An in-depth analysis of Larsen & Toubro's hostile takeover of MindTree, evaluating its impact on HR strategies and corporate culture integration.",
+    files: [
+      { id: "mt-1", title: "HR Strategy Analysis (Extended Essay)", type: "pdf", url: "/work-samples/mindtree/EE-Final-Ak.pdf" },
+    ]
+  },
+  {
+    id: "essemm",
+    company: "EssEmm Corporation",
+    role: "Marketing Student Intern",
+    metadata: "COIMBATORE, INDIA • MARKETING STRATEGY • JUN 2019 - SEP 2019",
+    context: "A strategic assessment evaluating marketing strategies to improve customer satisfaction. Utilizes business frameworks and sales forecasting to recommend e-commerce integrations.",
+    files: [
+      { id: "sm-1", title: "Marketing Strategy IA", type: "pdf", url: "/work-samples/essemm/Business-Mgmnt-IA-Final.pdf" },
+    ]
+  },
+  {
+    id: "shure",
+    company: "Shure",
+    role: "1st Place Winner",
+    metadata: "BANGALORE, INDIA • ACADEMIC PROJECT • MAR 2019",
+    context: "A strategic marketing proposal for Shure's expansion in India, analyzing target demographics and competitors to recommend localized sales strategies.",
+    files: [
+      { id: "shure-1", title: "Shure Marketing Proposal", type: "pdf", url: "/work-samples/shure/Shure-Marketing-Proposal.pdf" },
     ]
   }
 ];
@@ -84,8 +178,15 @@ const WORK_SECTIONS = [
 export function Portfolio23() {
   const [selectedFile, setSelectedFile] = useState(null);
   const location = useLocation();
+  const [isGlitching, setIsGlitching] = useState(false);
 
-  // Scroll to hash on load if present, otherwise scroll to top
+  const triggerMetaGlitch = () => {
+    setIsGlitching(true);
+    setTimeout(() => {
+      window.location.href = '/';
+    }, 2500);
+  };
+
   useEffect(() => {
     if (location.hash) {
       const id = location.hash.replace("#", "");
@@ -101,7 +202,7 @@ export function Portfolio23() {
   }, [location.pathname, location.hash]);
 
   return (
-    <section className="w-full min-h-screen bg-[#0C0C0B] pt-32 pb-24 relative z-10 selection:bg-white/20">
+    <section className="w-full min-h-screen bg-[#0C0C0B] pt-24 md:pt-32 pb-16 md:pb-24 relative z-10 selection:bg-white/20 overflow-hidden">
       
       {/* Background Glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-white/[0.02] blur-[120px] rounded-full pointer-events-none" />
@@ -113,8 +214,17 @@ export function Portfolio23() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-24 xl:mb-32 max-w-4xl"
+          className="mb-16 md:mb-24 xl:mb-32 max-w-4xl"
         >
+          <Link 
+            to="/#experience" 
+            className="group flex items-center gap-2 text-[#a3a3a3] hover:text-[#f4f4f4] transition-colors w-fit mb-8 md:mb-12"
+          >
+            <span className="text-[14px] md:text-[16px] transition-transform duration-300 group-hover:-translate-x-1">←</span>
+            <span className="font-['Outfit'] font-medium text-[11px] md:text-[12px] tracking-[0.15em] uppercase">
+              Back to Experience
+            </span>
+          </Link>
           <span className="font-['Outfit'] font-semibold text-[10px] md:text-[11px] tracking-[0.25em] text-[#a3a3a3] uppercase mb-4 block">
             PORTFOLIO / ARCHIVE
           </span>
@@ -127,7 +237,7 @@ export function Portfolio23() {
         </motion.div>
 
         {/* Sections */}
-        <div className="flex flex-col gap-32">
+        <div className="flex flex-col gap-20 md:gap-32">
           {WORK_SECTIONS.map((section, idx) => (
             <div key={section.id} id={section.id} className="scroll-mt-32">
               <motion.div 
@@ -150,7 +260,7 @@ export function Portfolio23() {
                     <h2 className="font-['Outfit'] font-bold text-[32px] md:text-[40px] text-[#f4f4f4] uppercase tracking-tight leading-none mb-1">
                       {section.company}
                     </h2>
-                    <h3 className="font-['Outfit'] text-[16px] md:text-[18px] text-[#22c55e] font-light mb-1.5">
+                    <h3 className="font-['Outfit'] text-[16px] md:text-[18px] text-[#e5e5e5] font-light mb-1.5">
                       {section.role}
                     </h3>
                     <p className="font-['Outfit'] text-[10px] md:text-[11px] font-semibold tracking-[0.2em] text-[#8a8a8a] uppercase">
@@ -167,7 +277,13 @@ export function Portfolio23() {
                   {section.files.map((file) => (
                     <div 
                       key={file.id}
-                      onClick={() => setSelectedFile(file)}
+                      onClick={() => {
+                        if (file.type === "meta") {
+                          triggerMetaGlitch();
+                        } else {
+                          setSelectedFile(file);
+                        }
+                      }}
                       className="group relative bg-[#121211]/40 backdrop-blur-md border border-[#222] hover:border-[#444] rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex flex-col aspect-[4/3]"
                     >
                       {/* Thumbnail Area */}
@@ -178,18 +294,21 @@ export function Portfolio23() {
                         {/* Frosted Glass Overlay */}
                         <div className="absolute inset-0 bg-[#0C0C0B]/20 backdrop-blur-[2px] group-hover:backdrop-blur-0 group-hover:bg-transparent transition-all duration-700 z-10 pointer-events-none" />
 
-                        {file.thumbnail ? (
-                          <img src={file.thumbnail} alt={file.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500 relative z-0" />
+                        {file.type === "meta" ? (
+                          <Terminal className="w-12 h-12 text-green-500/50 group-hover:text-green-400 transition-colors z-10" />
+                        ) : file.thumbnail || file.type === 'image' || file.type === 'gallery' ? (
+                          <img src={file.thumbnail || (file.type === 'gallery' ? file.urls[0] : file.url)} alt={file.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500 relative z-0" />
                         ) : file.type === 'pdf' ? (
                           <div className="w-full h-full absolute inset-0 opacity-80 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden flex items-start justify-center pointer-events-none z-0">
                             <Document 
                               file={file.url} 
                               loading={<FileText className="w-12 h-12 text-[#444] animate-pulse mt-12" />}
-                              className="scale-[0.8] origin-top md:scale-[0.85] lg:scale-100"
+                              className="w-full"
                             >
                               <Page 
                                 pageNumber={1} 
-                                width={400} 
+                                width={600} 
+                                className="w-full [&>canvas]:!w-full [&>canvas]:!h-auto [&>canvas]:!object-cover"
                                 renderTextLayer={false} 
                                 renderAnnotationLayer={false} 
                               />
@@ -198,16 +317,13 @@ export function Portfolio23() {
                         ) : (
                           <ImageIcon className="w-12 h-12 text-[#444] group-hover:text-white/80 transition-colors duration-300 relative z-10" />
                         )}
-                        
                       </div>
-
-                      {/* Info Area */}
                       <div className="p-4 bg-[#0a0a0a] border-t border-[#222]">
                         <h4 className="font-['Outfit'] font-semibold text-[13px] text-[#e5e5e5] truncate group-hover:text-white transition-colors">
                           {file.title}
                         </h4>
                         <span className="font-['Outfit'] text-[9px] text-[#8a8a8a] uppercase tracking-widest mt-1 block">
-                          {file.type === 'pdf' ? 'DOCUMENT' : 'IMAGE'}
+                          {file.type === 'pdf' ? 'DOCUMENT' : file.type === 'meta' ? 'SYSTEM' : file.type === 'gallery' ? 'GALLERY' : 'IMAGE'}
                         </span>
                       </div>
                     </div>
@@ -218,14 +334,41 @@ export function Portfolio23() {
           ))}
         </div>
       </div>
-
-      {/* The Secure Modal */}
       <SecureFileViewer 
         isOpen={!!selectedFile} 
         file={selectedFile} 
         onClose={() => setSelectedFile(null)} 
       />
-      
+      <AnimatePresence>
+        {isGlitching && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 z-[999] flex flex-col items-center justify-center bg-black"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: [0, 1, 0.5, 1], x: [0, -5, 5, -2, 2, 0] }}
+              transition={{ duration: 0.2, times: [0, 0.2, 0.4, 0.6, 0.8, 1], repeat: Infinity, repeatType: "mirror" }}
+            >
+              <h1 className="font-['Outfit'] font-bold text-[20px] md:text-[30px] text-green-500 tracking-[0.2em] uppercase">
+                Executing Portfolio.exe...
+              </h1>
+            </motion.div>
+            <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] z-10 opacity-70" />
+            <motion.div 
+              animate={{ y: [0, -20, 10, -50, 0], opacity: [0, 0.5, 0, 0.8, 0] }}
+              transition={{ duration: 1, repeat: Infinity }}
+              className="absolute top-1/4 left-1/4 w-32 h-2 bg-green-500/20"
+            />
+            <motion.div 
+              animate={{ y: [0, 40, -10, 60, 0], opacity: [0, 0.8, 0, 0.5, 0] }}
+              transition={{ duration: 0.8, repeat: Infinity, delay: 0.2 }}
+              className="absolute bottom-1/3 right-1/4 w-64 h-1 bg-green-500/20"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

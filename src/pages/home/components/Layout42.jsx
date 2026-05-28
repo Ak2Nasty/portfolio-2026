@@ -42,8 +42,8 @@ export function Layout42() {
   const secondLineWidth = useTransform(scrollYProgress, [0.5, 1], ["0%", "100%"]);
 
   return (
-    <section ref={sectionRef} id="about" className="w-full px-6 md:px-12 lg:px-16 pt-12 md:pt-20 lg:pt-24 pb-6 md:pb-12 lg:pb-16 relative z-20 bg-[#0C0C0B]">
-      <div className="max-w-[120rem] mx-auto">
+    <section ref={sectionRef} id="about" className="w-full px-6 md:px-12 lg:px-16 min-h-screen flex items-center py-20 relative z-20 bg-[#0C0C0B] border-t border-white/[0.05]">
+      <div className="max-w-[120rem] mx-auto w-full">
         <motion.div 
           initial="hidden"
           whileInView="visible"
@@ -81,6 +81,7 @@ export function Layout42() {
               href="/Akshathdayan_Suresh_Resume_2026.pdf"
               download="Akshathdayan_Suresh_Resume_2026.pdf"
               onClick={() => setHasDownloaded(true)}
+              onPointerDown={() => setHasDownloaded(true)}
               className={`mt-10 md:mt-14 inline-flex items-center justify-center px-10 md:px-12 py-3.5 md:py-4 rounded-full font-['Outfit'] font-bold text-[11px] md:text-[12px] tracking-[0.2em] uppercase transition-all duration-300 min-w-[200px] md:min-w-[240px] ${hasDownloaded ? 'bg-[#22c55e] text-[#0C0C0B] shadow-[0_0_15px_rgba(34,197,94,0.3)]' : 'bg-[#e8e8e8] text-[#050505] shadow-[0_0_15px_rgba(232,232,232,0.25)] hover:shadow-[0_0_20px_rgba(255,255,255,0.4)] hover:bg-white hover:-translate-y-[2px]'}`}
             >
               {hasDownloaded ? "THANK YOU!" : "DOWNLOAD RESUME"}

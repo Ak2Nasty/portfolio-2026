@@ -161,7 +161,7 @@ export function Header88() {
       </div>
 
       {/* Marquee Ticker */}
-      <motion.div variants={itemVariants} className="w-full border-y border-gray-900 py-2.5 md:py-3 overflow-hidden flex bg-[#0C0C0B] group">
+      <motion.div variants={itemVariants} className="w-full border-y border-white/[0.08] py-2.5 md:py-3 overflow-hidden flex bg-[#0C0C0B] group">
         <div className="flex font-['Outfit'] text-[9px] md:text-[11px] tracking-[0.25em] text-gray-400 uppercase animate-marquee whitespace-nowrap w-max group-hover:[animation-play-state:paused]">
           <span>INTEGRATED MARKETING • EVENT OPERATIONS • DIGITAL CAMPAIGNS • MARKETING ANALYTICS • BRAND STRATEGY • SOCIAL MEDIA MARKETING • CONTENT STRATEGY • POWER BI • GOOGLE ANALYTICS • EVENT COORDINATION • STAKEHOLDER COMMUNICATION • CONSUMER INSIGHTS • SEO/SEM • CAMPAIGN STRATEGY • CROSS-FUNCTIONAL COLLABORATION • CREATIVE EXECUTION • PROJECT COORDINATION • COPYWRITING • CONTENT MARKETING • MARKETING COMMUNICATIONS •&nbsp;</span>
           <span>INTEGRATED MARKETING • EVENT OPERATIONS • DIGITAL CAMPAIGNS • MARKETING ANALYTICS • BRAND STRATEGY • SOCIAL MEDIA MARKETING • CONTENT STRATEGY • POWER BI • GOOGLE ANALYTICS • EVENT COORDINATION • STAKEHOLDER COMMUNICATION • CONSUMER INSIGHTS • SEO/SEM • CAMPAIGN STRATEGY • CROSS-FUNCTIONAL COLLABORATION • CREATIVE EXECUTION • PROJECT COORDINATION • COPYWRITING • CONTENT MARKETING • MARKETING COMMUNICATIONS •&nbsp;</span>

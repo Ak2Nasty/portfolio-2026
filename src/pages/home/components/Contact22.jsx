@@ -43,6 +43,7 @@ const contactItems = [
     label: "EMAIL",
     value: "akshath4000@gmail.com",
     copyValue: "akshath4000@gmail.com",
+    mobileHref: "mailto:akshath4000@gmail.com",
     subtext: "Typically responds within 24 hours.",
     icon: Mail,
     styles: {
@@ -69,6 +70,7 @@ const contactItems = [
     label: "PHONE",
     value: "+1 (437) 249 - 4834",
     copyValue: "+1 (437) 249 - 4834",
+    mobileHref: "tel:+14372494834",
     subtext: "Voice call or direct message.",
     icon: Phone,
     styles: {
@@ -96,6 +98,13 @@ function ContactCard({ item }) {
   };
 
   const handleCopy = (e) => {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
+    if (isMobile && item.mobileHref) {
+      window.location.href = item.mobileHref;
+      return;
+    }
+
     if (item.copyValue) {
       e.preventDefault();
       navigator.clipboard.writeText(item.copyValue);
@@ -209,7 +218,7 @@ export function Contact22() {
     <section
       id="contact"
       ref={sectionRef}
-      className="w-full bg-[#0C0C0B] relative z-20 text-white border-t border-[#181818] py-24 xl:py-36 overflow-hidden"
+      className="w-full bg-[#0C0C0B] relative z-20 text-white py-24 xl:py-36 overflow-hidden border-t border-white/[0.05]"
     >
 
 

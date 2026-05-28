@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Home, User, GraduationCap, Briefcase, Image as ImageIcon, Wrench, Mail } from "lucide-react";
+import { ChevronDown, Home, User, GraduationCap, Briefcase, Folder, Cpu, Send } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export function Navbar13() {
@@ -13,9 +13,9 @@ export function Navbar13() {
     { label: "ABOUT", id: "about", icon: User },
     { label: "EDUCATION", id: "education", icon: GraduationCap },
     { label: "EXPERIENCE", id: "experience", icon: Briefcase },
-    { label: "WORK", id: "work-samples", href: "/work-sample", icon: ImageIcon },
-    { label: "SKILLS", id: "skills", icon: Wrench },
-    { label: "CONTACT", id: "contact", icon: Mail }
+    { label: "WORK", id: "work-samples", href: "/work-sample", icon: Folder },
+    { label: "SKILLS", id: "skills", icon: Cpu },
+    { label: "CONTACT", id: "contact", icon: Send }
   ];
 
   const handleClick = (e, item) => {

@@ -67,6 +67,7 @@ const softSkills = [
   "Event Coordination",
   "Stakeholder Communication",
   "Cross-Functional Collaboration",
+  "AI Fluency",
 ];
 
 const languages = [
@@ -213,31 +214,60 @@ const SmartIcon = ({ src, name, filter, customFilter }) => {
    TECH TILE
 ───────────────────────────────────────────── */
 
-const TechTile = ({ name, src, filter, customFilter, color = "#f4f4f4" }) => (
-  <motion.div
-    variants={fadeUp}
-    style={{ 
-      "--brand": color, 
-      "--brand-glow": `${color}25`,
-      "--brand-icon": `${color}60`
-    }}
-    className={[
-      "aspect-square flex flex-col items-center justify-center gap-2.5",
-      "bg-[#0a0a0a]/60 backdrop-blur-md border border-[#2a2a2a] rounded-sm",
-      "relative group cursor-default",
-      "transition-all duration-300 ease-out",
-      "hover:border-[var(--brand)] hover:bg-[#0f0f0f]/80 hover:-translate-y-[3px]",
-      "hover:shadow-[0_0_20px_var(--brand-glow)]"
-    ].join(" ")}
-  >
-    <div className="w-7 h-7 md:w-9 md:h-9 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-all duration-300 group-hover:drop-shadow-[0_0_6px_var(--brand-icon)]">
-      <SmartIcon src={src} name={name} filter={filter} customFilter={customFilter} />
-    </div>
-    <span className="font-['Outfit'] text-[7.5px] md:text-[8.5px] tracking-[0.14em] text-[#8a8a8a] uppercase group-hover:text-[var(--brand)] transition-colors duration-300 text-center leading-tight px-1">
-      {name}
-    </span>
-  </motion.div>
-);
+const TechTile = ({ name, src, filter, customFilter, color = "#f4f4f4" }) => {
+  const [isTapped, setIsTapped] = useState(false);
+
+  const handleTap = () => {
+    setIsTapped(true);
+    setTimeout(() => {
+      setIsTapped(false);
+    }, 400); // Wait 400ms to simulate the glow pulse, then fade back
+  };
+
+  return (
+    <motion.div
+      variants={fadeUp}
+      onTouchStart={handleTap}
+      onClick={handleTap}
+      style={{ 
+        "--brand": color, 
+        "--brand-glow": `${color}25`,
+        "--brand-icon": `${color}60`,
+        "--brand-half": `${color}80`
+      }}
+      className={[
+        "aspect-square flex flex-col items-center justify-center gap-2.5",
+        "bg-[#0a0a0a]/70 lg:bg-[#0a0a0a]/60 backdrop-blur-md",
+        "border rounded-sm",
+        "relative group cursor-default",
+        "transition-all duration-300 ease-out",
+        isTapped
+          ? "border-[var(--brand)] bg-[#0f0f0f]/80 -translate-y-[2px] shadow-[0_0_20px_var(--brand-glow)]"
+          : "border-[var(--brand-icon)] lg:border-[#2a2a2a] shadow-[0_0_10px_var(--brand-glow)] lg:shadow-none -translate-y-[1px] lg:translate-y-0",
+        "lg:hover:border-[var(--brand)] lg:hover:bg-[#0f0f0f]/80 lg:hover:-translate-y-[3px] lg:hover:shadow-[0_0_20px_var(--brand-glow)]"
+      ].join(" ")}
+    >
+      <div className={[
+        "w-7 h-7 md:w-9 md:h-9 flex items-center justify-center transition-all duration-300",
+        isTapped
+          ? "opacity-100 drop-shadow-[0_0_6px_var(--brand-icon)]"
+          : "opacity-80 lg:opacity-60 drop-shadow-[0_0_3px_var(--brand-icon)] lg:drop-shadow-none",
+        "lg:group-hover:opacity-100 lg:group-hover:drop-shadow-[0_0_6px_var(--brand-icon)]"
+      ].join(" ")}>
+        <SmartIcon src={src} name={name} filter={filter} customFilter={customFilter} />
+      </div>
+      <span className={[
+        "font-['Outfit'] text-[7.5px] md:text-[8.5px] tracking-[0.14em] uppercase text-center leading-tight px-1 transition-colors duration-300",
+        isTapped
+          ? "text-[var(--brand)]"
+          : "text-[var(--brand-half)] lg:text-[#8a8a8a]",
+        "lg:group-hover:text-[var(--brand)]"
+      ].join(" ")}>
+        {name}
+      </span>
+    </motion.div>
+  );
+};
 
 /* ─────────────────────────────────────────────
    SOFT SKILL ITEM
@@ -324,7 +354,7 @@ export function SkillsSection() {
     <section
       id="skills"
       ref={sectionRef}
-      className="w-full bg-[#0C0C0B] relative z-20 text-white border-t border-[#181818] py-24 xl:py-36 overflow-hidden group/section"
+      className="w-full bg-[#0C0C0B] relative z-20 text-white py-10 md:py-16 overflow-hidden group/section border-t border-white/[0.05]"
     >
       <div className="max-w-[120rem] mx-auto px-6 md:px-12 lg:px-16 relative z-10">
 

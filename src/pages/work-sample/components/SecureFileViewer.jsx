@@ -1,26 +1,45 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, FileText, Image as ImageIcon } from "lucide-react";
+import { X, FileText, Image as ImageIcon, ChevronLeft, ChevronRight, Layers } from "lucide-react";
 
 export function SecureFileViewer({ isOpen, onClose, file }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
+      document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
+      setCurrentIndex(0); // reset index when a file opens
     } else {
-      document.body.style.overflow = "unset";
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = "unset";
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
     };
-  }, [isOpen]);
+  }, [isOpen, file]);
 
   if (!isOpen || !file) return null;
 
   const isPDF = file.type === "pdf";
+  const isGallery = file.type === "gallery";
 
   // Add toolbar=0 to PDF urls to hide default browser controls
-  const fileUrl = isPDF ? `${file.url}#toolbar=0&navpanes=0&scrollbar=0` : file.url;
+  const fileUrl = isPDF 
+    ? `${file.url}#toolbar=0&navpanes=0&scrollbar=0` 
+    : (isGallery ? file.urls[currentIndex] : file.url);
+
+  const handlePrev = (e) => {
+    e.stopPropagation();
+    setCurrentIndex(prev => (prev > 0 ? prev - 1 : file.urls.length - 1));
+  };
+  
+  const handleNext = (e) => {
+    e.stopPropagation();
+    setCurrentIndex(prev => (prev < file.urls.length - 1 ? prev + 1 : 0));
+  };
 
   return (
     <AnimatePresence>
@@ -47,6 +66,8 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
               <div className="flex items-center gap-3">
                 {isPDF ? (
                   <FileText className="w-5 h-5 text-gray-400" />
+                ) : isGallery ? (
+                  <Layers className="w-5 h-5 text-gray-400" />
                 ) : (
                   <ImageIcon className="w-5 h-5 text-gray-400" />
                 )}
@@ -55,7 +76,7 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
                     {file.title}
                   </h3>
                   <span className="font-['Outfit'] text-[10px] md:text-[11px] text-gray-400 uppercase tracking-widest">
-                    {isPDF ? "DOCUMENT PREVIEW" : "IMAGE PREVIEW"}
+                    {isPDF ? "DOCUMENT PREVIEW" : isGallery ? `IMAGE GALLERY (${currentIndex + 1} OF ${file.urls.length})` : "IMAGE PREVIEW"}
                   </span>
                 </div>
               </div>
@@ -88,12 +109,33 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
                   title={file.title}
                 />
               ) : (
-                <img
-                  src={fileUrl}
-                  alt={file.title}
-                  className="w-full h-full object-contain relative z-0 select-none pointer-events-none"
-                  draggable="false"
-                />
+                <>
+                  <img
+                    key={fileUrl} // Re-render image when url changes
+                    src={fileUrl}
+                    alt={file.title}
+                    className="w-full h-full object-contain relative z-0 select-none pointer-events-none"
+                    draggable="false"
+                  />
+                  
+                  {/* Gallery Controls */}
+                  {isGallery && file.urls.length > 1 && (
+                    <>
+                      <button 
+                        onClick={handlePrev}
+                        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-md transition-all z-20 border border-white/10 pointer-events-auto"
+                      >
+                        <ChevronLeft className="w-6 h-6" />
+                      </button>
+                      <button 
+                        onClick={handleNext}
+                        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-md transition-all z-20 border border-white/10 pointer-events-auto"
+                      >
+                        <ChevronRight className="w-6 h-6" />
+                      </button>
+                    </>
+                  )}
+                </>
               )}
             </div>
           </motion.div>
