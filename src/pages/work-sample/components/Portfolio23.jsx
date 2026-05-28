@@ -5,9 +5,25 @@ import { FileText, Image as ImageIcon, Lock, Terminal } from "lucide-react";
 import { useLocation, Link } from "react-router-dom";
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+
+const ImageThumbnail = ({ src, alt }) => {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <>
+      {!loaded && <div className="absolute inset-0 bg-[#222]/80 animate-pulse z-0 flex items-center justify-center"><ImageIcon className="w-6 h-6 text-[#333]" /></div>}
+      <img 
+        src={src} 
+        alt={alt} 
+        onLoad={() => setLoaded(true)}
+        className={`w-full h-full object-cover transition-opacity duration-700 relative z-0 ${loaded ? 'opacity-80 group-hover:opacity-100' : 'opacity-0'}`} 
+      />
+    </>
+  );
+};
 
 const WORK_SECTIONS = [
   {
@@ -298,12 +314,12 @@ export function Portfolio23() {
                         {file.type === "meta" ? (
                           <Terminal className="w-12 h-12 text-green-500/50 group-hover:text-green-400 transition-colors z-10" />
                         ) : file.thumbnail || file.type === 'image' || file.type === 'gallery' ? (
-                          <img src={file.thumbnail || (file.type === 'gallery' ? file.urls[0] : file.url)} alt={file.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500 relative z-0" />
+                          <ImageThumbnail src={file.thumbnail || (file.type === 'gallery' ? file.urls[0] : file.url)} alt={file.title} />
                         ) : file.type === 'pdf' ? (
                           <div className="w-full h-full absolute inset-0 opacity-80 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden flex items-start justify-center pointer-events-none z-0">
                             <Document 
                               file={file.url} 
-                              loading={<FileText className="w-12 h-12 text-[#444] animate-pulse mt-12" />}
+                              loading={<div className="absolute inset-0 bg-[#222]/80 animate-pulse flex items-center justify-center"><FileText className="w-8 h-8 text-[#444]" /></div>}
                               className="w-full"
                             >
                               <Page 
