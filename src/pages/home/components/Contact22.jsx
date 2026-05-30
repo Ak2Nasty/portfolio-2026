@@ -256,7 +256,7 @@ export function Contact22() {
             variants={fadeUp}
             className="font-monument text-[28px] sm:text-[36px] md:text-[42px] xl:text-[50px] font-bold leading-[1.3] text-[#f4f4f4] tracking-[0.03em] uppercase max-w-none mb-6"
           >
-            IN PURSUIT OF MY NEXT CHALLENGE.{" "}
+            READY FOR WHAT'S NEXT.{" "}
             <motion.span 
               className="cursor-pointer bg-clip-text whitespace-nowrap"
               style={{ 
@@ -274,14 +274,14 @@ export function Contact22() {
                 }
               }}
             >
-              LET'S TALK?
+              LET'S TALK.
             </motion.span>
           </motion.h2>
           <motion.p
             variants={fadeUp}
             className="font-['Outfit'] text-[12px] md:text-[13px] leading-[1.7] font-medium tracking-[0.12em] text-[#8a8a8a] uppercase max-w-[800px]"
           >
-            ALWAYS OPEN TO MEANINGFUL COLLABORATION. WHETHER IT'S DISCUSSING BRAND STRATEGY, DIGITAL CAMPAIGNS, OR EXPLORING NEW OPPORTUNITIES—MY INBOX IS ALWAYS OPEN.
+            STRATEGY. CAMPAIGNS. CREATIVE EXECUTION. IF YOU'RE BUILDING SOMETHING AMBITIOUS, I'D LOVE TO BE PART OF IT.
           </motion.p>
         </motion.div>
 
