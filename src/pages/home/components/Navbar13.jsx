@@ -82,8 +82,8 @@ export function Navbar13() {
           AKSHATH<span className={`transition-colors duration-[1500ms] ${showGreeting ? "text-[#555]" : "text-[#a3a3a3]"}`}>.</span>
         </div>
 
-        {/* CENTER: greeting crossfades to nav links */}
-        <div className="relative flex-1 flex items-center justify-center h-8 min-w-0 px-2">
+        {/* RIGHT: greeting crossfades to nav links */}
+        <div className="relative flex-1 flex items-center justify-end h-8 min-w-0 px-2">
           <AnimatePresence mode="wait">
             {showGreeting ? (
               <motion.p
@@ -92,7 +92,7 @@ export function Navbar13() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="font-['Outfit'] font-bold text-[8.5px] sm:text-[10px] md:text-[11px] tracking-[0.15em] sm:tracking-[0.2em] text-[#050505] uppercase whitespace-nowrap overflow-hidden text-ellipsis text-center"
+                className="font-['Outfit'] font-bold text-[8.5px] sm:text-[10px] md:text-[11px] tracking-[0.15em] sm:tracking-[0.2em] text-[#050505] uppercase whitespace-nowrap overflow-hidden text-ellipsis text-right"
               >
                 {getGreeting(location.pathname)}
               </motion.p>
@@ -103,7 +103,7 @@ export function Navbar13() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="flex flex-nowrap items-center justify-center gap-0 sm:gap-1 lg:gap-2"
+                className="flex flex-nowrap items-center justify-end gap-0 sm:gap-1 lg:gap-2"
               >
                 {navItems.map((item, index) => {
                   const Icon = item.icon;
