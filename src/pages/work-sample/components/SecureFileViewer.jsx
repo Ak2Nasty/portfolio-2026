@@ -1,7 +1,39 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, FileText, Image as ImageIcon, ChevronLeft, ChevronRight, Layers } from "lucide-react";
 import { Document, Page, pdfjs } from 'react-pdf';
+
+function LazyPage({ pageNumber, width, devicePixelRatio }) {
+  const [isVisible, setIsVisible] = useState(pageNumber <= 2);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { rootMargin: '100% 0px' }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} style={{ minHeight: `${width * 1.294}px` }} className="w-full flex justify-center mb-4 md:mb-8 shadow-[0_0_30px_rgba(0,0,0,0.8)] bg-white max-w-full">
+      {isVisible && (
+        <Page
+          pageNumber={pageNumber}
+          width={width}
+          devicePixelRatio={devicePixelRatio}
+          renderTextLayer={false}
+          renderAnnotationLayer={false}
+          className="max-w-full"
+        />
+      )}
+    </div>
+  );
+}
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
@@ -137,14 +169,11 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
                     }
                   >
                     {Array.from(new Array(numPages || 0), (el, index) => (
-                      <Page
+                      <LazyPage
                         key={`page_${index + 1}`}
                         pageNumber={index + 1}
                         width={typeof window !== 'undefined' ? (window.innerWidth < 768 ? window.innerWidth - 32 : Math.min(window.innerWidth - 120, 1000)) : 800}
-                        devicePixelRatio={typeof window !== 'undefined' && window.innerWidth < 768 ? 1 : Math.min(typeof window !== 'undefined' ? window.devicePixelRatio : 1, 2)}
-                        className="mb-4 md:mb-8 shadow-[0_0_30px_rgba(0,0,0,0.8)] bg-white max-w-full"
-                        renderTextLayer={false}
-                        renderAnnotationLayer={false}
+                        devicePixelRatio={typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1}
                       />
                     ))}
                   </Document>
