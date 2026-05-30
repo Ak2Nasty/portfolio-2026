@@ -103,7 +103,7 @@ export function Navbar13() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="flex flex-wrap items-center justify-center gap-0.5 sm:gap-1 lg:gap-2"
+                className="flex flex-nowrap items-center justify-center gap-0 sm:gap-1 lg:gap-2"
               >
                 {navItems.map((item, index) => {
                   const Icon = item.icon;
@@ -117,7 +117,7 @@ export function Navbar13() {
                       <a 
                         href={`#${item.id}`} 
                         onClick={(e) => handleClick(e, item)}
-                        className="relative z-10 px-2 py-1.5 md:px-2.5 lg:px-4 lg:py-2 inline-flex items-center justify-center gap-1.5 font-['Outfit'] text-[9px] md:text-[9.5px] lg:text-[10px] tracking-[0.1em] lg:tracking-[0.15em] font-medium text-gray-400 hover:text-white transition-colors duration-300 uppercase whitespace-nowrap"
+                        className="relative z-10 px-1.5 sm:px-2 py-1.5 md:px-2.5 lg:px-4 lg:py-2 inline-flex items-center justify-center gap-1.5 font-['Outfit'] text-[9px] md:text-[9.5px] lg:text-[10px] tracking-[0.1em] lg:tracking-[0.15em] font-medium text-gray-400 hover:text-white transition-colors duration-300 uppercase whitespace-nowrap"
                       >
                         <span className="max-md:hidden">{item.label}</span>
                         {Icon && <Icon className="w-4 h-4 md:hidden" strokeWidth={1.5} />}
