@@ -243,16 +243,16 @@ const TechTile = ({ name, src, filter, customFilter, color = "#f4f4f4" }) => {
         "transition-all duration-300 ease-out",
         isTapped
           ? "border-[var(--brand)] bg-[#0f0f0f]/80 -translate-y-[2px] shadow-[0_0_20px_var(--brand-glow)]"
-          : "border-[var(--brand-icon)] lg:border-[#2a2a2a] shadow-[0_0_10px_var(--brand-glow)] lg:shadow-none -translate-y-[1px] lg:translate-y-0",
-        "lg:hover:border-[var(--brand)] lg:hover:bg-[#0f0f0f]/80 lg:hover:-translate-y-[3px] lg:hover:shadow-[0_0_20px_var(--brand-glow)]"
+          : "border-[var(--brand-icon)] lg:border-[#2a2a2a] shadow-[0_0_10px_var(--brand-glow)] lg:shadow-[0_0_12px_var(--brand-glow)] -translate-y-[1px] lg:translate-y-0",
+        "lg:hover:border-[var(--brand)] lg:hover:bg-[#0f0f0f]/80 lg:hover:-translate-y-[3px] lg:hover:shadow-[0_0_25px_var(--brand-glow)]"
       ].join(" ")}
     >
       <div className={[
         "w-7 h-7 md:w-9 md:h-9 flex items-center justify-center transition-all duration-300",
         isTapped
           ? "opacity-100 drop-shadow-[0_0_6px_var(--brand-icon)]"
-          : "opacity-80 lg:opacity-60 drop-shadow-[0_0_3px_var(--brand-icon)] lg:drop-shadow-none",
-        "lg:group-hover:opacity-100 lg:group-hover:drop-shadow-[0_0_6px_var(--brand-icon)]"
+          : "opacity-80 lg:opacity-85 drop-shadow-[0_0_3px_var(--brand-icon)] lg:drop-shadow-[0_0_5px_var(--brand-icon)]",
+        "lg:group-hover:opacity-100 lg:group-hover:drop-shadow-[0_0_10px_var(--brand-icon)]"
       ].join(" ")}>
         <SmartIcon src={src} name={name} filter={filter} customFilter={customFilter} />
       </div>
