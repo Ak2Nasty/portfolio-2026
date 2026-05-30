@@ -5,13 +5,16 @@ import { Document, Page, pdfjs } from 'react-pdf';
 
 function LazyPage({ pageNumber, width, devicePixelRatio }) {
   const [isVisible, setIsVisible] = useState(pageNumber <= 2);
+  const [isLoaded, setIsLoaded] = useState(false);
   const ref = useRef(null);
 
   useEffect(() => {
     if (typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsVisible(entry.isIntersecting);
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
       },
       { rootMargin: '100% 0px' }
     );
@@ -20,7 +23,11 @@ function LazyPage({ pageNumber, width, devicePixelRatio }) {
   }, []);
 
   return (
-    <div ref={ref} style={{ minHeight: `${width * 1.294}px` }} className="w-full flex justify-center mb-4 md:mb-8 shadow-[0_0_30px_rgba(0,0,0,0.8)] bg-white max-w-full">
+    <div 
+      ref={ref} 
+      style={!isLoaded ? { minHeight: `${width * 0.75}px` } : {}} 
+      className={`w-full flex justify-center mb-4 md:mb-8 max-w-full ${isLoaded ? 'shadow-[0_0_30px_rgba(0,0,0,0.8)]' : 'bg-white/5'}`}
+    >
       {isVisible && (
         <Page
           pageNumber={pageNumber}
@@ -28,6 +35,7 @@ function LazyPage({ pageNumber, width, devicePixelRatio }) {
           devicePixelRatio={devicePixelRatio}
           renderTextLayer={false}
           renderAnnotationLayer={false}
+          onLoadSuccess={() => setIsLoaded(true)}
           className="max-w-full"
         />
       )}
