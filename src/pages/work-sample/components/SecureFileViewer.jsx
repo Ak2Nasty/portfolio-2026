@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, FileText, Image as ImageIcon, ChevronLeft, ChevronRight, Layers } from "lucide-react";
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
+import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+
+pdfjs.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
 export function SecureFileViewer({ isOpen, onClose, file }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -127,8 +133,8 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
                       <Page
                         key={`page_${index + 1}`}
                         pageNumber={index + 1}
-                        width={typeof window !== 'undefined' ? Math.min(window.innerWidth - (window.innerWidth < 768 ? 32 : 120), 1200) : 800}
-                        className="mb-4 md:mb-8 shadow-[0_0_30px_rgba(0,0,0,0.8)] bg-white"
+                        width={typeof window !== 'undefined' ? (window.innerWidth < 768 ? window.innerWidth - 32 : Math.min(window.innerWidth - 120, 1000)) : 800}
+                        className="mb-4 md:mb-8 shadow-[0_0_30px_rgba(0,0,0,0.8)] bg-white max-w-full"
                         renderTextLayer={false}
                         renderAnnotationLayer={false}
                       />
