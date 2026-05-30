@@ -189,7 +189,7 @@ export function Career12() {
                 key={index}
                 variants={itemVariants}
                 style={{ top: topOffset }}
-                className="group sticky flex flex-row justify-between items-stretch bg-[#0a0a0a] border border-[#2a2a2a] rounded-2xl p-6 sm:p-8 lg:p-10 2xl:p-12 mb-[10vh] lg:mb-[25vh] shadow-[0_0_15px_rgba(255,255,255,0.05)] h-auto min-h-[400px] md:h-[480px] lg:h-[450px] overflow-hidden transition-shadow duration-500 hover:shadow-[0_0_25px_rgba(255,255,255,0.15)]"
+                className="group sticky flex flex-row justify-between items-stretch bg-[#0a0a0a] border border-[#2a2a2a] rounded-2xl p-6 sm:p-8 lg:p-10 2xl:p-12 mb-[10vh] lg:mb-[25vh] shadow-[0_0_15px_rgba(255,255,255,0.05)] h-auto min-h-[400px] overflow-hidden transition-shadow duration-500 hover:shadow-[0_0_25px_rgba(255,255,255,0.15)]"
               >
                 <div className="flex flex-col gap-5 flex-1 relative z-10 justify-between">
                   <div>
@@ -203,7 +203,7 @@ export function Career12() {
                       </h5>
                     </div>
 
-                    <ul className="flex flex-col gap-2.5 sm:gap-3 mt-4 sm:mt-6 mb-2">
+                    <ul className="flex flex-col gap-2 mt-4 mb-2">
                       {exp.summary.map((point, i) => (
                         <li key={i} className="flex items-start gap-3">
                           <span className="text-[#16a34a] mt-[4px] text-[10px]">▹</span>
