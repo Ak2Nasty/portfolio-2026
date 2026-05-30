@@ -6,7 +6,17 @@ import { useLocation, useNavigate } from "react-router-dom";
 const getGreeting = (pathname) => {
   if (pathname === "/work-sample") return "Welcome to the archive. 🏛️";
   
-  const hour = new Date().getHours();
+  const date = new Date();
+  const month = date.getMonth(); // 0-indexed (0 = Jan)
+  const day = date.getDate();
+
+  if (month === 11 && day === 25) return "Merry Christmas 🎄";
+  if (month === 11 && day === 31) return "Happy New Year's Eve 🥂";
+  if (month === 0 && day === 1) return "Happy New Year 🎆";
+  if (month === 9 && day === 31) return "Happy Halloween 🎃";
+  if (month === 1 && day === 14) return "Happy Valentine's Day 💌";
+
+  const hour = date.getHours();
   if (hour >= 5  && hour < 12) return "Good morning. 👋";
   if (hour >= 12 && hour < 17) return "Good afternoon. 👋";
   if (hour >= 17 && hour < 21) return "Working late? 🌆";
