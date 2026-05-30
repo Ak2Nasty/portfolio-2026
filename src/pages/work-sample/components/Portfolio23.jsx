@@ -66,7 +66,7 @@ const WORK_SECTIONS = [
     company: "Marketing Club (UBC MSA)",
     role: "President",
     metadata: "KELOWNA, BC • STUDENT LEADERSHIP • AUG 2022 - APR 2023",
-    context: "A curated collection of brand-aligned visual assets, event promotional materials, and multi-channel social media collateral designed to scale campus-wide engagement.",
+    context: "A collection of brand-aligned visual assets, event promotional materials, and multi-channel social media collateral designed to scale campus-wide engagement.",
     files: [
       { 
         id: "mc-1", 

@@ -60,6 +60,8 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
           className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0C0C0B]/90 backdrop-blur-xl p-4 md:p-8 lg:p-12"
           // Prevent right-click on the backdrop
           onContextMenu={(e) => e.preventDefault()}
+          onWheel={(e) => e.stopPropagation()}
+          data-lenis-prevent="true"
         >
           {/* Modal Container */}
           <motion.div
@@ -111,7 +113,12 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
               )}
 
               {isPDF ? (
-                <div className="w-full h-full overflow-y-auto bg-[#050505] flex flex-col items-center py-4 md:py-8 touch-pan-y" style={{ WebkitOverflowScrolling: 'touch' }}>
+                <div 
+                  className="w-full h-full overflow-y-auto bg-[#050505] flex flex-col items-center py-4 md:py-8 touch-pan-y" 
+                  style={{ WebkitOverflowScrolling: 'touch' }}
+                  data-lenis-prevent="true"
+                  onWheel={(e) => e.stopPropagation()}
+                >
                   <Document
                     file={file.url}
                     onLoadSuccess={({ numPages }) => setNumPages(numPages)}
@@ -134,6 +141,7 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
                         key={`page_${index + 1}`}
                         pageNumber={index + 1}
                         width={typeof window !== 'undefined' ? (window.innerWidth < 768 ? window.innerWidth - 32 : Math.min(window.innerWidth - 120, 1000)) : 800}
+                        devicePixelRatio={typeof window !== 'undefined' && window.innerWidth < 768 ? 1 : Math.min(typeof window !== 'undefined' ? window.devicePixelRatio : 1, 2)}
                         className="mb-4 md:mb-8 shadow-[0_0_30px_rgba(0,0,0,0.8)] bg-white max-w-full"
                         renderTextLayer={false}
                         renderAnnotationLayer={false}
