@@ -90,7 +90,9 @@ export function FloatingNav() {
           exit={{ opacity: 0, y: 20, x: "-50%" }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="fixed bottom-8 left-1/2 z-[9999]"
-          onMouseEnter={() => setIsHovered(true)}
+          onMouseEnter={() => {
+            if (window.innerWidth >= 768) setIsHovered(true);
+          }}
           onMouseLeave={() => setIsHovered(false)}
         >
           <motion.div 
@@ -126,7 +128,7 @@ export function FloatingNav() {
                             animate={{ width: "auto", opacity: 1, marginLeft: 8 }}
                             exit={{ width: 0, opacity: 0, marginLeft: 0 }}
                             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                            className="hidden md:block font-['Outfit'] text-[10px] md:text-[11px] font-medium tracking-[0.1em] uppercase whitespace-nowrap overflow-hidden"
+                            className="font-['Outfit'] text-[10px] md:text-[11px] font-medium tracking-[0.1em] uppercase whitespace-nowrap overflow-hidden"
                           >
                             {item.label}
                           </motion.span>
