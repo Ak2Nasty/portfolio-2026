@@ -281,7 +281,7 @@ export function Contact22() {
             variants={fadeUp}
             className="font-['Outfit'] text-[12px] md:text-[13px] leading-[1.7] font-medium tracking-[0.12em] text-[#8a8a8a] uppercase max-w-[800px]"
           >
-            READY TO DRIVE MEASURABLE IMPACT ACROSS BRAND STRATEGY, DIGITAL CAMPAIGNS, AND FLAWLESS EXECUTION.
+            ALWAYS EXCITED TO TALK MARKETING. WHETHER IT'S ABOUT DIGITAL CAMPAIGNS, BRAND STRATEGY, OR JUST CONNECTING OVER COFFEE—MY INBOX IS ALWAYS OPEN.
           </motion.p>
         </motion.div>
 
