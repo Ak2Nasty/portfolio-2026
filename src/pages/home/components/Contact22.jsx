@@ -281,7 +281,7 @@ export function Contact22() {
             variants={fadeUp}
             className="font-['Outfit'] text-[12px] md:text-[13px] leading-[1.7] font-medium tracking-[0.12em] text-[#8a8a8a] uppercase max-w-[800px]"
           >
-            OPEN TO ALL THINGS MARKETING — FROM DIGITAL CAMPAIGNS AND SOCIAL MEDIA TO EVENTS, STRATEGY, AND CREATIVE EXECUTION.
+            READY TO DRIVE MEASURABLE IMPACT ACROSS BRAND STRATEGY, DIGITAL CAMPAIGNS, AND FLAWLESS EXECUTION.
           </motion.p>
         </motion.div>
 
