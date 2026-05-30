@@ -281,7 +281,7 @@ export function Contact22() {
             variants={fadeUp}
             className="font-['Outfit'] text-[12px] md:text-[13px] leading-[1.7] font-medium tracking-[0.12em] text-[#8a8a8a] uppercase max-w-[800px]"
           >
-            WHETHER IT'S A BIG IDEA, A NEW ROLE, OR A FRESH COLLABORATION — MY INBOX IS ALWAYS OPEN.
+            OPEN TO ALL THINGS MARKETING - WHETHER IT'S A BIG IDEA, A NEW ROLE, OR A FRESH COLLABORATION — MY INBOX IS ALWAYS OPEN.
           </motion.p>
         </motion.div>
 
