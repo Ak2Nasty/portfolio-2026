@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ReactLenis } from 'lenis/react';
 import Home from "./pages/home";
 import WorkSample from "./pages/work-sample";
 import NotFound from "./pages/NotFound";
@@ -51,7 +52,7 @@ function App() {
   }, []);
 
   return (
-    <>
+    <ReactLenis root options={{ lerp: 0.08, smoothWheel: true }}>
       <EasterEggs />
       <Router>
         <Loader />
@@ -61,7 +62,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
-    </>
+    </ReactLenis>
   );
 }
 
