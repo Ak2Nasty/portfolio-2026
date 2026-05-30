@@ -127,19 +127,14 @@ export function Navbar13() {
                       <a 
                         href={`#${item.id}`} 
                         onClick={(e) => handleClick(e, item)}
-                        className="relative z-10 px-1.5 sm:px-2 py-1.5 md:px-2.5 lg:px-4 lg:py-2 inline-flex items-center justify-center gap-1.5 font-['Outfit'] text-[9px] md:text-[9.5px] lg:text-[10px] tracking-[0.1em] lg:tracking-[0.15em] font-medium text-gray-400 hover:text-white transition-colors duration-300 uppercase whitespace-nowrap"
+                        className="relative z-10 px-2 py-1.5 md:px-2.5 lg:px-4 lg:py-2 inline-flex items-center justify-center gap-0 md:group-hover:gap-1.5 font-['Outfit'] text-[9px] md:text-[9.5px] lg:text-[10px] tracking-[0.1em] lg:tracking-[0.15em] font-medium text-gray-400 hover:text-white transition-all duration-300 uppercase whitespace-nowrap"
                       >
-                        {/* Desktop: Icon + Expanding Text */}
-                        <div className="hidden md:flex items-center gap-0 group-hover:gap-1.5 transition-all duration-300">
-                          {Icon && <Icon className="w-4 h-4 shrink-0" strokeWidth={1.5} />}
-                          <span className="max-w-0 opacity-0 group-hover:max-w-[120px] group-hover:opacity-100 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden whitespace-nowrap">
-                            {item.label}
-                          </span>
-                        </div>
-                        {/* Mobile: Just Icon */}
-                        <div className="md:hidden flex items-center justify-center">
-                          {Icon && <Icon className="w-4 h-4 shrink-0" strokeWidth={1.5} />}
-                        </div>
+                        {Icon && <Icon className="w-4 h-4 shrink-0" strokeWidth={1.5} />}
+                        
+                        {/* Text: Hidden on mobile. On desktop, hidden (w-0) until hover */}
+                        <span className="hidden md:inline-block max-w-0 opacity-0 md:group-hover:max-w-[120px] md:group-hover:opacity-100 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden translate-y-[1px]">
+                          {item.label}
+                        </span>
                       </a>
                       <AnimatePresence>
                         {hoveredIndex === index && (
