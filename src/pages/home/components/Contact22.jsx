@@ -274,7 +274,7 @@ export function Contact22() {
                 }
               }}
             >
-              LET'S TALK.
+              LET'S TALK?
             </motion.span>
           </motion.h2>
           <motion.p
