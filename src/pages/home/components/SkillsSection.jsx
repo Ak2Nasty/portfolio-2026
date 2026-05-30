@@ -321,8 +321,8 @@ const SoftSkillsList = ({ skills }) => {
 
   // Spring smooths out fast scrolls so the index ripples sequentially
   const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 150,
-    damping: 25,
+    stiffness: 40,
+    damping: 15,
     mass: 0.5
   });
 
