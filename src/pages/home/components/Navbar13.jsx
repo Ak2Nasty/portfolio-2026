@@ -129,8 +129,17 @@ export function Navbar13() {
                         onClick={(e) => handleClick(e, item)}
                         className="relative z-10 px-1.5 sm:px-2 py-1.5 md:px-2.5 lg:px-4 lg:py-2 inline-flex items-center justify-center gap-1.5 font-['Outfit'] text-[9px] md:text-[9.5px] lg:text-[10px] tracking-[0.1em] lg:tracking-[0.15em] font-medium text-gray-400 hover:text-white transition-colors duration-300 uppercase whitespace-nowrap"
                       >
-                        <span className="max-md:hidden">{item.label}</span>
-                        {Icon && <Icon className="w-4 h-4 md:hidden" strokeWidth={1.5} />}
+                        {/* Desktop: Icon + Expanding Text */}
+                        <div className="hidden md:flex items-center gap-0 group-hover:gap-1.5 transition-all duration-300">
+                          {Icon && <Icon className="w-4 h-4 shrink-0" strokeWidth={1.5} />}
+                          <span className="max-w-0 opacity-0 group-hover:max-w-[120px] group-hover:opacity-100 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden whitespace-nowrap">
+                            {item.label}
+                          </span>
+                        </div>
+                        {/* Mobile: Just Icon */}
+                        <div className="md:hidden flex items-center justify-center">
+                          {Icon && <Icon className="w-4 h-4 shrink-0" strokeWidth={1.5} />}
+                        </div>
                       </a>
                       <AnimatePresence>
                         {hoveredIndex === index && (
