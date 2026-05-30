@@ -19,6 +19,8 @@ const ImageThumbnail = ({ src, alt }) => {
         src={src} 
         alt={alt} 
         onLoad={() => setLoaded(true)}
+        loading="lazy"
+        decoding="async"
         className={`w-full h-full object-cover transition-opacity duration-700 relative z-0 ${loaded ? 'opacity-80 group-hover:opacity-100' : 'opacity-0'}`} 
       />
     </>
@@ -221,8 +223,8 @@ export function Portfolio23() {
   return (
     <section className="w-full min-h-screen bg-[#0C0C0B] pt-24 md:pt-32 pb-16 md:pb-24 relative z-10 selection:bg-white/20 overflow-hidden">
       
-      {/* Background Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-white/[0.02] blur-[120px] rounded-full pointer-events-none" />
+      {/* Background Glow - Optimized for mobile GPU */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] md:w-[800px] h-[200px] md:h-[300px] bg-white/[0.02] blur-[60px] md:blur-[120px] rounded-full pointer-events-none transform-gpu" />
 
       <div className="max-w-[100rem] mx-auto px-6 md:px-12 lg:px-16">
         
