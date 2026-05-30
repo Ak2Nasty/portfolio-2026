@@ -88,16 +88,12 @@ export function Layout42() {
             </a>
           </motion.div>
           
-          {/* Right: Bio */}
           <motion.div variants={itemVariants} className="flex flex-col justify-start md:pt-[2rem] lg:pt-[2.25rem] gap-6">
             <p className="font-['Outfit'] text-[17px] md:text-[20px] leading-[1.75] font-light text-[#c2c2c2] max-w-[600px]">
-              Experience across <strong className="font-medium text-[#f4f4f4]">digital marketing, global events, campaign execution, marketing analytics</strong>, and <strong className="font-medium text-[#f4f4f4]">brand strategy</strong> through <strong className="font-medium text-[#f4f4f4]">corporate, consulting</strong>, and <strong className="font-medium text-[#f4f4f4]"><span className="whitespace-nowrap">consumer-facing environments</span></strong>.
+              An integrated marketing strategist specializing in <strong className="font-medium text-[#f4f4f4]">digital campaigns, global events, and brand development</strong>. I blend creative problem-solving with rigorous analytics to deliver measurable impact across corporate and consumer-facing environments.
             </p>
             <p className="font-['Outfit'] text-[17px] md:text-[20px] leading-[1.75] font-light text-[#c2c2c2] max-w-[600px]">
-              I've worked closely with <strong className="font-medium text-[#f4f4f4]">event coordination</strong>, <strong className="font-medium text-[#f4f4f4]">social media campaigns</strong>, <strong className="font-medium text-[#f4f4f4]">copywriting</strong>, <strong className="font-medium text-[#f4f4f4]">client communication</strong>, and <strong className="font-medium text-[#f4f4f4]">content strategy</strong> — balancing <strong className="font-medium text-[#f4f4f4]">critical thinking</strong>, with <strong className="font-medium text-[#f4f4f4]">seamless execution</strong>.
-            </p>
-            <p className="font-['Outfit'] text-[17px] md:text-[20px] leading-[1.75] font-light text-[#c2c2c2] max-w-[600px]">
-              My approach is <strong className="font-medium text-[#f4f4f4]">systems-driven</strong>, <strong className="font-medium text-[#f4f4f4]">research-oriented</strong>, with a strong focus on <strong className="font-medium text-[#f4f4f4]">constant learning, adaptability</strong>, and <strong className="font-medium text-[#f4f4f4]">creative problem solving</strong>.
+              From high-converting <strong className="font-medium text-[#f4f4f4]">copywriting</strong> to <strong className="font-medium text-[#f4f4f4]">cross-channel strategy</strong>, my approach is highly systems-driven. I don't just coordinate — I turn complex data into <strong className="font-medium text-[#f4f4f4]">seamless, flawless execution</strong>.
             </p>
           </motion.div>
         </motion.div>
