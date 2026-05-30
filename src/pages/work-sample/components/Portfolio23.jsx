@@ -41,7 +41,7 @@ const WORK_SECTIONS = [
     company: "D2L",
     role: "Customer Marketing & Events Coordinator",
     metadata: "VANCOUVER, BC • CO-OP • SEP 2023 - DEC 2023",
-    context: "Field marketing logistics. Vendor strategy. The complete playbook for 'Project Event in a Box'.",
+    context: "A comprehensive strategic blueprint detailing vendor transition frameworks, field marketing logistics, and scaled event execution protocols for 'Project Event in a Box'.",
     files: [
       { id: "d2l-1", title: "Project EIAB", type: "pdf", url: "/work-samples/d2l/project-eiab.pdf" },
     ]
@@ -51,7 +51,7 @@ const WORK_SECTIONS = [
     company: "OKHC",
     role: "Marketing & Communications Consultant",
     metadata: "KELOWNA, BC • UBC CAPSTONE • JAN 2025 - APR 2025",
-    context: "Strategic audits. Digital rebranding. Stakeholder comms. A full-cycle consulting engagement.",
+    context: "A complete digital rebrand package and strategic marketing audit, featuring modernized visual assets, a government-facing fact sheet, and high-level stakeholder communication frameworks.",
     files: [
       { id: "okhc-1", title: "Capstone Final Report", type: "pdf", url: "/work-samples/okhc/capstone-full-report.pdf" },
       { id: "okhc-2", title: "Capstone Final Presentation", type: "pdf", url: "/work-samples/okhc/okhc-final-presentation.pdf" },
@@ -66,7 +66,7 @@ const WORK_SECTIONS = [
     company: "Marketing Club (UBC MSA)",
     role: "President",
     metadata: "KELOWNA, BC • STUDENT LEADERSHIP • AUG 2022 - APR 2023",
-    context: "Event marketing. Brand campaigns. Sponsorship acquisition. Leading UBC's premier marketing community.",
+    context: "A curated collection of brand-aligned visual assets, event promotional materials, and multi-channel social media collateral designed to scale campus-wide engagement.",
     files: [
       { 
         id: "mc-1", 
@@ -84,7 +84,7 @@ const WORK_SECTIONS = [
         type: "gallery", 
         urls: [
           "/work-samples/marketing-club/speak-up-event.jpg",
-          "/work-samples/marketing-club/banner.jpg"
+          "/work-samples/marketing-club/net-at-nite.png"
         ] 
       },
       { 
@@ -114,7 +114,7 @@ const WORK_SECTIONS = [
     company: "Nestlé Nespresso",
     role: "Sales Associate",
     metadata: "KELOWNA, BC • CONSUMER ENGAGEMENT • NOV 2022 - APR 2023",
-    context: "Audience targeting. PPC strategy. Ad creation. A data-driven digital marketing playbook.",
+    context: "A data-driven digital marketing playbook featuring market segmentation analysis, targeted PPC keyword architecture, and high-conversion creative ad mockups.",
     files: [
       { id: "nes-1", title: "Marketing Plan", type: "pdf", url: "/work-samples/nespresso/Marketing-Plan.pdf" },
       { id: "nes-2", title: "Audience Targeting", type: "pdf", url: "/work-samples/nespresso/Audience-Targeting-and-Strategy.pdf" },
@@ -127,7 +127,7 @@ const WORK_SECTIONS = [
     company: "CUBS Vancouver",
     role: "Graphic Designer",
     metadata: "VANCOUVER, BC (REMOTE) • CREATIVE MARKETING • AUG 2022 - DEC 2022",
-    context: "Social strategy. Persuasive copy. Visual design. Elevating a community-focused education brand.",
+    context: "A centralized archive of brand identity assets, persuasive copywriting, and visual social media collateral developed for community-focused education initiatives.",
     files: [
       { 
         id: "cb-1", 
