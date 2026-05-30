@@ -256,7 +256,7 @@ export function Contact22() {
             variants={fadeUp}
             className="font-monument text-[28px] sm:text-[36px] md:text-[42px] xl:text-[50px] font-bold leading-[1.3] text-[#f4f4f4] tracking-[0.03em] uppercase max-w-none mb-6"
           >
-            READY FOR WHAT'S NEXT.{" "}
+            IN PURSUIT OF WHAT'S NEXT.{" "}
             <motion.span 
               className="cursor-pointer bg-clip-text whitespace-nowrap"
               style={{ 
