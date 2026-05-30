@@ -28,7 +28,11 @@ export function Career12() {
       company: "D2L",
       logo: "/d2l-inverted.png",
       role: "Customer Marketing & Events Coordinator",
-      summary: "Contributed to global event operations and cross-functional marketing initiatives, leading a large-scale event vendor transition through strategic evaluation, stakeholder communication, Power BI reporting, and trade show coordination.",
+      summary: [
+        "Led a global vendor transition project, delivering a <strong class=\"font-medium text-[#f4f4f4]\">30% reduction</strong> in event costs.",
+        "Analyzed pipeline data using <strong class=\"font-medium text-[#f4f4f4]\">Power BI</strong> to optimize targeted outreach and post-event engagement.",
+        "Orchestrated end-to-end logistics for hybrid trade shows and cross-channel campaigns."
+      ],
       metadata: "VANCOUVER, BC • CO-OP • SEP 2023 - DEC 2023",
       link: "/work-sample#d2l"
     },
@@ -37,7 +41,11 @@ export function Career12() {
       logo: "/okhc-logo-transparent.png",
       logoClass: "brightness-0 invert",
       role: "Marketing & Communications Consultant",
-      summary: "Led communications, strategic marketing, and website redesign development for a non-profit consulting engagement through client outreach, marketing audits, social media strategy, stakeholder communication, and content development.",
+      summary: [
+        "Conducted a comprehensive <strong class=\"font-medium text-[#f4f4f4]\">marketing audit</strong> and designed an organic and paid social media strategy.",
+        "Delivered a <strong class=\"font-medium text-[#f4f4f4]\">full website redesign mockup</strong>, including an AI chatbot, gallery, and contact architecture.",
+        "Produced government-facing fact sheets and directed communications for board-level stakeholders."
+      ],
       metadata: "KELOWNA, BC • UBC CAPSTONE • JAN 2025 - APR 2025",
       link: "/work-sample#okhc"
     },
@@ -46,7 +54,11 @@ export function Career12() {
       logo: "/footlocker-seeklogo.png",
       logoClass: "grayscale invert contrast-200",
       role: "Sales Associate",
-      summary: "Delivered client-focused customer experiences in a high-volume retail environment through product recommendations, visual merchandising, inventory coordination, and fast-paced frontline operations.",
+      summary: [
+        "Maintained consistent high-volume transactions in a <strong class=\"font-medium text-[#f4f4f4]\">fast-paced retail environment</strong>.",
+        "Delivered client-focused communication to provide clear, effective <strong class=\"font-medium text-[#f4f4f4]\">product recommendations</strong>.",
+        "Supported operational execution by organizing inventory and upholding <strong class=\"font-medium text-[#f4f4f4]\">visual merchandising standards</strong>."
+      ],
       metadata: "KELOWNA, BC • RETAIL OPERATIONS • NOV 2025 - PRESENT",
       link: null
     },
@@ -55,7 +67,11 @@ export function Career12() {
       logo: "/msa-logo.png",
       logoClass: "grayscale invert contrast-200",
       role: "President, Marketing Club",
-      summary: "Led digital content, social media strategy, sponsorship partnerships, and campus-wide event execution through cross-channel promotional campaigns, budget coordination, and brand-aligned marketing initiatives.",
+      summary: [
+        "Developed external sponsorships and coordinated <strong class=\"font-medium text-[#f4f4f4]\">co-branded benefits</strong> across promotional channels.",
+        "Directed digital content and social media strategy, producing brand-aligned materials using <strong class=\"font-medium text-[#f4f4f4]\">Photoshop and Canva</strong>.",
+        "Organized campus-wide events and workshops, managing budgets and timelines across a <strong class=\"font-medium text-[#f4f4f4]\">four-member team</strong>."
+      ],
       metadata: "KELOWNA, BC • STUDENT LEADERSHIP • AUG 2022 - APR 2023",
       link: "/work-sample#marketing-club"
     },
@@ -64,7 +80,11 @@ export function Career12() {
       logo: "/nespresso-idr.svg",
       logoClass: "brightness-0 invert",
       role: "Sales Associate",
-      summary: "Delivered brand-focused customer experiences through product demonstrations, consumer engagement, visual merchandising, and personalized sales communication, contributing to an 8% increase in sales performance.",
+      summary: [
+        "Delivered personalized product messaging and live demonstrations, contributing to an <strong class=\"font-medium text-[#f4f4f4]\">8% increase in sales</strong>.",
+        "Designed and maintained brand-aligned visual merchandising to drive <strong class=\"font-medium text-[#f4f4f4]\">consumer engagement</strong>.",
+        "Leveraged front-line customer insights to tailor recommendations and resolve inquiries."
+      ],
       metadata: "KELOWNA, BC • CONSUMER ENGAGEMENT • NOV 2022 - APR 2023",
       link: "/work-sample#nespresso"
     },
@@ -73,7 +93,11 @@ export function Career12() {
       logo: "/cubs-logo.png",
       logoClass: "grayscale invert contrast-200 scale-[1.7] origin-right translate-x-20",
       role: "Graphic Designer",
-      summary: "Developed social media campaigns, copywriting, and visual content for community-focused education initiatives through content strategy, digital design, and creative communication.",
+      summary: [
+        "Developed content strategies and wrote high-converting <strong class=\"font-medium text-[#f4f4f4]\">copy</strong> for social media campaigns.",
+        "Designed engaging social media visuals using <strong class=\"font-medium text-[#f4f4f4]\">Photoshop and Illustrator</strong> to align with campaign goals.",
+        "Promoted tutoring and education services specifically targeted toward <strong class=\"font-medium text-[#f4f4f4]\">underserved communities</strong>."
+      ],
       metadata: "VANCOUVER, BC (REMOTE) • CREATIVE MARKETING • AUG 2022 - DEC 2022",
       link: "/work-sample#cubs"
     },
@@ -82,7 +106,11 @@ export function Career12() {
       logo: "/mindtree-logo.svg",
       logoClass: "brightness-0 invert",
       role: "Acquisitions Student Intern",
-      summary: "Supported post-acquisition communications and organizational change initiatives through stakeholder coordination, internal communication strategy, operational research, and cross-functional collaboration.",
+      summary: [
+        "Developed post-acquisition internal communications to ensure consistent messaging during <strong class=\"font-medium text-[#f4f4f4]\">organizational change</strong>.",
+        "Conducted stakeholder analysis and industry research to identify risks and support <strong class=\"font-medium text-[#f4f4f4]\">executive decision-making</strong>.",
+        "Collaborated cross-functionally to streamline policy updates, contributing to a <strong class=\"font-medium text-[#f4f4f4]\">5% reduction in employee attrition</strong>."
+      ],
       metadata: "BANGALORE, INDIA • CORPORATE STRATEGY • SEP 2019 - JAN 2020",
       link: "/work-sample#mindtree"
     },
@@ -91,7 +119,11 @@ export function Career12() {
       logo: "/essemm-logo.svg",
       logoClass: "brightness-0 invert",
       role: "Marketing Student Intern",
-      summary: "Conducted market research, strategic analysis, and customer insight reporting to support distribution strategy, product positioning, and e-commerce recommendations through data-driven marketing initiatives.",
+      summary: [
+        "Conducted primary research through executive interviews and surveys to identify <strong class=\"font-medium text-[#f4f4f4]\">marketing strategy gaps</strong>.",
+        "Analyzed four years of financial data to assess portfolio performance and <strong class=\"font-medium text-[#f4f4f4]\">growth opportunities</strong>.",
+        "Presented data-driven recommendations to improve distribution, including an <strong class=\"font-medium text-[#f4f4f4]\">e-commerce application proposal</strong>."
+      ],
       metadata: "COIMBATORE, INDIA • MARKETING STRATEGY • JUN 2019 - SEP 2019",
       link: "/work-sample#essemm"
     },
@@ -100,7 +132,10 @@ export function Career12() {
       logo: "/shure-logo.svg",
       logoClass: "brightness-0 invert scale-[2] md:scale-100 origin-bottom-right -translate-y-4 -translate-x-4 md:translate-y-0 md:translate-x-0",
       role: "1st Place Winner",
-      summary: "Developed an award-winning strategic marketing proposal for Shure's expansion in India, analyzing target demographics and competitors to recommend localized sales strategies.",
+      summary: [
+        "Developed an <strong class=\"font-medium text-[#f4f4f4]\">award-winning</strong> strategic marketing proposal for Shure's expansion in India.",
+        "Analyzed target demographics and competitors to recommend highly <strong class=\"font-medium text-[#f4f4f4]\">localized sales strategies</strong>."
+      ],
       metadata: "BANGALORE, INDIA • ACADEMIC PROJECT • MAR 2019",
       link: "/work-sample#shure"
     }
@@ -168,9 +203,17 @@ export function Career12() {
                       </h5>
                     </div>
 
-                    <p className="font-['Outfit'] text-[13px] sm:text-[14px] md:text-[16px] leading-[1.8] font-light text-[#b3b3b3] max-w-[600px] mt-4 sm:mt-6 mb-2">
-                      {exp.summary}
-                    </p>
+                    <ul className="flex flex-col gap-2.5 sm:gap-3 mt-4 sm:mt-6 mb-2">
+                      {exp.summary.map((point, i) => (
+                        <li key={i} className="flex items-start gap-3">
+                          <span className="text-[#16a34a] mt-[4px] text-[10px]">▹</span>
+                          <span 
+                            className="font-['Outfit'] text-[13px] sm:text-[14px] md:text-[16px] leading-[1.6] font-light text-[#b3b3b3] max-w-[600px]"
+                            dangerouslySetInnerHTML={{ __html: point }} 
+                          />
+                        </li>
+                      ))}
+                    </ul>
                   </div>
 
                   <div>
