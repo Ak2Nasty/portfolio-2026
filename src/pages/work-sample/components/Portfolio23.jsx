@@ -254,9 +254,13 @@ export function Portfolio23() {
         </motion.div>
 
         {/* Sections */}
-        <div className="flex flex-col gap-20 md:gap-32">
+        <div className="flex flex-col gap-20 md:gap-32 relative">
           {WORK_SECTIONS.map((section, idx) => (
-            <div key={section.id} id={section.id} className="scroll-mt-32">
+            <div key={section.id} id={section.id} className="scroll-mt-32 relative">
+              {/* Divider Line */}
+              {idx > 0 && (
+                <div className="absolute -top-10 md:-top-16 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+              )}
               <motion.div 
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
