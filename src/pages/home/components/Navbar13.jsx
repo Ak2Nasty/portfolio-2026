@@ -61,7 +61,11 @@ export function Navbar13() {
       className="absolute top-0 left-0 right-0 z-[999] w-full px-4 md:px-6 lg:px-12 pt-6 lg:pt-8 flex justify-center"
     >
       <div 
-        className="w-full max-w-[80rem] flex items-center justify-between bg-[#121211]/40 border border-white/[0.05] backdrop-blur-md rounded-[2rem] px-3 md:px-6 lg:px-8 py-2 lg:py-3.5 shadow-[0_8px_32px_rgba(0,0,0,0.3)] overflow-hidden"
+        className={`w-full max-w-[80rem] flex items-center justify-between backdrop-blur-md rounded-[2rem] px-3 md:px-6 lg:px-8 py-2 lg:py-3.5 overflow-hidden transition-all duration-[1500ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          showGreeting 
+            ? "bg-white/95 border border-white/50 shadow-[0_0_40px_rgba(255,255,255,0.15)]" 
+            : "bg-[#121211]/40 border border-white/[0.05] shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
+        }`}
         onMouseEnter={() => { if (!timerExpired.current) { setIsHoveringNav(true); setShowGreeting(false); } }}
         onMouseLeave={() => { if (!timerExpired.current) { setIsHoveringNav(false); setShowGreeting(true); } }}
       >
@@ -69,9 +73,11 @@ export function Navbar13() {
         {/* LOGO */}
         <div 
           onClick={(e) => handleClick(e, { id: 'home' })}
-          className="font-monument text-[11px] lg:text-[13px] tracking-[0.15em] lg:tracking-[0.2em] font-black text-[#f4f4f4] uppercase cursor-pointer select-none shrink-0"
+          className={`font-monument text-[11px] lg:text-[13px] tracking-[0.15em] lg:tracking-[0.2em] font-black uppercase cursor-pointer select-none shrink-0 transition-colors duration-[1500ms] ${
+            showGreeting ? "text-[#050505]" : "text-[#f4f4f4]"
+          }`}
         >
-          AKSHATH<span className="text-[#a3a3a3]">.</span>
+          AKSHATH<span className={`transition-colors duration-[1500ms] ${showGreeting ? "text-[#555]" : "text-[#a3a3a3]"}`}>.</span>
         </div>
 
         {/* CENTER: greeting crossfades to nav links */}
@@ -84,7 +90,7 @@ export function Navbar13() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="font-['Outfit'] text-[8.5px] sm:text-[10px] md:text-[11px] tracking-[0.15em] sm:tracking-[0.2em] text-[#c2c2c2] uppercase whitespace-nowrap overflow-hidden text-ellipsis text-center"
+                className="font-['Outfit'] font-bold text-[8.5px] sm:text-[10px] md:text-[11px] tracking-[0.15em] sm:tracking-[0.2em] text-[#050505] uppercase whitespace-nowrap overflow-hidden text-ellipsis text-center"
               >
                 {getGreeting()}
               </motion.p>
