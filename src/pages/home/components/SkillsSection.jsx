@@ -373,8 +373,7 @@ export function SkillsSection() {
             CORE CAPABILITIES
           </motion.h2>
           <motion.p variants={fadeUp} className="font-['Outfit'] text-[12px] md:text-[14px] leading-[1.8] font-medium tracking-[0.15em] text-[#8a8a8a] uppercase max-w-[600px]">
-            A COMBINATION OF TECHNICAL TOOLS, ANALYTICAL THINKING, CREATIVE EXECUTION,
-            AND CROSS-FUNCTIONAL COMMUNICATION BUILT THROUGH REAL-WORLD EXPERIENCE.
+            TECHNICAL FLUENCY. ANALYTICAL RIGOR. CREATIVE EXECUTION. A STRATEGIC TOOLKIT BUILT FOR REAL-WORLD IMPACT.
           </motion.p>
         </motion.div>
 
