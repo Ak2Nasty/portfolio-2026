@@ -368,7 +368,7 @@ const CategoryBlock = ({ label, tools }) => (
       <span className="font-['Outfit'] font-semibold text-[11px] md:text-[13px] tracking-[0.2em] text-[#f4f4f4] uppercase whitespace-nowrap">
         {label}
       </span>
-      <div className="flex-1 h-[1px] bg-gradient-to-r from-[#f4f4f4]/30 to-transparent shadow-[0_4px_12px_rgba(244,244,244,0.3)]" />
+      <div className="flex-1 h-px bg-[#333]" />
     </div>
     <motion.div
       variants={containerVariants}
@@ -386,11 +386,10 @@ const CategoryBlock = ({ label, tools }) => (
 ───────────────────────────────────────────── */
 
 const SectionLabel = ({ children }) => (
-  <motion.div variants={fadeUp} className="relative pb-3 md:pb-4 mb-6">
+  <motion.div variants={fadeUp} className="pb-3 md:pb-4 mb-6 border-b border-[#333]">
     <span className="font-['Outfit'] font-semibold text-[11px] md:text-[13px] tracking-[0.2em] text-[#f4f4f4] uppercase">
       {children}
     </span>
-    <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-[#f4f4f4]/30 to-transparent shadow-[0_4px_12px_rgba(244,244,244,0.3)]" />
   </motion.div>
 );
 
