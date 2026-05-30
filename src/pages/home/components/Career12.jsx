@@ -129,7 +129,7 @@ export function Career12() {
             </div>
             
             <p className="font-['Outfit'] text-[12px] md:text-[14px] leading-[1.8] font-medium tracking-[0.15em] text-[#8a8a8a] max-w-[400px] uppercase mb-6">
-              HIGH-IMPACT EXECUTION ACROSS MARKETING, STRATEGY, AND LEADERSHIP.
+              A TRACK RECORD OF IMPACT ACROSS MARKETING, CORPORATE STRATEGY, AND LEADERSHIP ROLES.
             </p>
 
             <Link 
