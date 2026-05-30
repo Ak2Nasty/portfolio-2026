@@ -93,7 +93,7 @@ export function Layout42() {
               An integrated marketing strategist specializing in <strong className="font-medium text-[#f4f4f4]">digital campaigns, global events, and brand development</strong>. I blend creative problem-solving with rigorous analytics to deliver measurable impact across corporate and consumer-facing environments.
             </p>
             <p className="font-['Outfit'] text-[17px] md:text-[20px] leading-[1.75] font-light text-[#c2c2c2] max-w-[600px]">
-              From high-converting <strong className="font-medium text-[#f4f4f4]">copywriting</strong> to <strong className="font-medium text-[#f4f4f4]">cross-channel strategy</strong>, my approach is highly systems-driven. I don't just coordinate — I turn complex data into <strong className="font-medium text-[#f4f4f4]">seamless, flawless execution</strong>.
+              From high-converting <strong className="font-medium text-[#f4f4f4]">copywriting</strong> to <strong className="font-medium text-[#f4f4f4]">cross-channel strategy</strong>, my approach is <strong className="font-medium text-[#f4f4f4]">systems and research-driven</strong>. I bridge the gap between creative storytelling and technical reality — I don't just coordinate, I turn complex data into <strong className="font-medium text-[#f4f4f4]">seamless, flawless execution</strong>.
             </p>
           </motion.div>
         </motion.div>
