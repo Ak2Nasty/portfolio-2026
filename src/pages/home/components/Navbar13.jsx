@@ -25,7 +25,6 @@ const getGreeting = (pathname) => {
 
 export function Navbar13() {
   const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [isNavHovered, setIsNavHovered] = useState(false);
   const [showGreeting, setShowGreeting] = useState(true);
   const [isHoveringNav, setIsHoveringNav] = useState(false);
   const timerExpired = React.useRef(false);
@@ -115,8 +114,6 @@ export function Navbar13() {
                 exit={{ opacity: 0, y: -6 }}
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                 className="flex flex-nowrap items-center justify-end gap-0 sm:gap-1 lg:gap-2"
-                onMouseEnter={() => setIsNavHovered(true)}
-                onMouseLeave={() => setIsNavHovered(false)}
               >
                 {navItems.map((item, index) => {
                   const Icon = item.icon;
@@ -130,23 +127,10 @@ export function Navbar13() {
                       <a 
                         href={`#${item.id}`} 
                         onClick={(e) => handleClick(e, item)}
-                        className="relative z-10 px-2 py-1.5 md:px-2.5 lg:px-4 lg:py-2 inline-flex items-center justify-center font-['Outfit'] text-[9px] md:text-[9.5px] lg:text-[10px] tracking-[0.1em] lg:tracking-[0.15em] font-medium text-gray-400 hover:text-white transition-colors duration-300 uppercase whitespace-nowrap"
+                        className="relative z-10 px-1.5 sm:px-2 py-1.5 md:px-2.5 lg:px-4 lg:py-2 inline-flex items-center justify-center gap-1.5 font-['Outfit'] text-[9px] md:text-[9.5px] lg:text-[10px] tracking-[0.1em] lg:tracking-[0.15em] font-medium text-gray-400 hover:text-white transition-colors duration-300 uppercase whitespace-nowrap"
                       >
-                        {Icon && <Icon className="w-4 h-4 shrink-0" strokeWidth={1.5} />}
-                        
-                        {/* Text: Hidden on mobile. On desktop, animates width via framer-motion */}
-                        <motion.div
-                          className="hidden md:block overflow-hidden"
-                          initial={false}
-                          animate={{ 
-                            width: isNavHovered ? "auto" : 0, 
-                            opacity: isNavHovered ? 1 : 0,
-                            marginLeft: isNavHovered ? 6 : 0 
-                          }}
-                          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                        >
-                          <span className="block translate-y-[1px]">{item.label}</span>
-                        </motion.div>
+                        <span className="max-md:hidden">{item.label}</span>
+                        {Icon && <Icon className="w-4 h-4 md:hidden" strokeWidth={1.5} />}
                       </a>
                       <AnimatePresence>
                         {hoveredIndex === index && (
