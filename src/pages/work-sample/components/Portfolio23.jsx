@@ -40,6 +40,8 @@ const WORK_SECTIONS = [
   },
   {
     id: "d2l",
+    logo: "/d2l-inverted.png",
+    logoClass: "object-contain",
     company: "D2L",
     role: "Customer Marketing & Events Coordinator",
     metadata: "VANCOUVER, BC • CO-OP • SEP 2023 - DEC 2023",
@@ -50,6 +52,8 @@ const WORK_SECTIONS = [
   },
   {
     id: "okhc",
+    logo: "/okhc-logo-transparent.png",
+    logoClass: "object-contain brightness-0 invert",
     company: "OKHC",
     role: "Marketing & Communications Consultant",
     metadata: "KELOWNA, BC • UBC CAPSTONE • JAN 2025 - APR 2025",
@@ -65,6 +69,8 @@ const WORK_SECTIONS = [
   },
   {
     id: "marketing-club",
+    logo: "/msa-logo.png",
+    logoClass: "object-contain brightness-0 invert",
     company: "Marketing Club (UBC MSA)",
     role: "President",
     metadata: "KELOWNA, BC • STUDENT LEADERSHIP • AUG 2022 - APR 2023",
@@ -113,6 +119,8 @@ const WORK_SECTIONS = [
   },
   {
     id: "nespresso",
+    logo: "/nespresso-idr.svg",
+    logoClass: "object-contain brightness-0 invert",
     company: "Nestlé Nespresso",
     role: "Sales Associate",
     metadata: "KELOWNA, BC • CONSUMER ENGAGEMENT • NOV 2022 - APR 2023",
@@ -126,6 +134,8 @@ const WORK_SECTIONS = [
   },
   {
     id: "cubs",
+    logo: "/cubs-logo.png",
+    logoClass: "object-contain brightness-0 invert",
     company: "CUBS Vancouver",
     role: "Graphic Designer",
     metadata: "VANCOUVER, BC (REMOTE) • CREATIVE MARKETING • AUG 2022 - DEC 2022",
@@ -274,11 +284,16 @@ export function Portfolio23() {
                 {/* Left: Company Details */}
                 <div className="lg:w-1/3 flex flex-col gap-6">
                   <div className="flex flex-col">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-8 h-[1px] bg-white/20" />
-                      <span className="font-['Outfit'] font-semibold text-[10px] tracking-[0.2em] text-[#a3a3a3] uppercase">
-                        {String(idx + 1).padStart(2, '0')}
-                      </span>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-[1px] bg-white/20" />
+                        <span className="font-['Outfit'] font-semibold text-[10px] tracking-[0.2em] text-[#a3a3a3] uppercase">
+                          {String(idx + 1).padStart(2, '0')}
+                        </span>
+                      </div>
+                      {section.logo && (
+                        <img src={section.logo} alt={`${section.company} logo`} className={`h-5 md:h-7 opacity-50 hover:opacity-100 transition-opacity duration-300 ${section.logoClass}`} />
+                      )}
                     </div>
                     <h2 className="font-['Outfit'] font-bold text-[32px] md:text-[40px] text-[#f4f4f4] uppercase tracking-tight leading-none mb-1">
                       {section.company}
