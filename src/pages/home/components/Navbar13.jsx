@@ -3,7 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Home, User, GraduationCap, Briefcase, Folder, Cpu, Send } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const getGreeting = () => {
+const getGreeting = (pathname) => {
+  if (pathname === "/work-sample") return "Welcome to the archive. 🏛️";
+  
   const hour = new Date().getHours();
   if (hour >= 5  && hour < 12) return "Good morning. 👋";
   if (hour >= 12 && hour < 17) return "Good afternoon. 👋";
@@ -92,7 +94,7 @@ export function Navbar13() {
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                 className="font-['Outfit'] font-bold text-[8.5px] sm:text-[10px] md:text-[11px] tracking-[0.15em] sm:tracking-[0.2em] text-[#050505] uppercase whitespace-nowrap overflow-hidden text-ellipsis text-center"
               >
-                {getGreeting()}
+                {getGreeting(location.pathname)}
               </motion.p>
             ) : (
               <motion.ul
