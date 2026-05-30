@@ -8,7 +8,7 @@ export function BackgroundTexture() {
 
   return (
     <motion.div 
-      className="fixed inset-[-20%] z-[-10] pointer-events-none opacity-[0.12] mix-blend-screen"
+      className="fixed inset-[-20%] z-[50] pointer-events-none opacity-[0.15] mix-blend-screen"
       style={{
         y,
         backgroundImage: `url('/bg-texture.jpg')`,
