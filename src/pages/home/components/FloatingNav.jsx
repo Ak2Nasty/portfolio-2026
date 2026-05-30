@@ -126,7 +126,7 @@ export function FloatingNav() {
                             animate={{ width: "auto", opacity: 1, marginLeft: 8 }}
                             exit={{ width: 0, opacity: 0, marginLeft: 0 }}
                             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                            className="font-['Outfit'] text-[10px] md:text-[11px] font-medium tracking-[0.1em] uppercase whitespace-nowrap overflow-hidden"
+                            className="hidden md:block font-['Outfit'] text-[10px] md:text-[11px] font-medium tracking-[0.1em] uppercase whitespace-nowrap overflow-hidden"
                           >
                             {item.label}
                           </motion.span>
