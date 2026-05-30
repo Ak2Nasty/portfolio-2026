@@ -41,7 +41,7 @@ const WORK_SECTIONS = [
     company: "D2L",
     role: "Customer Marketing & Events Coordinator",
     metadata: "VANCOUVER, BC • CO-OP • SEP 2023 - DEC 2023",
-    context: "Comprehensive documentation, vendor transition strategies, and execution plans for 'Project Event in a Box'.",
+    context: "Field marketing logistics. Vendor strategy. The complete playbook for 'Project Event in a Box'.",
     files: [
       { id: "d2l-1", title: "Project EIAB", type: "pdf", url: "/work-samples/d2l/project-eiab.pdf" },
     ]
@@ -51,7 +51,7 @@ const WORK_SECTIONS = [
     company: "OKHC",
     role: "Marketing & Communications Consultant",
     metadata: "KELOWNA, BC • UBC CAPSTONE • JAN 2025 - APR 2025",
-    context: "Conducted high-level marketing audits and executed a complete digital rebrand for a live client consulting capstone.",
+    context: "Strategic audits. Digital rebranding. Stakeholder comms. A full-cycle consulting engagement.",
     files: [
       { id: "okhc-1", title: "Capstone Final Report", type: "pdf", url: "/work-samples/okhc/capstone-full-report.pdf" },
       { id: "okhc-2", title: "Capstone Final Presentation", type: "pdf", url: "/work-samples/okhc/okhc-final-presentation.pdf" },
@@ -66,7 +66,7 @@ const WORK_SECTIONS = [
     company: "Marketing Club (UBC MSA)",
     role: "President",
     metadata: "KELOWNA, BC • STUDENT LEADERSHIP • AUG 2022 - APR 2023",
-    context: "Scaled campus engagement through targeted promotional campaigns, structured event logistics, and high-converting sponsorship decks.",
+    context: "Event marketing. Brand campaigns. Sponsorship acquisition. Leading UBC's premier marketing community.",
     files: [
       { 
         id: "mc-1", 
@@ -114,7 +114,7 @@ const WORK_SECTIONS = [
     company: "Nestlé Nespresso",
     role: "Sales Associate",
     metadata: "KELOWNA, BC • CONSUMER ENGAGEMENT • NOV 2022 - APR 2023",
-    context: "Engineered a digital growth strategy focused on precise audience segmentation, optimized PPC architecture, and high-conversion ad creative.",
+    context: "Audience targeting. PPC strategy. Ad creation. A data-driven digital marketing playbook.",
     files: [
       { id: "nes-1", title: "Marketing Plan", type: "pdf", url: "/work-samples/nespresso/Marketing-Plan.pdf" },
       { id: "nes-2", title: "Audience Targeting", type: "pdf", url: "/work-samples/nespresso/Audience-Targeting-and-Strategy.pdf" },
@@ -127,7 +127,7 @@ const WORK_SECTIONS = [
     company: "CUBS Vancouver",
     role: "Graphic Designer",
     metadata: "VANCOUVER, BC (REMOTE) • CREATIVE MARKETING • AUG 2022 - DEC 2022",
-    context: "Produced visual assets, persuasive copy, and targeted social campaigns to accelerate community education initiatives.",
+    context: "Social strategy. Persuasive copy. Visual design. Elevating a community-focused education brand.",
     files: [
       { 
         id: "cb-1", 
