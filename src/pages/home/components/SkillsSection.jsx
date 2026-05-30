@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { motion, useInView, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import { motion, useInView, useScroll, useTransform, useMotionValueEvent, useSpring } from "framer-motion";
 import { useRef } from "react";
 
 /* ─────────────────────────────────────────────
@@ -319,7 +319,14 @@ const SoftSkillsList = ({ skills }) => {
     offset: ["start center", "end center"]
   });
 
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+  // Spring smooths out fast scrolls so the index ripples sequentially
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 150,
+    damping: 25,
+    mass: 0.5
+  });
+
+  useMotionValueEvent(smoothProgress, "change", (latest) => {
     if (latest <= 0) {
       setScrollActiveIndex(0);
     } else if (latest >= 1) {
