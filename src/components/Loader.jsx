@@ -7,6 +7,7 @@ export function Loader() {
   const validRoutes = ["/", "/work-sample"];
   const is404 = !validRoutes.includes(location.pathname);
   const [isLoading, setIsLoading] = useState(!is404);
+  const [loadingText, setLoadingText] = useState("INITIALIZING KERNEL...");
 
   useEffect(() => {
     if (is404) return; // Don't run loader logic on 404 page
@@ -20,8 +21,27 @@ export function Loader() {
       document.body.style.overflow = "auto";
     }, 2000);
 
+    const texts = [
+      "INITIALIZING KERNEL...",
+      "LOADING ASSETS...",
+      "DECRYPTING DATA...",
+      "COMPILING BUNDLE...",
+      "ESTABLISHING CONNECTION...",
+      "ACCESS GRANTED."
+    ];
+    let step = 0;
+    const interval = setInterval(() => {
+      step++;
+      if (step < texts.length) {
+        setLoadingText(texts[step]);
+      } else {
+        clearInterval(interval);
+      }
+    }, 300); // 6 texts * 300ms = 1800ms (fits inside the 2000ms loader)
+
     return () => {
       clearTimeout(timer);
+      clearInterval(interval);
       document.body.style.overflow = "auto";
     };
   }, [is404]);
@@ -66,6 +86,17 @@ export function Loader() {
                 transition={{ duration: 1.5, ease: "easeInOut" }}
                 className="absolute top-0 left-0 h-full bg-white rounded-full"
               />
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="mt-2 text-center"
+            >
+              <span className="font-['Outfit'] text-[8px] md:text-[9px] tracking-[0.25em] text-[#888] uppercase">
+                {loadingText}
+              </span>
             </motion.div>
           </motion.div>
         </motion.div>
