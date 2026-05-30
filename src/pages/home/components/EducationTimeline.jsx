@@ -209,7 +209,7 @@ export function EducationTimeline() {
             LEARNING CURVE
           </h2>
           <p className="font-['Outfit'] text-[12px] md:text-[14px] leading-[1.8] font-medium tracking-[0.15em] text-[#8a8a8a] max-w-[400px] uppercase">
-            FORMAL EDUCATION ACROSS BUSINESS, DIGITAL MARKETING, GLOBAL LEADERSHIP, AND MANAGEMENT.
+            ACADEMIC FOUNDATIONS IN BUSINESS STRATEGY, DIGITAL MARKETING, AND GLOBAL LEADERSHIP.
           </p>
         </div>
 
@@ -268,7 +268,7 @@ export function EducationTimeline() {
               LEARNING CURVE
             </h2>
             <p className="font-['Outfit'] text-[12px] md:text-[14px] leading-[1.8] font-medium tracking-[0.15em] text-[#8a8a8a] max-w-[500px] uppercase mt-2">
-              FORMAL EDUCATION ACROSS BUSINESS, DIGITAL MARKETING, GLOBAL LEADERSHIP, AND MANAGEMENT.
+              ACADEMIC FOUNDATIONS IN BUSINESS STRATEGY, DIGITAL MARKETING, AND GLOBAL LEADERSHIP.
             </p>
           </div>
 
