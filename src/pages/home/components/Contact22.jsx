@@ -281,7 +281,7 @@ export function Contact22() {
             variants={fadeUp}
             className="font-['Outfit'] text-[12px] md:text-[13px] leading-[1.7] font-medium tracking-[0.12em] text-[#8a8a8a] uppercase max-w-[800px]"
           >
-            ALWAYS EXCITED TO TALK MARKETING. WHETHER IT'S ABOUT DIGITAL CAMPAIGNS, BRAND STRATEGY, OR JUST CONNECTING OVER COFFEE—MY INBOX IS ALWAYS OPEN.
+            ALWAYS OPEN TO MEANINGFUL COLLABORATION. WHETHER IT'S DISCUSSING BRAND STRATEGY, DIGITAL CAMPAIGNS, OR EXPLORING NEW OPPORTUNITIES—MY INBOX IS ALWAYS OPEN.
           </motion.p>
         </motion.div>
 
