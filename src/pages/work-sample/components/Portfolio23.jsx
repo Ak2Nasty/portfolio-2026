@@ -261,7 +261,7 @@ export function Portfolio23() {
             <div key={section.id} id={section.id} className="scroll-mt-32 relative">
               {/* Divider Line */}
               {idx > 0 && (
-                <div className="absolute -top-10 md:-top-16 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+                <div className="absolute -top-10 md:-top-16 left-0 right-0 h-[1px] bg-white/[0.15]" />
               )}
               <motion.div 
                 initial={{ opacity: 0, y: 40 }}
