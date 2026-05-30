@@ -249,7 +249,7 @@ export function Portfolio23() {
             WORK SAMPLES
           </h1>
           <p className="font-['Outfit'] text-[14px] md:text-[16px] leading-[1.8] font-medium tracking-[0.1em] text-[#8a8a8a] max-w-2xl uppercase">
-            A CURATED ARCHIVE OF PROJECTS, PRESENTATIONS, CAMPAIGNS, AND DELIVERABLES BEHIND THE EXPERIENCE.
+            A CURATED ARCHIVE OF PROJECTS, PRESENTATIONS, CAMPAIGNS, AND DELIVERABLES BEHIND THE EXECUTION.
           </p>
         </motion.div>
 
