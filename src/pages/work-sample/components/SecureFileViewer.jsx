@@ -4,6 +4,7 @@ import { X, FileText, Image as ImageIcon, ChevronLeft, ChevronRight, Layers } fr
 
 export function SecureFileViewer({ isOpen, onClose, file }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [numPages, setNumPages] = useState(null);
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -11,6 +12,7 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
       document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
       setCurrentIndex(0); // reset index when a file opens
+      setNumPages(null); // reset pdf pages
     } else {
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
@@ -103,11 +105,36 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
               )}
 
               {isPDF ? (
-                <iframe
-                  src={fileUrl}
-                  className="w-full h-full border-none relative z-0"
-                  title={file.title}
-                />
+                <div className="w-full h-full overflow-y-auto bg-[#050505] flex flex-col items-center py-4 md:py-8 touch-pan-y" style={{ WebkitOverflowScrolling: 'touch' }}>
+                  <Document
+                    file={file.url}
+                    onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+                    loading={
+                      <div className="flex items-center justify-center h-full text-[#8a8a8a] font-['Outfit'] text-[11px] md:text-[13px] tracking-[0.2em] uppercase mt-20">
+                        Loading Document...
+                      </div>
+                    }
+                    error={
+                      <div className="flex flex-col items-center justify-center h-full text-[#8a8a8a] font-['Outfit'] text-[11px] md:text-[13px] tracking-[0.2em] uppercase mt-20 gap-4">
+                        <span>Failed to load PDF preview</span>
+                        <a href={file.url} target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 bg-white/10 text-white rounded-full hover:bg-white/20 transition-colors border border-white/10">
+                          Open Directly
+                        </a>
+                      </div>
+                    }
+                  >
+                    {Array.from(new Array(numPages || 0), (el, index) => (
+                      <Page
+                        key={`page_${index + 1}`}
+                        pageNumber={index + 1}
+                        width={typeof window !== 'undefined' ? Math.min(window.innerWidth - (window.innerWidth < 768 ? 32 : 120), 1200) : 800}
+                        className="mb-4 md:mb-8 shadow-[0_0_30px_rgba(0,0,0,0.8)] bg-white"
+                        renderTextLayer={false}
+                        renderAnnotationLayer={false}
+                      />
+                    ))}
+                  </Document>
+                </div>
               ) : (
                 <>
                   <img
