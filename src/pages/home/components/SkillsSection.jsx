@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { motion, useInView, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { useRef } from "react";
 
 /* ─────────────────────────────────────────────
@@ -273,16 +273,13 @@ const TechTile = ({ name, src, filter, customFilter, color = "#f4f4f4" }) => {
    SOFT SKILL ITEM
 ───────────────────────────────────────────── */
 
-const SoftSkillItem = ({ skill }) => {
-  const ref = useRef(null);
-  // Extremely narrow band to ensure only ONE item is active at a time
-  const isActive = useInView(ref, { margin: "-48% 0px -48% 0px" });
-
+const SoftSkillItem = ({ skill, isActive, onMouseEnter, onMouseLeave }) => {
   return (
     <motion.div
-      ref={ref}
       variants={fadeUp}
-      className={`flex items-center gap-4 py-3.5 border-b border-[#2a2a2a] last:border-0 group cursor-default transition-all duration-300 px-2 -mx-2 rounded-md ${
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      className={`flex items-center gap-4 py-3.5 border-b border-[#2a2a2a] last:border-0 cursor-default transition-all duration-300 px-2 -mx-2 rounded-md ${
         isActive 
           ? "bg-[#0a0a0a] -translate-y-[2px] shadow-lg border-transparent" 
           : "hover:bg-[#0a0a0a] hover:-translate-y-[2px] hover:shadow-lg hover:border-transparent"
@@ -292,19 +289,65 @@ const SoftSkillItem = ({ skill }) => {
         className={`relative h-1.5 rounded-full transition-all duration-300 shrink-0 ${
           isActive 
             ? "w-4 bg-[#f4f4f4] shadow-[0_0_10px_#f4f4f4]" 
-            : "w-1.5 bg-[#444] group-hover:w-4 group-hover:bg-[#f4f4f4] group-hover:shadow-[0_0_10px_#f4f4f4]"
+            : "w-1.5 bg-[#444]"
         }`} 
       />
       <span 
         className={`font-['Outfit'] text-[13px] md:text-[14px] xl:text-[15px] font-light tracking-[0.04em] transition-all duration-300 ${
           isActive 
             ? "text-[#f4f4f4] translate-x-1" 
-            : "text-[#c2c2c2] group-hover:text-[#f4f4f4] group-hover:translate-x-1"
+            : "text-[#c2c2c2]"
         }`}
       >
         {skill}
       </span>
     </motion.div>
+  );
+};
+
+/* ─────────────────────────────────────────────
+   SOFT SKILLS LIST
+───────────────────────────────────────────── */
+
+const SoftSkillsList = ({ skills }) => {
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [scrollActiveIndex, setScrollActiveIndex] = useState(0);
+  const containerRef = useRef(null);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start center", "end center"]
+  });
+
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (latest <= 0) {
+      setScrollActiveIndex(0);
+    } else if (latest >= 1) {
+      setScrollActiveIndex(skills.length - 1);
+    } else {
+      const index = Math.floor(latest * skills.length);
+      setScrollActiveIndex(index);
+    }
+  });
+
+  return (
+    <div ref={containerRef} className="flex flex-col relative pb-8">
+      {skills.map((skill, index) => {
+        const isActive = hoveredIndex !== null 
+          ? hoveredIndex === index 
+          : scrollActiveIndex === index;
+
+        return (
+          <SoftSkillItem 
+            key={skill} 
+            skill={skill} 
+            isActive={isActive}
+            onMouseEnter={() => setHoveredIndex(index)}
+            onMouseLeave={() => setHoveredIndex(null)}
+          />
+        );
+      })}
+    </div>
   );
 };
 
@@ -403,11 +446,7 @@ export function SkillsSection() {
               variants={containerVariants}
             >
               <SectionLabel>Soft Skills</SectionLabel>
-              <div className="flex flex-col">
-                {softSkills.map((skill) => (
-                  <SoftSkillItem key={skill} skill={skill} />
-                ))}
-              </div>
+              <SoftSkillsList skills={softSkills} />
             </motion.div>
 
             <motion.div
