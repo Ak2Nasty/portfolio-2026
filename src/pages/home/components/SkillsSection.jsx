@@ -40,7 +40,7 @@ const techCategories = [
       { name: "Photoshop",   src: JSD("adobephotoshop"),    filter: true,  color: "#31A8FF" },
       { name: "Illustrator", src: JSD("adobeillustrator"),  filter: true,  color: "#FF9A00" },
       { name: "Figma",       src: SI("figma"),              filter: false, color: "#F24E1E" },
-      { name: "CapCut",      src: SI("capcut"),             filter: false, color: "#f4f4f4" },
+      { name: "CapCut",      src: "/logos/capcut.png",      filter: true, color: "#f4f4f4", isLocal: true },
       { name: "DaVinci",     src: SI("davinciresolve"),     filter: false, color: "#f4f4f4" },
     ],
   },
