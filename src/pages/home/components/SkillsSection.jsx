@@ -36,12 +36,12 @@ const techCategories = [
   {
     label: "Content & Design",
     tools: [
-      // Local file — grayscale filter applied:
-      // Inline SVG — white circle with hollow C cutout, no filter needed
       { name: "Canva",       src: "custom-canva",            filter: false, color: "#00C4CC" },
       { name: "Photoshop",   src: JSD("adobephotoshop"),    filter: true,  color: "#31A8FF" },
       { name: "Illustrator", src: JSD("adobeillustrator"),  filter: true,  color: "#FF9A00" },
       { name: "Figma",       src: SI("figma"),              filter: false, color: "#F24E1E" },
+      { name: "CapCut",      src: JSD("capcut"),            filter: true,  color: "#f4f4f4" },
+      { name: "DaVinci",     src: JSD("davinciresolve"),    filter: true,  color: "#f4f4f4" },
     ],
   },
   {
