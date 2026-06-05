@@ -22,7 +22,7 @@ const techCategories = [
       { name: "Google Ads",       src: SI("googleads"),             filter: false, color: "#F4B400" },
       { name: "Meta Ads",         src: SI("meta"),                  filter: false, color: "#0668E1" },
       { name: "Hootsuite",        src: SI("hootsuite"),             filter: false, color: "#FF4040" },
-      { name: "Salesforce",       src: SI("salesforce"),            filter: false, color: "#00A1E0" },
+      { name: "Salesforce",       src: JSD("salesforce"),           filter: true, color: "#00A1E0" },
     ],
   },
   {
