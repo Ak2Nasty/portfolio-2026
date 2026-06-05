@@ -22,7 +22,7 @@ const techCategories = [
       { name: "Google Ads",       src: SI("googleads"),             filter: false, color: "#F4B400" },
       { name: "Meta Ads",         src: SI("meta"),                  filter: false, color: "#0668E1" },
       { name: "Hootsuite",        src: SI("hootsuite"),             filter: false, color: "#FF4040" },
-      { name: "WordPress",        src: SI("wordpress"),             filter: false, color: "#21759B" },
+      { name: "Salesforce",       src: SI("salesforce"),            filter: false, color: "#00A1E0" },
     ],
   },
   {
@@ -42,6 +42,7 @@ const techCategories = [
       { name: "Figma",       src: SI("figma"),              filter: false, color: "#F24E1E" },
       { name: "CapCut",      src: "/logos/capcut.png",      filter: true, color: "#f4f4f4", isLocal: true },
       { name: "DaVinci",     src: SI("davinciresolve"),     filter: false, color: "#f4f4f4" },
+      { name: "WordPress",   src: SI("wordpress"),          filter: false, color: "#21759B" },
     ],
   },
   {
