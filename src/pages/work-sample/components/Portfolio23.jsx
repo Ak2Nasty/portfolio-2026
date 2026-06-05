@@ -46,6 +46,7 @@ const WORK_SECTIONS = [
     context: "A comprehensive strategic blueprint detailing vendor transition frameworks, field marketing logistics, and scaled event execution protocols for 'Project Event in a Box'.",
     files: [
       { id: "d2l-1", title: "Project EIAB", type: "pdf", url: "/work-samples/d2l/project-eiab.pdf" },
+      { id: "d2l-2", title: "MODUS Enablement Deck", type: "pdf", url: "/work-samples/modus-enablement-deck.pdf" },
     ]
   },
   {
