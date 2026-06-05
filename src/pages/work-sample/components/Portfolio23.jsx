@@ -43,7 +43,7 @@ const WORK_SECTIONS = [
     company: "D2L",
     role: "Customer Marketing & Events Coordinator",
     metadata: "VANCOUVER, BC • CO-OP • SEP 2023 - DEC 2023",
-    context: "A comprehensive strategic blueprint detailing vendor transition frameworks, field marketing logistics, and scaled event execution protocols for 'Project Event in a Box'.",
+    context: "A collection of strategic deliverables featuring scaled event execution protocols for 'Project Event in a Box', alongside a comprehensive enablement deck designed for internal leadership alignment.",
     files: [
       { id: "d2l-1", title: "Project EIAB", type: "pdf", url: "/work-samples/d2l/project-eiab.pdf" },
       { id: "d2l-2", title: "MODUS Enablement Deck", type: "pdf", url: "/work-samples/modus-enablement-deck.pdf" },
