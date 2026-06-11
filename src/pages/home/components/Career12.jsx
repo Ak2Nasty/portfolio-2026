@@ -201,7 +201,7 @@ export function Career12() {
                 key={index}
                 variants={itemVariants}
                 style={{ top: topOffset }}
-                className={`group sticky flex flex-row justify-between items-stretch bg-[#0a0a0a] border ${exp.isHighlight ? 'border-purple-500/50 shadow-[0_0_30px_rgba(168,85,247,0.15)]' : 'border-[#2a2a2a] shadow-[0_0_15px_rgba(255,255,255,0.05)]'} rounded-2xl p-6 sm:p-8 lg:p-10 2xl:p-12 mb-[10vh] lg:mb-[25vh] h-auto min-h-[400px] overflow-hidden transition-all duration-500 hover:shadow-[0_0_30px_rgba(255,255,255,0.1)] ${exp.isHighlight ? 'hover:shadow-[0_0_40px_rgba(168,85,247,0.25)]' : ''}`}
+                className={`group sticky flex flex-row justify-between items-stretch ${exp.isHighlight ? 'bg-transparent border border-white/20 border-dashed animate-[pulse_4s_ease-in-out_infinite] shadow-[0_0_20px_rgba(255,255,255,0.03)] hover:border-white/40 hover:shadow-[0_0_35px_rgba(255,255,255,0.1)]' : 'bg-[#0a0a0a] border border-[#2a2a2a] shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]'} rounded-2xl p-6 sm:p-8 lg:p-10 2xl:p-12 mb-[10vh] lg:mb-[25vh] h-auto min-h-[400px] overflow-hidden transition-all duration-500`}
               >
                 <div className="flex flex-col gap-5 flex-1 relative z-10 justify-between">
                   <div>
@@ -210,7 +210,7 @@ export function Career12() {
                       <h4 className={`font-['Outfit'] font-bold text-[24px] sm:text-[28px] md:text-[36px] ${exp.isHighlight ? 'text-white' : 'text-[#f4f4f4]'} uppercase tracking-tight leading-none`}>
                         {exp.company}
                       </h4>
-                      <h5 className={`font-['Outfit'] text-[16px] sm:text-[18px] md:text-[20px] ${exp.isHighlight ? 'text-purple-400' : 'text-[#e5e5e5]'} font-medium tracking-wide`}>
+                      <h5 className={`font-['Outfit'] text-[16px] sm:text-[18px] md:text-[20px] ${exp.isHighlight ? 'text-[#a3a3a3]' : 'text-[#e5e5e5]'} font-medium tracking-wide`}>
                         {exp.role}
                       </h5>
                     </div>
@@ -218,7 +218,7 @@ export function Career12() {
                     <ul className="flex flex-col gap-2 mt-4 mb-2">
                       {exp.summary.map((point, i) => (
                         <li key={i} className="flex items-start gap-3">
-                          <span className={`${exp.isHighlight ? 'text-purple-500' : 'text-[#16a34a]'} mt-[4px] text-[10px]`}>▹</span>
+                          <span className={`${exp.isHighlight ? 'text-white/40' : 'text-[#16a34a]'} mt-[4px] text-[10px]`}>▹</span>
                           <span 
                             className="font-['Outfit'] text-[13px] sm:text-[14px] md:text-[16px] leading-[1.6] font-light text-[#b3b3b3] max-w-[600px]"
                             dangerouslySetInnerHTML={{ __html: point }} 
