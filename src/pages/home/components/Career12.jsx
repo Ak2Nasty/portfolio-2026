@@ -201,7 +201,7 @@ export function Career12() {
                 key={index}
                 variants={itemVariants}
                 style={{ top: topOffset, zIndex: index }}
-                className={`group sticky flex flex-row justify-between items-stretch ${exp.isHighlight ? 'bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] shadow-[0_8px_32px_rgba(255,255,255,0.03)] hover:bg-white/[0.05] hover:border-white/[0.12] hover:shadow-[0_8px_32px_rgba(255,255,255,0.06)]' : 'bg-[#0a0a0a] border border-[#2a2a2a] shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]'} rounded-2xl p-6 sm:p-8 lg:p-10 2xl:p-12 mb-[10vh] lg:mb-[25vh] h-auto min-h-[400px] overflow-hidden transition-all duration-500`}
+                className={`group sticky flex flex-row justify-between items-stretch ${exp.isHighlight ? 'bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] shadow-[0_8px_32px_rgba(255,255,255,0.03)] hover:bg-white/[0.05] hover:border-white/[0.12] hover:shadow-[0_8px_32px_rgba(255,255,255,0.06)]' : 'bg-[#0a0a0a] border border-[#2a2a2a] shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]'} rounded-2xl p-6 sm:p-8 lg:p-10 2xl:p-12 mb-[10vh] lg:mb-[25vh] h-auto min-h-[450px] lg:min-h-[600px] overflow-hidden transition-all duration-500`}
               >
                 <div className="flex flex-col gap-5 flex-1 relative z-10 justify-between">
                   <div>
