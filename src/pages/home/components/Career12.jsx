@@ -218,7 +218,7 @@ export function Career12() {
                     <ul className="flex flex-col gap-2 mt-4 mb-2">
                       {exp.summary.map((point, i) => (
                         <li key={i} className="flex items-start gap-3">
-                          <span className="text-[#16a34a] mt-[4px] text-[10px]">▹</span>
+                          <span className={`${exp.isHighlight ? 'text-purple-500' : 'text-[#16a34a]'} mt-[4px] text-[10px]`}>▹</span>
                           <span 
                             className="font-['Outfit'] text-[13px] sm:text-[14px] md:text-[16px] leading-[1.6] font-light text-[#b3b3b3] max-w-[600px]"
                             dangerouslySetInnerHTML={{ __html: point }} 
