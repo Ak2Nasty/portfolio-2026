@@ -161,12 +161,35 @@ export function WorkSamplesFooter() {
                       onClick={(e) => handleNumberClick(e, num)}
                       className="flex items-center justify-between w-full px-3 py-2.5 rounded-lg hover:bg-white/[0.05] transition-colors group/num"
                     >
-                      <div className="flex items-center gap-2 text-gray-300 group-hover/num:text-white transition-colors">
-                        <span className="flex items-center justify-center w-[16px]"><img src={num.flag} alt="flag" className="w-full rounded-[2px]" /></span>
-                        <span className="font-['Outfit'] text-[12px] md:text-[13px] font-medium truncate">{num.value}</span>
-                      </div>
-                      <div className="w-4 flex items-center justify-center">
-                        {copiedPhoneId === num.id && <Check className="w-3.5 h-3.5 text-purple-500" strokeWidth={3} />}
+                      <div className="flex items-center gap-3 text-gray-300 group-hover/num:text-white transition-colors w-full overflow-hidden">
+                        <span className="flex items-center justify-center w-[16px] shrink-0"><img src={num.flag} alt="flag" className="w-full rounded-[2px]" /></span>
+                        <div className="relative h-[20px] w-full flex items-center">
+                          <AnimatePresence mode="wait">
+                            {copiedPhoneId !== num.id ? (
+                              <motion.span
+                                key="number"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                transition={{ duration: 0.2 }}
+                                className="absolute left-0 font-['Outfit'] text-[12px] md:text-[13px] font-medium truncate"
+                              >
+                                {num.value}
+                              </motion.span>
+                            ) : (
+                              <motion.span
+                                key="copied"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                transition={{ duration: 0.2 }}
+                                className="absolute left-0 font-['Outfit'] text-[11px] md:text-[12px] font-semibold text-purple-400 tracking-wider flex items-center gap-1.5 uppercase"
+                              >
+                                <Check className="w-3.5 h-3.5" strokeWidth={2.5} /> Copied
+                              </motion.span>
+                            )}
+                          </AnimatePresence>
+                        </div>
                       </div>
                     </button>
                   ))}
