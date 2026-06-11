@@ -21,6 +21,21 @@ const LinkedinIcon = ({ className, strokeWidth = 1.5 }) => (
   </svg>
 );
 
+const WhatsAppIcon = ({ className, strokeWidth = 1.5 }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={strokeWidth}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+  </svg>
+);
+
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -67,12 +82,12 @@ const contactItems = [
     },
   },
   {
-    label: "PHONE",
-    value: "+1 (437) 249 - 4834",
-    copyValue: "+1 (437) 249 - 4834",
-    mobileHref: "tel:+14372494834",
+    label: "WHATSAPP",
+    value: "+1 (647) 521 - 2708",
+    copyValue: "+1 (647) 521 - 2708",
+    mobileHref: "https://wa.me/16475212708",
     subtext: "Voice call or direct message.",
-    icon: Phone,
+    icon: WhatsAppIcon,
     styles: {
       "--brand-glow": "rgba(34, 197, 94, 0.03)",
       "--brand-border": "rgba(34, 197, 94, 0.4)",

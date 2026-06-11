@@ -19,6 +19,21 @@ const LinkedinIcon = ({ className, strokeWidth = 1.5 }) => (
   </svg>
 );
 
+const WhatsAppIcon = ({ className, strokeWidth = 1.5 }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={strokeWidth}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+  </svg>
+);
+
 export function WorkSamplesFooter() {
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedPhone, setCopiedPhone] = useState(false);
@@ -96,9 +111,9 @@ export function WorkSamplesFooter() {
           </a>
 
           <button 
-            onClick={(e) => handleCopy(e, "+14372494834", "phone")}
+            onClick={(e) => handleCopy(e, "+1 (647) 521-2708", "phone")}
             className="flex items-center justify-center w-12 h-12 rounded-full bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] hover:border-green-500/40 hover:shadow-[0_0_15px_rgba(34,197,94,0.2)] transition-all duration-300 group relative"
-            title="Copy Phone"
+            title="Copy WhatsApp Number"
           >
             <AnimatePresence>
               {copiedPhone && (
@@ -133,7 +148,7 @@ export function WorkSamplesFooter() {
                   transition={{ duration: 0.2 }}
                   className="absolute inset-0 flex items-center justify-center text-[#8a8a8a] group-hover:text-green-500 transition-colors duration-300"
                 >
-                  <Phone className="w-5 h-5" />
+                  <WhatsAppIcon className="w-5 h-5" />
                 </motion.div>
               )}
             </AnimatePresence>
