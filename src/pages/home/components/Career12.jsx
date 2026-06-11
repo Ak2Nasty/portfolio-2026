@@ -237,7 +237,7 @@ export function Career12() {
                     {exp.link && (
                       <Link 
                         to={exp.link}
-                        className="group/link flex md:hidden items-center gap-2 w-fit"
+                        className="group/link flex items-center gap-2 w-fit"
                       >
                         <span className="font-['Outfit'] font-bold text-[10px] sm:text-[11px] md:text-[12px] tracking-[0.2em] text-white group-hover/link:text-[#16a34a] transition-colors duration-300">
                           VIEW PROJECT
@@ -250,41 +250,17 @@ export function Career12() {
                   </div>
                 </div>
 
-                {/* Logo Watermark & Desktop CTA */}
-                <div className="absolute -right-10 -bottom-10 md:relative md:right-0 md:bottom-0 flex flex-col flex-shrink-0 w-[200px] sm:w-[250px] md:w-[150px] lg:w-[180px] xl:w-[200px] 2xl:w-[250px] z-0 md:pl-4">
-                  
-                  {/* Top Spacer to push logo to center */}
-                  <div className="hidden md:block flex-1" />
-
-                  {/* Logo */}
-                  {exp.logo && (
-                    <div className="flex items-center justify-center pointer-events-none select-none transition-all duration-700 opacity-[0.08] md:opacity-90 group-hover:opacity-[0.15] md:group-hover:opacity-100 mix-blend-screen drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] group-hover:drop-shadow-[0_0_25px_rgba(255,255,255,0.2)]">
-                      <img 
-                        src={exp.logo} 
-                        alt="" 
-                        className={`w-full h-auto object-contain ${exp.logoClass || "brightness-0 invert"}`}
-                        draggable="false"
-                      />
-                    </div>
-                  )}
-
-                  {/* Desktop CTA & Bottom Spacer */}
-                  <div className="hidden md:flex flex-1 items-end justify-end w-full">
-                    {exp.link && (
-                      <Link 
-                        to={exp.link}
-                        className="group/link flex items-center gap-2 pointer-events-auto"
-                      >
-                        <span className="font-['Outfit'] font-bold text-[10px] sm:text-[11px] md:text-[12px] tracking-[0.2em] text-white group-hover/link:text-[#16a34a] transition-colors duration-300 whitespace-nowrap">
-                          VIEW PROJECT
-                        </span>
-                        <svg className="w-3 h-3 sm:w-4 sm:h-4 text-white group-hover/link:text-[#16a34a] transform group-hover/link:translate-x-1 transition-all duration-300 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                      </Link>
-                    )}
+                {/* Logo Watermark */}
+                {exp.logo && (
+                  <div className="absolute -right-10 -bottom-10 md:relative md:right-0 md:bottom-0 flex flex-shrink-0 items-center justify-center w-[200px] sm:w-[250px] md:w-[150px] lg:w-[180px] xl:w-[200px] 2xl:w-[250px] pointer-events-none select-none md:pl-4 transition-all duration-700 opacity-[0.08] md:opacity-90 group-hover:opacity-[0.15] md:group-hover:opacity-100 mix-blend-screen drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] group-hover:drop-shadow-[0_0_25px_rgba(255,255,255,0.2)] z-0">
+                    <img 
+                      src={exp.logo} 
+                      alt="" 
+                      className={`w-full h-auto object-contain ${exp.logoClass || "brightness-0 invert"}`}
+                      draggable="false"
+                    />
                   </div>
-                </div>
+                )}
               </motion.div>
               );
             })}
