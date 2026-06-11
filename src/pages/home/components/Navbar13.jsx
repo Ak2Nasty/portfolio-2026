@@ -73,7 +73,7 @@ export function Navbar13() {
       className="absolute top-0 left-0 right-0 z-[999] w-full px-4 md:px-6 lg:px-12 pt-6 lg:pt-8 flex justify-center"
     >
       <div 
-        className={`w-full max-w-[80rem] flex items-center justify-between backdrop-blur-md rounded-[2rem] px-3 md:px-6 lg:px-8 py-2 lg:py-3.5 overflow-hidden transition-all duration-[1500ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        className={`w-full max-w-[80rem] flex items-center justify-between backdrop-blur-md rounded-[2rem] px-3 md:px-6 lg:px-8 py-2 lg:py-3.5 overflow-hidden transition-all duration-1000 ease-out ${
           showGreeting 
             ? "bg-white/95 border border-white/50 shadow-[0_0_40px_rgba(255,255,255,0.15)]" 
             : "bg-[#121211]/40 border border-white/[0.05] shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
@@ -85,11 +85,11 @@ export function Navbar13() {
         {/* LOGO */}
         <div 
           onClick={(e) => handleClick(e, { id: 'home' })}
-          className={`font-monument text-[11px] lg:text-[13px] tracking-[0.15em] lg:tracking-[0.2em] font-black uppercase cursor-pointer select-none shrink-0 transition-colors duration-[1500ms] ${
+          className={`font-monument text-[11px] lg:text-[13px] tracking-[0.15em] lg:tracking-[0.2em] font-black uppercase cursor-pointer select-none shrink-0 transition-colors duration-1000 ${
             showGreeting ? "text-[#050505]" : "text-[#f4f4f4]"
           }`}
         >
-          AKSHATH<span className={`transition-colors duration-[1500ms] ${showGreeting ? "text-[#555]" : "text-[#a3a3a3]"}`}>.</span>
+          AKSHATH<span className={`transition-colors duration-1000 ${showGreeting ? "text-[#555]" : "text-[#a3a3a3]"}`}>.</span>
         </div>
 
         {/* RIGHT: greeting crossfades to nav links */}
