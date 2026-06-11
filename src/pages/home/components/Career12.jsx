@@ -200,7 +200,7 @@ export function Career12() {
               <motion.div 
                 key={index}
                 variants={itemVariants}
-                style={{ top: topOffset }}
+                style={{ top: topOffset, zIndex: index }}
                 className={`group sticky flex flex-row justify-between items-stretch ${exp.isHighlight ? 'bg-[#0a0a0a] border border-white/20 border-dashed animate-[pulse_4s_ease-in-out_infinite] shadow-[0_0_20px_rgba(255,255,255,0.03)] hover:border-white/40 hover:shadow-[0_0_35px_rgba(255,255,255,0.1)]' : 'bg-[#0a0a0a] border border-[#2a2a2a] shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]'} rounded-2xl p-6 sm:p-8 lg:p-10 2xl:p-12 mb-[10vh] lg:mb-[25vh] h-auto min-h-[400px] overflow-hidden transition-all duration-500`}
               >
                 <div className="flex flex-col gap-5 flex-1 relative z-10 justify-between">
