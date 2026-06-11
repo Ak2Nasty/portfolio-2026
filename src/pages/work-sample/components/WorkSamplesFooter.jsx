@@ -57,8 +57,8 @@ export function WorkSamplesFooter() {
   }, []);
 
   const phoneNumbers = [
-    { id: "can", flag: "🇨🇦", value: "+1 (437) 249-4834", href: "tel:+14372494834" },
-    { id: "ind", flag: "🇮🇳", value: "+91 9894615404", href: "tel:+919894615404" }
+    { id: "can", flag: "https://flagcdn.com/ca.svg", value: "+1 (437) 249-4834", href: "tel:+14372494834" },
+    { id: "ind", flag: "https://flagcdn.com/in.svg", value: "+91 9894615404", href: "tel:+919894615404" }
   ];
 
   const handleNumberClick = (e, numObj) => {
@@ -162,7 +162,7 @@ export function WorkSamplesFooter() {
                       className="flex items-center justify-between w-full px-3 py-2.5 rounded-lg hover:bg-white/[0.05] transition-colors group/num"
                     >
                       <div className="flex items-center gap-2 text-gray-300 group-hover/num:text-white transition-colors">
-                        <span className="text-[14px]">{num.flag}</span>
+                        <span className="flex items-center justify-center w-[16px]"><img src={num.flag} alt="flag" className="w-full rounded-[2px]" /></span>
                         <span className="font-['Outfit'] text-[12px] md:text-[13px] font-medium truncate">{num.value}</span>
                       </div>
                       <div className="w-4 flex items-center justify-center">

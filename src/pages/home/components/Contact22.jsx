@@ -93,8 +93,8 @@ const contactItems = [
   {
     label: "PHONE",
     numbers: [
-      { flag: "🇨🇦", value: "+1 (437) 249-4834", mobileHref: "tel:+14372494834" },
-      { flag: "🇮🇳", value: "+91 9894615404", mobileHref: "tel:+919894615404" }
+      { flag: "https://flagcdn.com/ca.svg", value: "+1 (437) 249-4834", mobileHref: "tel:+14372494834" },
+      { flag: "https://flagcdn.com/in.svg", value: "+91 9894615404", mobileHref: "tel:+919894615404" }
     ],
     subtext: "Canadian and Indian direct lines.",
     icon: Phone,
@@ -196,7 +196,7 @@ function ContactCard({ item }) {
                       transition={{ duration: 0.2 }}
                       className="font-['Outfit'] text-[14px] sm:text-[15px] md:text-[16px] font-medium text-gray-300 group-hover/num:text-white transition-colors duration-300 truncate flex items-center gap-2"
                     >
-                      <span className="text-[14px] sm:text-[16px]">{num.flag}</span> {num.value}
+                      <span className="flex items-center justify-center w-[18px]"><img src={num.flag} alt="flag" className="w-full rounded-[2px]" /></span> {num.value}
                     </motion.span>
                   ) : (
                     <motion.span
