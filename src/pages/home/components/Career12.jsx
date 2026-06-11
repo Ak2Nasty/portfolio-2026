@@ -228,22 +228,22 @@ export function Career12() {
                     </ul>
                   </div>
 
-                  <div className="flex justify-between items-end mt-auto pt-6">
-                    {/* Metadata */}
-                    <p className={`font-['Outfit'] text-[9px] sm:text-[10px] md:text-[11px] tracking-[0.2em] md:tracking-[0.25em] uppercase ${exp.isHighlight ? 'text-[#777]' : 'text-[#666]'}`}>
-                      {exp.metadata}
-                    </p>
-
+                  <div className="flex flex-col gap-4 mt-auto pt-6">
                     {/* CTA */}
                     {exp.link && (
                       <Link 
                         to={exp.link}
-                        className="mt-4 flex items-center gap-3 font-['Outfit'] text-[10px] md:text-[11px] font-semibold tracking-[0.2em] text-[#f4f4f4] uppercase transition-all duration-300 hover:text-[#16a34a] w-fit group/cta"
+                        className="flex items-center gap-3 font-['Outfit'] text-[10px] md:text-[11px] font-semibold tracking-[0.2em] text-[#f4f4f4] uppercase transition-all duration-300 hover:text-[#16a34a] w-fit group/cta"
                       >
                         VIEW PROJECT 
                         <span className="transition-transform duration-300 group-hover/cta:translate-x-1.5">→</span>
                       </Link>
                     )}
+
+                    {/* Metadata */}
+                    <p className={`font-['Outfit'] text-[9px] sm:text-[10px] md:text-[11px] tracking-[0.2em] md:tracking-[0.25em] uppercase ${exp.isHighlight ? 'text-[#777]' : 'text-[#666]'}`}>
+                      {exp.metadata}
+                    </p>
                   </div>
                 </div>
 
