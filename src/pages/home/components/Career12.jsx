@@ -144,9 +144,9 @@ export function Career12() {
       role: "Next Great Opportunity",
       isHighlight: true,
       summary: [
-        "Ready to bring relentless execution and strategic vision to <strong class=\"font-bold text-black\">your team</strong>.",
-        "Prepared to drive growth, solve complex challenges, and deliver <strong class=\"font-bold text-black\">high-impact results</strong>.",
-        "Currently seeking opportunities to leverage my diverse background for your organization's <strong class=\"font-bold text-black\">next big win</strong>."
+        "Ready to bring relentless execution and strategic vision to <strong class=\"font-medium text-white\">your team</strong>.",
+        "Prepared to drive growth, solve complex challenges, and deliver <strong class=\"font-medium text-white\">high-impact results</strong>.",
+        "Currently seeking opportunities to leverage my diverse background for your organization's <strong class=\"font-medium text-white\">next big win</strong>."
       ],
       metadata: "AVAILABLE FOR IMPACT • READY TO EXECUTE • 2026 & BEYOND",
       link: null
@@ -201,16 +201,16 @@ export function Career12() {
                 key={index}
                 variants={itemVariants}
                 style={{ top: topOffset, zIndex: index }}
-                className={`group sticky flex flex-row justify-between items-stretch ${exp.isHighlight ? 'bg-[#e5e5e5] border border-[#d4d4d4] shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.15)]' : 'bg-[#0a0a0a] border border-[#2a2a2a] shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]'} rounded-2xl p-6 sm:p-8 lg:p-10 2xl:p-12 mb-[10vh] lg:mb-[25vh] h-auto min-h-[400px] overflow-hidden transition-all duration-500`}
+                className={`group sticky flex flex-row justify-between items-stretch ${exp.isHighlight ? 'bg-[#1a1a1a] border border-[#333] shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:border-[#444] hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]' : 'bg-[#0a0a0a] border border-[#2a2a2a] shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]'} rounded-2xl p-6 sm:p-8 lg:p-10 2xl:p-12 mb-[10vh] lg:mb-[25vh] h-auto min-h-[400px] overflow-hidden transition-all duration-500`}
               >
                 <div className="flex flex-col gap-5 flex-1 relative z-10 justify-between">
                   <div>
                     {/* Header (Company & Role) */}
                     <div className="flex flex-col gap-1.5">
-                      <h4 className={`font-['Outfit'] font-bold text-[24px] sm:text-[28px] md:text-[36px] ${exp.isHighlight ? 'text-black' : 'text-[#f4f4f4]'} uppercase tracking-tight leading-none`}>
+                      <h4 className={`font-['Outfit'] font-bold text-[24px] sm:text-[28px] md:text-[36px] ${exp.isHighlight ? 'text-white' : 'text-[#f4f4f4]'} uppercase tracking-tight leading-none`}>
                         {exp.company}
                       </h4>
-                      <h5 className={`font-['Outfit'] text-[16px] sm:text-[18px] md:text-[20px] ${exp.isHighlight ? 'text-gray-600' : 'text-[#e5e5e5]'} font-medium tracking-wide`}>
+                      <h5 className={`font-['Outfit'] text-[16px] sm:text-[18px] md:text-[20px] ${exp.isHighlight ? 'text-[#a3a3a3]' : 'text-[#e5e5e5]'} font-medium tracking-wide`}>
                         {exp.role}
                       </h5>
                     </div>
@@ -218,9 +218,9 @@ export function Career12() {
                     <ul className="flex flex-col gap-2 mt-4 mb-2">
                       {exp.summary.map((point, i) => (
                         <li key={i} className="flex items-start gap-3">
-                          <span className={`${exp.isHighlight ? 'text-black' : 'text-[#16a34a]'} mt-[4px] text-[10px]`}>▹</span>
+                          <span className={`${exp.isHighlight ? 'text-white/40' : 'text-[#16a34a]'} mt-[4px] text-[10px]`}>▹</span>
                           <span 
-                            className={`font-['Outfit'] text-[13px] sm:text-[14px] md:text-[16px] leading-[1.6] font-light ${exp.isHighlight ? 'text-gray-800' : 'text-[#b3b3b3]'} max-w-[600px]`}
+                            className={`font-['Outfit'] text-[13px] sm:text-[14px] md:text-[16px] leading-[1.6] font-light ${exp.isHighlight ? 'text-[#d4d4d4]' : 'text-[#b3b3b3]'} max-w-[600px]`}
                             dangerouslySetInnerHTML={{ __html: point }} 
                           />
                         </li>
@@ -230,7 +230,7 @@ export function Career12() {
 
                   <div>
                     {/* Metadata */}
-                    <p className={`font-['Outfit'] text-[9px] sm:text-[10px] md:text-[11px] tracking-[0.2em] md:tracking-[0.25em] uppercase ${exp.isHighlight ? 'text-gray-500 font-bold' : 'text-[#666]'}`}>
+                    <p className={`font-['Outfit'] text-[9px] sm:text-[10px] md:text-[11px] tracking-[0.2em] md:tracking-[0.25em] uppercase ${exp.isHighlight ? 'text-[#888] font-semibold' : 'text-[#666]'}`}>
                       {exp.metadata}
                     </p>
 
