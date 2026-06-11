@@ -165,7 +165,7 @@ export function Career12() {
         >
           
           {/* Left: Section Header */}
-          <motion.div variants={itemVariants} className="w-full lg:w-[45%] flex flex-col gap-6 md:gap-8 justify-start lg:sticky lg:top-[15vh] h-fit">
+          <motion.div variants={itemVariants} className="w-full lg:w-[35%] flex flex-col gap-6 md:gap-8 justify-start lg:sticky lg:top-[15vh] h-fit">
             <div className="flex flex-col gap-3 md:gap-4">
               <span className="font-['Outfit'] font-semibold text-[10px] md:text-[11px] tracking-[0.25em] text-[#a3a3a3] uppercase">
                 EXPERIENCE / 03
@@ -193,7 +193,7 @@ export function Career12() {
           </motion.div>
           
           {/* Right: Experience List */}
-          <div className="w-full lg:w-[55%] flex flex-col relative" style={{ paddingBottom: '25vh' }}>
+          <div className="w-full lg:w-[60%] flex flex-col relative" style={{ paddingBottom: '25vh' }}>
             {experiences.map((exp, index) => {
               const topOffset = `calc(15vh + ${index * 20}px)`;
               return (
@@ -201,7 +201,7 @@ export function Career12() {
                 key={index}
                 variants={itemVariants}
                 style={{ top: topOffset, zIndex: index }}
-                className={`group sticky flex flex-row justify-between items-stretch ${exp.isHighlight ? 'bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] shadow-[0_8px_32px_rgba(255,255,255,0.03)] hover:bg-white/[0.05] hover:border-white/[0.12] hover:shadow-[0_8px_32px_rgba(255,255,255,0.06)]' : 'bg-[#0a0a0a] border border-[#2a2a2a] shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]'} rounded-2xl p-6 sm:p-8 lg:p-10 2xl:p-12 mb-[10vh] lg:mb-[25vh] h-auto lg:h-[480px] min-h-[400px] overflow-hidden transition-all duration-500`}
+                className={`group sticky flex flex-row justify-between items-stretch ${exp.isHighlight ? 'bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] shadow-[0_8px_32px_rgba(255,255,255,0.03)] hover:bg-white/[0.05] hover:border-white/[0.12] hover:shadow-[0_8px_32px_rgba(255,255,255,0.06)]' : 'bg-[#0a0a0a] border border-[#2a2a2a] shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]'} rounded-2xl p-6 sm:p-8 lg:p-10 2xl:p-12 mb-[10vh] lg:mb-[25vh] h-auto lg:h-[450px] min-h-[400px] overflow-hidden transition-all duration-500`}
               >
                 <div className="flex flex-col gap-5 flex-1 relative z-10 justify-between">
                   <div>
