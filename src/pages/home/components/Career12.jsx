@@ -63,7 +63,7 @@ export function Career12() {
       link: null
     },
     {
-      company: "UBC Management Student Association",
+      company: "UBC MSA",
       logo: "/msa-logo.png",
       logoClass: "grayscale invert contrast-200",
       role: "President, Marketing Club",
@@ -228,12 +228,12 @@ export function Career12() {
                     </ul>
                   </div>
 
-                  <div className="flex flex-col gap-3 mt-auto pt-4">
+                  <div className="flex flex-col gap-4 mt-auto pt-6">
                     {/* CTA */}
                     {exp.link && (
                       <Link 
                         to={exp.link}
-                        className="flex items-center gap-3 font-['Outfit'] text-[10px] md:text-[11px] font-semibold tracking-[0.2em] text-[#f4f4f4] uppercase transition-all duration-300 border border-white/20 rounded-full px-6 py-2 hover:bg-white hover:text-black hover:border-white hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(255,255,255,0.15)] w-fit group/cta"
+                        className="flex items-center gap-3 font-['Outfit'] text-[10px] md:text-[11px] font-semibold tracking-[0.2em] text-[#f4f4f4] uppercase transition-all duration-300 border border-white/20 rounded-full px-6 py-2.5 hover:bg-white hover:text-black hover:border-white hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(255,255,255,0.15)] w-fit group/cta"
                       >
                         VIEW PROJECT 
                         <span className="transition-transform duration-300 group-hover/cta:translate-x-1.5 font-bold">→</span>
