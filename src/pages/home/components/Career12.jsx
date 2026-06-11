@@ -234,17 +234,14 @@ export function Career12() {
                       {exp.metadata}
                     </p>
 
+                    {/* CTA */}
                     {exp.link && (
                       <Link 
                         to={exp.link}
-                        className="group/link flex items-center gap-2 w-fit"
+                        className="mt-4 flex items-center gap-3 font-['Outfit'] text-[10px] md:text-[11px] font-semibold tracking-[0.2em] text-[#f4f4f4] uppercase transition-all duration-300 hover:text-[#16a34a] w-fit group/cta"
                       >
-                        <span className="font-['Outfit'] font-bold text-[10px] sm:text-[11px] md:text-[12px] tracking-[0.2em] text-white group-hover/link:text-[#16a34a] transition-colors duration-300">
-                          VIEW PROJECT
-                        </span>
-                        <svg className="w-3 h-3 sm:w-4 sm:h-4 text-white group-hover/link:text-[#16a34a] transform group-hover/link:translate-x-1 transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
+                        VIEW PROJECT 
+                        <span className="transition-transform duration-300 group-hover/cta:translate-x-1.5">→</span>
                       </Link>
                     )}
                   </div>
