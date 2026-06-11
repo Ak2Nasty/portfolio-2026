@@ -98,7 +98,7 @@ export function Career12() {
         "Designed engaging social media visuals using <strong class=\"font-medium text-[#f4f4f4]\">Photoshop and Illustrator</strong> to align with campaign goals.",
         "Promoted tutoring and education services specifically targeted toward <strong class=\"font-medium text-[#f4f4f4]\">underserved communities</strong>."
       ],
-      metadata: "VANCOUVER, BC (REMOTE) • CREATIVE MARKETING • AUG 2022 - DEC 2022",
+      metadata: "VANCOUVER, BC • CREATIVE MARKETING • AUG 2022 - DEC 2022",
       link: "/work-sample#cubs"
     },
     {
