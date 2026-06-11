@@ -153,7 +153,7 @@ export function WorkSamplesFooter() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute bottom-[calc(100%+16px)] left-1/2 -translate-x-1/2 bg-[#1a1a1a] border border-[#333] rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.8)] p-2 w-[220px] z-50 flex flex-col gap-1"
+                  className="absolute bottom-[calc(100%+16px)] right-[-10px] sm:left-1/2 sm:-translate-x-1/2 bg-[#1a1a1a] border border-[#333] rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.8)] p-2 w-[220px] z-50 flex flex-col gap-1"
                 >
                   {phoneNumbers.map((num) => (
                     <button
@@ -194,7 +194,7 @@ export function WorkSamplesFooter() {
                     </button>
                   ))}
                   {/* Triangle pointer */}
-                  <div className="absolute -bottom-[6px] left-1/2 -translate-x-1/2 w-3 h-3 bg-[#1a1a1a] border-b border-r border-[#333] rotate-45" />
+                  <div className="absolute -bottom-[6px] right-[34px] sm:left-1/2 sm:-translate-x-1/2 w-3 h-3 bg-[#1a1a1a] border-b border-r border-[#333] rotate-45" />
                 </motion.div>
               )}
             </AnimatePresence>

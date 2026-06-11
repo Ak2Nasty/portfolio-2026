@@ -184,7 +184,7 @@ function ContactCard({ item }) {
               <div 
                 key={idx} 
                 onClick={(e) => handleNumberCopy(e, num)}
-                className="group/num relative flex items-center justify-end w-full cursor-pointer"
+                className="group/num relative flex items-center justify-start sm:justify-end w-full cursor-pointer"
               >
                 <AnimatePresence mode="wait">
                   {copiedId !== num.value ? (
