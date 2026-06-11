@@ -25,18 +25,6 @@ export function Career12() {
 
   const experiences = [
     {
-      company: "Your Company Here",
-      role: "Next Great Opportunity",
-      isHighlight: true,
-      summary: [
-        "Ready to bring relentless execution and strategic vision to <strong class=\"font-medium text-[#f4f4f4]\">your team</strong>.",
-        "Prepared to drive growth, solve complex challenges, and deliver <strong class=\"font-medium text-[#f4f4f4]\">high-impact results</strong>.",
-        "Currently seeking opportunities to leverage my diverse background for your organization's <strong class=\"font-medium text-[#f4f4f4]\">next big win</strong>."
-      ],
-      metadata: "AVAILABLE FOR IMPACT • READY TO EXECUTE • 2026 & BEYOND",
-      link: null
-    },
-    {
       company: "D2L",
       logo: "/d2l-inverted.png",
       role: "Customer Marketing & Events Coordinator",
@@ -150,6 +138,18 @@ export function Career12() {
       ],
       metadata: "BANGALORE, INDIA • ACADEMIC PROJECT • MAR 2019",
       link: "/work-sample#shure"
+    },
+    {
+      company: "Your Company Here",
+      role: "Next Great Opportunity",
+      isHighlight: true,
+      summary: [
+        "Ready to bring relentless execution and strategic vision to <strong class=\"font-medium text-[#f4f4f4]\">your team</strong>.",
+        "Prepared to drive growth, solve complex challenges, and deliver <strong class=\"font-medium text-[#f4f4f4]\">high-impact results</strong>.",
+        "Currently seeking opportunities to leverage my diverse background for your organization's <strong class=\"font-medium text-[#f4f4f4]\">next big win</strong>."
+      ],
+      metadata: "AVAILABLE FOR IMPACT • READY TO EXECUTE • 2026 & BEYOND",
+      link: null
     }
   ];
 
