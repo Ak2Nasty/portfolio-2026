@@ -169,12 +169,12 @@ export function Career12() {
 
             <Link 
               to="/work-sample"
-              className="group relative flex items-center justify-center gap-3 w-fit px-8 py-3.5 bg-[#0a0a0a]/50 border border-white/[0.1] rounded-full overflow-hidden transition-all duration-500 hover:bg-white/[0.04] hover:border-white/[0.15] hover:shadow-[0_0_25px_rgba(255,255,255,0.05)] backdrop-blur-sm cursor-pointer"
+              className="group relative flex items-center justify-center gap-3 w-fit px-8 py-3.5 bg-white text-black rounded-full overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:bg-gray-100 hover:shadow-[0_0_30px_rgba(255,255,255,0.25)] cursor-pointer"
             >
-              <span className="relative z-10 font-['Outfit'] text-[11px] tracking-[0.2em] font-medium text-gray-300 group-hover:text-white uppercase transition-colors">
+              <span className="relative z-10 font-['Outfit'] text-[11px] tracking-[0.2em] font-bold uppercase transition-colors">
                 View Work Samples
               </span>
-              <span className="relative z-10 text-gray-500 transition-all duration-300 group-hover:translate-x-1 group-hover:text-white">
+              <span className="relative z-10 transition-all duration-300 group-hover:translate-x-1 font-bold">
                 →
               </span>
             </Link>
