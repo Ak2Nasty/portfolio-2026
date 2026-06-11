@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Phone, Check } from "lucide-react";
+import { Mail, Phone, Check, ChevronUp } from "lucide-react";
 
 const LinkedinIcon = ({ className, strokeWidth = 1.5 }) => (
   <svg
@@ -30,20 +30,46 @@ const WhatsAppIcon = ({ className }) => (
   </svg>
 );
 
-export function WorkSamplesFooter() {
-  const [copiedEmail, setCopiedEmail] = useState(false);
-  const [copiedPhone, setCopiedPhone] = useState(false);
-
   const handleCopy = (e, value, type) => {
     e.preventDefault();
     navigator.clipboard.writeText(value);
     if (type === 'email') {
       setCopiedEmail(true);
       setTimeout(() => setCopiedEmail(false), 1800);
-    } else {
-      setCopiedPhone(true);
-      setTimeout(() => setCopiedPhone(false), 1800);
     }
+  };
+
+  const [phoneMenuOpen, setPhoneMenuOpen] = useState(false);
+  const [copiedPhoneId, setCopiedPhoneId] = useState(null);
+  const phoneMenuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (phoneMenuRef.current && !phoneMenuRef.current.contains(event.target)) {
+        setPhoneMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const phoneNumbers = [
+    { id: "can", flag: "🇨🇦", value: "+1 (437) 249-4834", href: "tel:+14372494834" },
+    { id: "ind", flag: "🇮🇳", value: "+91 9894615404", href: "tel:+919894615404" }
+  ];
+
+  const handleNumberClick = (e, numObj) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      window.location.href = numObj.href;
+      return;
+    }
+    navigator.clipboard.writeText(numObj.value);
+    setCopiedPhoneId(numObj.id);
+    setTimeout(() => setCopiedPhoneId(null), 1800);
   };
 
   return (
@@ -116,49 +142,45 @@ export function WorkSamplesFooter() {
             <WhatsAppIcon className="w-5 h-5 text-[#8a8a8a] group-hover:text-green-500 transition-colors duration-300" />
           </a>
 
-          <button 
-            onClick={(e) => handleCopy(e, "+1 437 249 4834 / +91 9894615404", "phone")}
-            className="flex items-center justify-center w-12 h-12 rounded-full bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] hover:border-purple-500/40 hover:shadow-[0_0_15px_rgba(168,85,247,0.2)] transition-all duration-300 group relative"
-            title="Copy Phone Numbers"
-          >
+          <div ref={phoneMenuRef} className="relative">
             <AnimatePresence>
-              {copiedPhone && (
+              {phoneMenuOpen && (
                 <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.8 }}
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 5, scale: 0.8 }}
-                  className="absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap bg-[#1a1a1a] border border-[#333] text-gray-300 text-[9px] md:text-[10px] uppercase tracking-[0.15em] font-semibold py-1.5 px-3 rounded shadow-[0_0_20px_rgba(0,0,0,0.5)] pointer-events-none z-50"
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute bottom-[calc(100%+16px)] left-1/2 -translate-x-1/2 bg-[#1a1a1a] border border-[#333] rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.8)] p-2 w-[220px] z-50 flex flex-col gap-1"
                 >
-                  Copied to clipboard
+                  {phoneNumbers.map((num) => (
+                    <button
+                      key={num.id}
+                      onClick={(e) => handleNumberClick(e, num)}
+                      className="flex items-center justify-between w-full px-3 py-2.5 rounded-lg hover:bg-white/[0.05] transition-colors group/num"
+                    >
+                      <div className="flex items-center gap-2 text-gray-300 group-hover/num:text-white transition-colors">
+                        <span className="text-[14px]">{num.flag}</span>
+                        <span className="font-['Outfit'] text-[12px] md:text-[13px] font-medium truncate">{num.value}</span>
+                      </div>
+                      <div className="w-4 flex items-center justify-center">
+                        {copiedPhoneId === num.id && <Check className="w-3.5 h-3.5 text-purple-500" strokeWidth={3} />}
+                      </div>
+                    </button>
+                  ))}
+                  {/* Triangle pointer */}
+                  <div className="absolute -bottom-[6px] left-1/2 -translate-x-1/2 w-3 h-3 bg-[#1a1a1a] border-b border-r border-[#333] rotate-45" />
                 </motion.div>
               )}
             </AnimatePresence>
-            <AnimatePresence mode="wait">
-              {copiedPhone ? (
-                <motion.div
-                  key="check"
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.5 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute inset-0 flex items-center justify-center text-purple-500"
-                >
-                  <Check className="w-5 h-5" />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="phone"
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.5 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute inset-0 flex items-center justify-center text-[#8a8a8a] group-hover:text-purple-500 transition-colors duration-300"
-                >
-                  <Phone className="w-5 h-5" />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </button>
+            
+            <button 
+              onClick={() => setPhoneMenuOpen(!phoneMenuOpen)}
+              className="flex items-center justify-center w-12 h-12 rounded-full bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] hover:border-purple-500/40 hover:shadow-[0_0_15px_rgba(168,85,247,0.2)] transition-all duration-300 group relative"
+              title="Phone Numbers"
+            >
+              <Phone className="w-5 h-5 text-[#8a8a8a] group-hover:text-purple-500 transition-colors duration-300" />
+            </button>
+          </div>
         </div>
 
         {/* Closing Statement */}

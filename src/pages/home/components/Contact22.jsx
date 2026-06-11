@@ -92,9 +92,10 @@ const contactItems = [
   },
   {
     label: "PHONE",
-    value: "+1 (437) 249-4834  •  +91 9894615404",
-    copyValue: "+1 437 249 4834 / +91 9894615404",
-    mobileHref: "tel:+14372494834",
+    numbers: [
+      { flag: "🇨🇦", value: "+1 (437) 249-4834", mobileHref: "tel:+14372494834" },
+      { flag: "🇮🇳", value: "+91 9894615404", mobileHref: "tel:+919894615404" }
+    ],
     subtext: "Canadian and Indian direct lines.",
     icon: Phone,
     styles: {
@@ -108,6 +109,7 @@ const contactItems = [
 
 function ContactCard({ item }) {
   const [copied, setCopied] = useState(false);
+  const [copiedId, setCopiedId] = useState(null);
   const cardRef = useRef(null);
   const Icon = item.icon;
 
@@ -122,6 +124,7 @@ function ContactCard({ item }) {
   };
 
   const handleCopy = (e) => {
+    if (item.numbers) return;
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     
     if (isMobile && item.mobileHref) {
@@ -135,6 +138,21 @@ function ContactCard({ item }) {
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
     }
+  };
+
+  const handleNumberCopy = (e, numObj) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      window.location.href = numObj.mobileHref;
+      return;
+    }
+
+    navigator.clipboard.writeText(numObj.value);
+    setCopiedId(numObj.value);
+    setTimeout(() => setCopiedId(null), 1800);
   };
 
   const cardContent = (
@@ -159,35 +177,73 @@ function ContactCard({ item }) {
       </div>
       
       {/* Right: Value + Arrow */}
-      <div className="flex items-center justify-between sm:justify-end gap-6 sm:gap-8 w-full sm:w-auto pl-[52px] sm:pl-0">
-        <div className="relative h-6 w-full sm:w-[220px] md:w-[280px] flex items-center justify-start sm:justify-end overflow-hidden">
-          <AnimatePresence mode="wait">
-            {!copied ? (
-              <motion.span
-                key="value"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="absolute left-0 sm:left-auto sm:right-0 font-['Outfit'] text-[14px] sm:text-[15px] md:text-[16px] font-medium text-gray-300 group-hover:text-white transition-colors duration-300 truncate"
+      <div className={`flex items-center justify-between sm:justify-end gap-6 sm:gap-8 w-full sm:w-auto pl-[52px] sm:pl-0 ${item.numbers ? 'pointer-events-auto' : ''}`}>
+        <div className={`relative w-full sm:w-[220px] md:w-[280px] flex ${item.numbers ? 'flex-col items-start sm:items-end gap-2' : 'h-6 items-center justify-start sm:justify-end'} overflow-hidden`}>
+          {item.numbers ? (
+            item.numbers.map((num, idx) => (
+              <div 
+                key={idx} 
+                onClick={(e) => handleNumberCopy(e, num)}
+                className="group/num relative flex items-center justify-end w-full cursor-pointer"
               >
-                {item.value}
-              </motion.span>
-            ) : (
-              <motion.span
-                key="copied"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="absolute left-0 sm:left-auto sm:right-0 font-['Outfit'] text-[12px] sm:text-[13px] font-semibold text-[var(--brand-icon)] tracking-wider flex items-center justify-start sm:justify-end gap-1.5 uppercase"
-              >
-                <Check className="w-3.5 h-3.5" strokeWidth={2.5} /> Copied
-              </motion.span>
-            )}
-          </AnimatePresence>
+                <AnimatePresence mode="wait">
+                  {copiedId !== num.value ? (
+                    <motion.span
+                      key={`val-${idx}`}
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -5 }}
+                      transition={{ duration: 0.2 }}
+                      className="font-['Outfit'] text-[14px] sm:text-[15px] md:text-[16px] font-medium text-gray-300 group-hover/num:text-white transition-colors duration-300 truncate flex items-center gap-2"
+                    >
+                      <span className="text-[14px] sm:text-[16px]">{num.flag}</span> {num.value}
+                    </motion.span>
+                  ) : (
+                    <motion.span
+                      key={`cop-${idx}`}
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -5 }}
+                      transition={{ duration: 0.2 }}
+                      className="font-['Outfit'] text-[12px] sm:text-[13px] font-semibold text-[var(--brand-icon)] tracking-wider flex items-center gap-1.5 uppercase h-[24px]"
+                    >
+                      <Check className="w-3.5 h-3.5" strokeWidth={2.5} /> Copied
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </div>
+            ))
+          ) : (
+            <AnimatePresence mode="wait">
+              {!copied ? (
+                <motion.span
+                  key="value"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="absolute left-0 sm:left-auto sm:right-0 font-['Outfit'] text-[14px] sm:text-[15px] md:text-[16px] font-medium text-gray-300 group-hover:text-white transition-colors duration-300 truncate"
+                >
+                  {item.value}
+                </motion.span>
+              ) : (
+                <motion.span
+                  key="copied"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="absolute left-0 sm:left-auto sm:right-0 font-['Outfit'] text-[12px] sm:text-[13px] font-semibold text-[var(--brand-icon)] tracking-wider flex items-center justify-start sm:justify-end gap-1.5 uppercase"
+                >
+                  <Check className="w-3.5 h-3.5" strokeWidth={2.5} /> Copied
+                </motion.span>
+              )}
+            </AnimatePresence>
+          )}
         </div>
-        <ArrowUpRight className="w-5 h-5 text-gray-600 group-hover:text-gray-300 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300 shrink-0" />
+        {!item.numbers && (
+          <ArrowUpRight className="w-5 h-5 text-gray-600 group-hover:text-gray-300 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300 shrink-0" />
+        )}
       </div>
     </div>
   );
