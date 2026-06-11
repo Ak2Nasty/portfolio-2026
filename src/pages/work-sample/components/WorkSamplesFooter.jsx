@@ -106,10 +106,20 @@ export function WorkSamplesFooter() {
             <LinkedinIcon className="w-5 h-5 text-[#8a8a8a] group-hover:text-sky-400 transition-colors duration-300" />
           </a>
 
-          <button 
-            onClick={(e) => handleCopy(e, "+1 (647) 521-2708", "phone")}
+          <a 
+            href="https://wa.me/16475212708"
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex items-center justify-center w-12 h-12 rounded-full bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] hover:border-green-500/40 hover:shadow-[0_0_15px_rgba(34,197,94,0.2)] transition-all duration-300 group relative"
-            title="Copy WhatsApp Number"
+            title="WhatsApp"
+          >
+            <WhatsAppIcon className="w-5 h-5 text-[#8a8a8a] group-hover:text-green-500 transition-colors duration-300" />
+          </a>
+
+          <button 
+            onClick={(e) => handleCopy(e, "+1 437 249 4834 / +91 9894615404", "phone")}
+            className="flex items-center justify-center w-12 h-12 rounded-full bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] hover:border-purple-500/40 hover:shadow-[0_0_15px_rgba(168,85,247,0.2)] transition-all duration-300 group relative"
+            title="Copy Phone Numbers"
           >
             <AnimatePresence>
               {copiedPhone && (
@@ -131,7 +141,7 @@ export function WorkSamplesFooter() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.5 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute inset-0 flex items-center justify-center text-green-500"
+                  className="absolute inset-0 flex items-center justify-center text-purple-500"
                 >
                   <Check className="w-5 h-5" />
                 </motion.div>
@@ -142,9 +152,9 @@ export function WorkSamplesFooter() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.5 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute inset-0 flex items-center justify-center text-[#8a8a8a] group-hover:text-green-500 transition-colors duration-300"
+                  className="absolute inset-0 flex items-center justify-center text-[#8a8a8a] group-hover:text-purple-500 transition-colors duration-300"
                 >
-                  <WhatsAppIcon className="w-5 h-5" />
+                  <Phone className="w-5 h-5" />
                 </motion.div>
               )}
             </AnimatePresence>

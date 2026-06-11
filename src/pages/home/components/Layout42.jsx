@@ -78,7 +78,7 @@ export function Layout42() {
 
             {/* Resume Button */}
             <a 
-              href="/Akshathdayan_Suresh_Resume_1Page_2026.pdf"
+              href="/Akshathdayan_Suresh_Resume_1Page_2026V2.pdf"
               download="Akshathdayan_Suresh_Resume_1Page_2026.pdf"
               onClick={() => setHasDownloaded(true)}
               onPointerDown={() => setHasDownloaded(true)}

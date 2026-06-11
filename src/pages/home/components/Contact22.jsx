@@ -80,8 +80,7 @@ const contactItems = [
   {
     label: "WHATSAPP",
     value: "+1 (647) 521 - 2708",
-    copyValue: "+1 (647) 521 - 2708",
-    mobileHref: "https://wa.me/16475212708",
+    href: "https://wa.me/16475212708",
     subtext: "Voice call or direct message.",
     icon: WhatsAppIcon,
     styles: {
@@ -89,6 +88,20 @@ const contactItems = [
       "--brand-border": "rgba(34, 197, 94, 0.4)",
       "--brand-border-glow": "rgba(34, 197, 94, 0.25)",
       "--brand-icon": "rgba(34, 197, 94, 0.9)",
+    },
+  },
+  {
+    label: "PHONE",
+    value: "+1 (437) 249-4834  •  +91 9894615404",
+    copyValue: "+1 437 249 4834 / +91 9894615404",
+    mobileHref: "tel:+14372494834",
+    subtext: "Canadian and Indian direct lines.",
+    icon: Phone,
+    styles: {
+      "--brand-glow": "rgba(168, 85, 247, 0.03)",
+      "--brand-border": "rgba(168, 85, 247, 0.4)",
+      "--brand-border-glow": "rgba(168, 85, 247, 0.25)",
+      "--brand-icon": "rgba(168, 85, 247, 0.9)",
     },
   },
 ];
