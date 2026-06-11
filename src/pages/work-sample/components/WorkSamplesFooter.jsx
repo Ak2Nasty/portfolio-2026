@@ -30,6 +30,9 @@ const WhatsAppIcon = ({ className }) => (
   </svg>
 );
 
+export function WorkSamplesFooter() {
+  const [copiedEmail, setCopiedEmail] = useState(false);
+
   const handleCopy = (e, value, type) => {
     e.preventDefault();
     navigator.clipboard.writeText(value);
