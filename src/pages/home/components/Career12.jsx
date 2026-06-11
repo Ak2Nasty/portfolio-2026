@@ -25,6 +25,18 @@ export function Career12() {
 
   const experiences = [
     {
+      company: "Your Company Here",
+      role: "Next Great Opportunity",
+      isHighlight: true,
+      summary: [
+        "Ready to bring relentless execution and strategic vision to <strong class=\"font-medium text-[#f4f4f4]\">your team</strong>.",
+        "Prepared to drive growth, solve complex challenges, and deliver <strong class=\"font-medium text-[#f4f4f4]\">high-impact results</strong>.",
+        "Currently seeking opportunities to leverage my diverse background for your organization's <strong class=\"font-medium text-[#f4f4f4]\">next big win</strong>."
+      ],
+      metadata: "AVAILABLE FOR IMPACT • READY TO EXECUTE • 2026 & BEYOND",
+      link: null
+    },
+    {
       company: "D2L",
       logo: "/d2l-inverted.png",
       role: "Customer Marketing & Events Coordinator",
@@ -189,16 +201,16 @@ export function Career12() {
                 key={index}
                 variants={itemVariants}
                 style={{ top: topOffset }}
-                className="group sticky flex flex-row justify-between items-stretch bg-[#0a0a0a] border border-[#2a2a2a] rounded-2xl p-6 sm:p-8 lg:p-10 2xl:p-12 mb-[10vh] lg:mb-[25vh] shadow-[0_0_15px_rgba(255,255,255,0.05)] h-auto min-h-[400px] overflow-hidden transition-shadow duration-500 hover:shadow-[0_0_25px_rgba(255,255,255,0.15)]"
+                className={`group sticky flex flex-row justify-between items-stretch bg-[#0a0a0a] border ${exp.isHighlight ? 'border-purple-500/50 shadow-[0_0_30px_rgba(168,85,247,0.15)]' : 'border-[#2a2a2a] shadow-[0_0_15px_rgba(255,255,255,0.05)]'} rounded-2xl p-6 sm:p-8 lg:p-10 2xl:p-12 mb-[10vh] lg:mb-[25vh] h-auto min-h-[400px] overflow-hidden transition-all duration-500 hover:shadow-[0_0_30px_rgba(255,255,255,0.1)] ${exp.isHighlight ? 'hover:shadow-[0_0_40px_rgba(168,85,247,0.25)]' : ''}`}
               >
                 <div className="flex flex-col gap-5 flex-1 relative z-10 justify-between">
                   <div>
                     {/* Header (Company & Role) */}
                     <div className="flex flex-col gap-1.5">
-                      <h4 className="font-['Outfit'] font-bold text-[24px] sm:text-[28px] md:text-[36px] text-[#f4f4f4] uppercase tracking-tight leading-none">
+                      <h4 className={`font-['Outfit'] font-bold text-[24px] sm:text-[28px] md:text-[36px] ${exp.isHighlight ? 'text-white' : 'text-[#f4f4f4]'} uppercase tracking-tight leading-none`}>
                         {exp.company}
                       </h4>
-                      <h5 className="font-['Outfit'] text-[16px] sm:text-[18px] md:text-[20px] text-[#e5e5e5] font-medium tracking-wide">
+                      <h5 className={`font-['Outfit'] text-[16px] sm:text-[18px] md:text-[20px] ${exp.isHighlight ? 'text-purple-400' : 'text-[#e5e5e5]'} font-medium tracking-wide`}>
                         {exp.role}
                       </h5>
                     </div>
