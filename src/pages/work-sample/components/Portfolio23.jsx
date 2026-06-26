@@ -207,6 +207,21 @@ export function Portfolio23() {
     }, 2500);
   };
 
+  // Lock scroll when glitch animation is playing
+  useEffect(() => {
+    if (isGlitching) {
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    } else {
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    };
+  }, [isGlitching]);
+
   useEffect(() => {
     if (location.hash) {
       const id = location.hash.replace("#", "");
@@ -222,12 +237,13 @@ export function Portfolio23() {
   }, [location.pathname, location.hash]);
 
   return (
-    <section className="w-full min-h-screen bg-[#0C0C0B] pt-24 md:pt-32 pb-16 md:pb-24 relative z-10 selection:bg-white/20 overflow-hidden">
-      
-      {/* Background Glow - Optimized for mobile GPU */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] md:w-[800px] h-[200px] md:h-[300px] bg-white/[0.02] blur-[60px] md:blur-[120px] rounded-full pointer-events-none transform-gpu" />
+    <>
+      <section className="w-full min-h-screen bg-[#0C0C0B] pt-24 md:pt-32 pb-16 md:pb-24 relative z-10 selection:bg-white/20 overflow-hidden">
+        
+        {/* Background Glow - Optimized for mobile GPU */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] md:w-[800px] h-[200px] md:h-[300px] bg-white/[0.02] blur-[60px] md:blur-[120px] rounded-full pointer-events-none transform-gpu" />
 
-      <div className="max-w-[100rem] mx-auto px-6 md:px-12 lg:px-16">
+        <div className="max-w-[100rem] mx-auto px-6 md:px-12 lg:px-16">
         
         {/* Page Header */}
         <motion.div 
@@ -358,6 +374,9 @@ export function Portfolio23() {
           ))}
         </div>
       </div>
+      </section>
+
+      {/* Render overlay elements outside the section to avoid stacking context issues */}
       <SecureFileViewer 
         isOpen={!!selectedFile} 
         file={selectedFile} 
@@ -368,7 +387,10 @@ export function Portfolio23() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-black"
+            className="fixed inset-0 z-[999999] flex flex-col items-center justify-center bg-black"
+            onContextMenu={(e) => e.preventDefault()}
+            onWheel={(e) => e.stopPropagation()}
+            data-lenis-prevent="true"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -393,6 +415,6 @@ export function Portfolio23() {
           </motion.div>
         )}
       </AnimatePresence>
-    </section>
+    </>
   );
 }
