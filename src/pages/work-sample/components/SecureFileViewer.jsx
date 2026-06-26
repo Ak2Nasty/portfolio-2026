@@ -100,9 +100,22 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
     
     let startTime = Date.now();
     let speedSamples = [];
+    
+    // Fallback: If Vercel caches the file or strips the Content-Length header, 
+    // real progress won't fire. This interval creates a smooth "fake" progress 
+    // that slows down as it approaches 90%, ensuring the UI never feels stuck.
+    let fakeProgressInterval = setInterval(() => {
+      setDownloadProgress(prev => {
+        if (prev >= 90) return 90;
+        return prev + (90 - prev) * 0.15;
+      });
+    }, 250);
 
     xhr.onprogress = (event) => {
       if (event.lengthComputable) {
+        // We have real progress data, so clear the fake interval!
+        clearInterval(fakeProgressInterval);
+        
         const percentComplete = (event.loaded / event.total) * 100;
         setDownloadProgress(percentComplete);
         
@@ -122,20 +135,35 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
     };
 
     xhr.onload = () => {
-      if (xhr.status === 200) {
+      clearInterval(fakeProgressInterval);
+      
+      if (xhr.status === 200 || xhr.status === 0) {
         const blob = xhr.response;
         const blobUrl = URL.createObjectURL(blob);
-        if (isPDF) {
-          setObjectUrl(`${blobUrl}#toolbar=0&navpanes=0&scrollbar=0`);
-        } else {
-          setObjectUrl(blobUrl);
-        }
+        
+        // Force the bar to 100% so the user visually sees it complete
+        setDownloadProgress(100);
+        setTimeRemaining(0);
+        
+        // Wait 400ms to allow the CSS animation to smoothly fill the bar 
+        // before we hide the loading screen and render the document.
+        setTimeout(() => {
+          if (isPDF) {
+            setObjectUrl(`${blobUrl}#toolbar=0&navpanes=0&scrollbar=0`);
+          } else {
+            setObjectUrl(blobUrl);
+          }
+          setIsDownloading(false);
+        }, 400);
+        
+      } else {
+        setIsDownloading(false);
+        setObjectUrl(isPDF ? `${urlToFetch}#toolbar=0&navpanes=0&scrollbar=0` : urlToFetch);
       }
-      setIsDownloading(false);
     };
 
     xhr.onerror = () => {
-      // Fallback on error
+      clearInterval(fakeProgressInterval);
       setIsDownloading(false);
       setObjectUrl(isPDF ? `${urlToFetch}#toolbar=0&navpanes=0&scrollbar=0` : urlToFetch);
     };
@@ -143,6 +171,7 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
     xhr.send();
 
     return () => {
+      clearInterval(fakeProgressInterval);
       xhr.abort();
     };
   }, [isOpen, file, currentIndex]);
