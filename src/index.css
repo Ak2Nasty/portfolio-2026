@@ -72,9 +72,3 @@ body.is-glitching header {
   display: none !important;
 }
 
-/* Hide default cursor on devices with a physical mouse */
-@media (pointer: fine) {
-  * {
-    cursor: none !important;
-  }
-}

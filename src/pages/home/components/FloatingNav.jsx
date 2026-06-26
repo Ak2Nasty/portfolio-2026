@@ -90,7 +90,6 @@ export function FloatingNav() {
           exit={{ opacity: 0, y: 20, x: "-50%" }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="fixed bottom-8 left-1/2 z-[9999]"
-          data-no-cursor-expand="true"
           onMouseEnter={() => {
             if (window.innerWidth >= 768) setIsHovered(true);
           }}
