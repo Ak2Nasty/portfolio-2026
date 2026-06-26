@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, FileText, Image as ImageIcon, ChevronLeft, ChevronRight, Layers } from "lucide-react";
+import { X, FileText, Image as ImageIcon, ChevronLeft, ChevronRight, Layers, Loader2 } from "lucide-react";
 import { Document, Page, pdfjs } from 'react-pdf';
 
 function LazyPage({ pageNumber, width, devicePixelRatio }) {
@@ -163,8 +163,11 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
                     file={file.url}
                     onLoadSuccess={({ numPages }) => setNumPages(numPages)}
                     loading={
-                      <div className="flex items-center justify-center h-full text-[#8a8a8a] font-['Outfit'] text-[11px] md:text-[13px] tracking-[0.2em] uppercase mt-20">
-                        Loading Document...
+                      <div className="flex flex-col items-center justify-center h-full gap-4 text-[#8a8a8a] mt-20">
+                        <Loader2 className="w-8 h-8 md:w-10 md:h-10 animate-spin text-white/40" />
+                        <span className="font-['Outfit'] text-[11px] md:text-[13px] tracking-[0.25em] uppercase font-medium">
+                          DOWNLOADING ASSET...
+                        </span>
                       </div>
                     }
                     error={
@@ -188,11 +191,19 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
                 </div>
               ) : (
                 <>
+                  {/* Background Loader for Images */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-[#8a8a8a] z-0">
+                    <Loader2 className="w-8 h-8 md:w-10 md:h-10 animate-spin text-white/40" />
+                    <span className="font-['Outfit'] text-[11px] md:text-[13px] tracking-[0.25em] uppercase font-medium">
+                      LOADING ASSET...
+                    </span>
+                  </div>
+
                   <img
                     key={fileUrl} // Re-render image when url changes
                     src={fileUrl}
                     alt={file.title}
-                    className="w-full h-full object-contain relative z-0 select-none pointer-events-none"
+                    className="w-full h-full object-contain relative z-10 select-none pointer-events-none"
                     draggable="false"
                   />
                   
