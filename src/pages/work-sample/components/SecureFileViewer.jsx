@@ -51,6 +51,15 @@ pdfjs.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 export function SecureFileViewer({ isOpen, onClose, file }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [numPages, setNumPages] = useState(null);
+  
+  // Custom download state
+  const [downloadProgress, setDownloadProgress] = useState(0);
+  const [timeRemaining, setTimeRemaining] = useState(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [objectUrl, setObjectUrl] = useState(null);
+
+  const isPDF = file?.type === "pdf";
+  const isGallery = file?.type === "gallery";
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -69,24 +78,107 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
     };
   }, [isOpen, file]);
 
+  // XHR Fetch Logic for tracking progress
+  useEffect(() => {
+    if (!isOpen || !file) return;
+
+    let urlToFetch = isGallery ? file.urls[currentIndex] : file.url;
+    
+    setIsDownloading(true);
+    setDownloadProgress(0);
+    setTimeRemaining(null);
+
+    // Clean up previous blob URL
+    if (objectUrl) {
+      URL.revokeObjectURL(objectUrl.split('#')[0]);
+      setObjectUrl(null);
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", urlToFetch, true);
+    xhr.responseType = "blob";
+    
+    let startTime = Date.now();
+    let speedSamples = [];
+
+    xhr.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const percentComplete = (event.loaded / event.total) * 100;
+        setDownloadProgress(percentComplete);
+        
+        const elapsedTime = (Date.now() - startTime) / 1000; // seconds
+        if (elapsedTime > 0.5) {
+          const currentSpeed = event.loaded / elapsedTime; // bytes per second
+          speedSamples.push(currentSpeed);
+          // Average the last 5 speed samples for stability
+          if (speedSamples.length > 5) speedSamples.shift();
+          const avgSpeed = speedSamples.reduce((a, b) => a + b, 0) / speedSamples.length;
+          
+          const remainingBytes = event.total - event.loaded;
+          const remainingTime = remainingBytes / avgSpeed;
+          setTimeRemaining(remainingTime);
+        }
+      }
+    };
+
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        const blob = xhr.response;
+        const blobUrl = URL.createObjectURL(blob);
+        if (isPDF) {
+          setObjectUrl(`${blobUrl}#toolbar=0&navpanes=0&scrollbar=0`);
+        } else {
+          setObjectUrl(blobUrl);
+        }
+      }
+      setIsDownloading(false);
+    };
+
+    xhr.onerror = () => {
+      // Fallback on error
+      setIsDownloading(false);
+      setObjectUrl(isPDF ? `${urlToFetch}#toolbar=0&navpanes=0&scrollbar=0` : urlToFetch);
+    };
+
+    xhr.send();
+
+    return () => {
+      xhr.abort();
+    };
+  }, [isOpen, file, currentIndex]);
+
+  // Cleanup on unmount or close
+  useEffect(() => {
+    return () => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl.split('#')[0]);
+      }
+    };
+  }, [objectUrl]);
+
   if (!isOpen || !file) return null;
-
-  const isPDF = file.type === "pdf";
-  const isGallery = file.type === "gallery";
-
-  // Add toolbar=0 to PDF urls to hide default browser controls
-  const fileUrl = isPDF 
-    ? `${file.url}#toolbar=0&navpanes=0&scrollbar=0` 
-    : (isGallery ? file.urls[currentIndex] : file.url);
 
   const handlePrev = (e) => {
     e.stopPropagation();
-    setCurrentIndex(prev => (prev > 0 ? prev - 1 : file.urls.length - 1));
+    if (!isDownloading) {
+      setCurrentIndex(prev => (prev > 0 ? prev - 1 : file.urls.length - 1));
+    }
   };
   
   const handleNext = (e) => {
     e.stopPropagation();
-    setCurrentIndex(prev => (prev < file.urls.length - 1 ? prev + 1 : 0));
+    if (!isDownloading) {
+      setCurrentIndex(prev => (prev < file.urls.length - 1 ? prev + 1 : 0));
+    }
+  };
+
+  // Helper to format time
+  const formatTime = (seconds) => {
+    if (!seconds || !isFinite(seconds) || seconds < 1) return "Less than a second";
+    if (seconds < 60) return `${Math.ceil(seconds)} seconds`;
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.ceil(seconds % 60);
+    return `${mins}m ${secs}s`;
   };
 
   return (
@@ -98,7 +190,6 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
           className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0C0C0B]/90 backdrop-blur-xl p-4 md:p-8 lg:p-12"
-          // Prevent right-click on the backdrop
           onContextMenu={(e) => e.preventDefault()}
           onWheel={(e) => e.stopPropagation()}
           data-lenis-prevent="true"
@@ -143,7 +234,6 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
             {/* Viewer Content Area */}
             <div className="relative flex-1 w-full h-full bg-[#050505] overflow-hidden flex items-center justify-center">
               
-              {/* Invisible Shield Overlay to prevent dragging/saving for images */}
               {!isPDF && (
                 <div 
                   className="absolute inset-0 z-10 cursor-default" 
@@ -152,80 +242,87 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
                 />
               )}
 
-              {isPDF ? (
-                <div 
-                  className="w-full h-full overflow-y-auto bg-[#050505] flex flex-col items-center py-4 md:py-8 touch-pan-y" 
-                  style={{ WebkitOverflowScrolling: 'touch' }}
-                  data-lenis-prevent="true"
-                  onWheel={(e) => e.stopPropagation()}
-                >
-                  <Document
-                    file={file.url}
-                    onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-                    loading={
-                      <div className="flex flex-col items-center justify-center h-full gap-4 text-[#8a8a8a] mt-20">
-                        <Loader2 className="w-8 h-8 md:w-10 md:h-10 animate-spin text-white/40" />
-                        <span className="font-['Outfit'] text-[11px] md:text-[13px] tracking-[0.25em] uppercase font-medium">
-                          DOWNLOADING ASSET...
-                        </span>
-                      </div>
-                    }
-                    error={
-                      <div className="flex flex-col items-center justify-center h-full text-[#8a8a8a] font-['Outfit'] text-[11px] md:text-[13px] tracking-[0.2em] uppercase mt-20 gap-4">
-                        <span>Failed to load PDF preview</span>
-                        <a href={file.url} target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 bg-white/10 text-white rounded-full hover:bg-white/20 transition-colors border border-white/10">
-                          Open Directly
-                        </a>
-                      </div>
-                    }
-                  >
-                    {Array.from(new Array(numPages || 0), (el, index) => (
-                      <LazyPage
-                        key={`page_${index + 1}`}
-                        pageNumber={index + 1}
-                        width={typeof window !== 'undefined' ? (window.innerWidth < 768 ? window.innerWidth - 32 : Math.min(window.innerWidth - 120, 1000)) : 800}
-                        devicePixelRatio={typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1}
-                      />
-                    ))}
-                  </Document>
-                </div>
-              ) : (
-                <>
-                  {/* Background Loader for Images */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-[#8a8a8a] z-0">
-                    <Loader2 className="w-8 h-8 md:w-10 md:h-10 animate-spin text-white/40" />
-                    <span className="font-['Outfit'] text-[11px] md:text-[13px] tracking-[0.25em] uppercase font-medium">
-                      LOADING ASSET...
+              {isDownloading ? (
+                /* Custom Progress Bar UI */
+                <div className="flex flex-col items-center justify-center w-full max-w-md px-8 gap-6 z-20">
+                  <div className="flex flex-col items-center gap-2">
+                    <Loader2 className="w-10 h-10 animate-spin text-white/40 mb-2" />
+                    <span className="font-['Outfit'] text-[12px] md:text-[14px] tracking-[0.25em] uppercase font-bold text-white">
+                      DOWNLOADING ASSET
+                    </span>
+                    <span className="font-['Outfit'] text-[10px] text-gray-400 tracking-wider">
+                      {timeRemaining !== null ? `${formatTime(timeRemaining)} remaining` : "Calculating speed..."}
                     </span>
                   </div>
-
-                  <img
-                    key={fileUrl} // Re-render image when url changes
-                    src={fileUrl}
-                    alt={file.title}
-                    className="w-full h-full object-contain relative z-10 select-none pointer-events-none"
-                    draggable="false"
-                  />
                   
-                  {/* Gallery Controls */}
-                  {isGallery && file.urls.length > 1 && (
-                    <>
-                      <button 
-                        onClick={handlePrev}
-                        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-md transition-all z-20 border border-white/10 pointer-events-auto"
-                      >
-                        <ChevronLeft className="w-6 h-6" />
-                      </button>
-                      <button 
-                        onClick={handleNext}
-                        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-md transition-all z-20 border border-white/10 pointer-events-auto"
-                      >
-                        <ChevronRight className="w-6 h-6" />
-                      </button>
-                    </>
-                  )}
-                </>
-              )}
+                  {/* Progress Bar Container */}
+                  <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden relative">
+                    <motion.div 
+                      className="absolute left-0 top-0 h-full bg-[#16a34a]"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${downloadProgress}%` }}
+                      transition={{ ease: "linear", duration: 0.2 }}
+                    />
+                  </div>
+                  <div className="w-full flex justify-between font-['Outfit'] text-[10px] text-gray-500 font-medium">
+                    <span>0%</span>
+                    <span className="text-white">{Math.round(downloadProgress)}%</span>
+                  </div>
+                </div>
+              ) : objectUrl ? (
+                /* Loaded Content */
+                isPDF ? (
+                  <div 
+                    className="w-full h-full overflow-y-auto bg-[#050505] flex flex-col items-center py-4 md:py-8 touch-pan-y" 
+                    style={{ WebkitOverflowScrolling: 'touch' }}
+                    data-lenis-prevent="true"
+                    onWheel={(e) => e.stopPropagation()}
+                  >
+                    <Document
+                      file={objectUrl}
+                      onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+                      loading={null}
+                    >
+                      {Array.from(new Array(numPages || 0), (el, index) => (
+                        <LazyPage
+                          key={`page_${index + 1}`}
+                          pageNumber={index + 1}
+                          width={typeof window !== 'undefined' ? (window.innerWidth < 768 ? window.innerWidth - 32 : Math.min(window.innerWidth - 120, 1000)) : 800}
+                          devicePixelRatio={typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1}
+                        />
+                      ))}
+                    </Document>
+                  </div>
+                ) : (
+                  <>
+                    <img
+                      key={objectUrl}
+                      src={objectUrl}
+                      alt={file.title}
+                      className="w-full h-full object-contain relative z-10 select-none pointer-events-none"
+                      draggable="false"
+                    />
+                    
+                    {/* Gallery Controls */}
+                    {isGallery && file.urls.length > 1 && (
+                      <>
+                        <button 
+                          onClick={handlePrev}
+                          className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-md transition-all z-20 border border-white/10 pointer-events-auto"
+                        >
+                          <ChevronLeft className="w-6 h-6" />
+                        </button>
+                        <button 
+                          onClick={handleNext}
+                          className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-md transition-all z-20 border border-white/10 pointer-events-auto"
+                        >
+                          <ChevronRight className="w-6 h-6" />
+                        </button>
+                      </>
+                    )}
+                  </>
+                )
+              ) : null}
             </div>
           </motion.div>
         </motion.div>
