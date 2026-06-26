@@ -6,6 +6,7 @@ import WorkSample from "./pages/work-sample";
 import NotFound from "./pages/NotFound";
 import { Loader } from "./components/Loader";
 import { EasterEggs } from "./components/EasterEggs";
+import { CustomCursor } from "./components/CustomCursor";
 
 function App() {
   useEffect(() => {
@@ -53,6 +54,7 @@ function App() {
 
   return (
     <ReactLenis root options={{ lerp: 0.08, smoothWheel: true }}>
+      <CustomCursor />
       <EasterEggs />
       <Router>
         <Loader />
