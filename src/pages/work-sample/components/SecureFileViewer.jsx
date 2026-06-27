@@ -293,8 +293,7 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
                       transition={{ ease: "linear", duration: 0.2 }}
                     />
                   </div>
-                  <div className="w-full flex justify-between font-['Outfit'] text-[10px] text-gray-500 font-medium">
-                    <span>0%</span>
+                  <div className="w-full flex justify-end font-['Outfit'] text-[10px] text-gray-500 font-medium">
                     <span className="text-white">{Math.round(downloadProgress)}%</span>
                   </div>
                 </div>
