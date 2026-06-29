@@ -57,6 +57,7 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
   const [timeRemaining, setTimeRemaining] = useState(null);
   const [isDownloading, setIsDownloading] = useState(false);
   const [objectUrl, setObjectUrl] = useState(null);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   const isPDF = file?.type === "pdf";
   const isGallery = file?.type === "gallery";
@@ -87,6 +88,13 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
     setIsDownloading(true);
     setDownloadProgress(0);
     setTimeRemaining(null);
+    setElapsedSeconds(0);
+
+    // Live elapsed-time ticker — always gives user feedback even when
+    // Content-Length is missing and speed can't be calculated.
+    const elapsedInterval = setInterval(() => {
+      setElapsedSeconds(prev => prev + 1);
+    }, 1000);
 
     // Clean up previous blob URL
     if (objectUrl) {
@@ -136,6 +144,7 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
 
     xhr.onload = () => {
       clearInterval(fakeProgressInterval);
+      clearInterval(elapsedInterval);
       
       if (xhr.status === 200 || xhr.status === 0) {
         const blob = xhr.response;
@@ -164,6 +173,7 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
 
     xhr.onerror = () => {
       clearInterval(fakeProgressInterval);
+      clearInterval(elapsedInterval);
       setIsDownloading(false);
       setObjectUrl(isPDF ? `${urlToFetch}#toolbar=0&navpanes=0&scrollbar=0` : urlToFetch);
     };
@@ -172,6 +182,7 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
 
     return () => {
       clearInterval(fakeProgressInterval);
+      clearInterval(elapsedInterval);
       xhr.abort();
     };
   }, [isOpen, file, currentIndex]);
@@ -280,7 +291,9 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
                       DOWNLOADING ASSET
                     </span>
                     <span className="font-['Outfit'] text-[10px] text-gray-400 tracking-wider">
-                      {timeRemaining !== null ? `${formatTime(timeRemaining)} remaining` : "Calculating speed..."}
+                      {timeRemaining !== null && timeRemaining > 0
+                        ? `${formatTime(timeRemaining)} remaining`
+                        : `${elapsedSeconds}s elapsed`}
                     </span>
                   </div>
                   
