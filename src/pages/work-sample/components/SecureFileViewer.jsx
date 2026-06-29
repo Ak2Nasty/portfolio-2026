@@ -291,9 +291,7 @@ export function SecureFileViewer({ isOpen, onClose, file }) {
                       DOWNLOADING ASSET
                     </span>
                     <span className="font-['Outfit'] text-[10px] text-gray-400 tracking-wider">
-                      {timeRemaining !== null && timeRemaining > 0
-                        ? `${formatTime(timeRemaining)} remaining`
-                        : `${elapsedSeconds}s elapsed`}
+                      Please Wait..
                     </span>
                   </div>
                   
