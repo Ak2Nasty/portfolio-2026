@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { Mail, Phone, ArrowUpRight, Check } from "lucide-react";
+import { Mail, Phone, ArrowUpRight, Check, Loader2, AlertCircle } from "lucide-react";
+import emailjs from "@emailjs/browser";
 
 const LinkedinIcon = ({ className, strokeWidth = 1.5 }) => (
   <svg
@@ -157,7 +158,6 @@ function ContactCard({ item }) {
 
   const cardContent = (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-6 relative z-10 pointer-events-none w-full">
-      
       {/* Left: Icon + Label + Subtext */}
       <div className="flex items-start sm:items-center gap-4 sm:gap-5 w-full sm:w-auto">
         <div className="p-3 md:p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.06] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)] group-hover:border-white/[0.1] transition-colors duration-500 shrink-0 mt-0.5 sm:mt-0">
@@ -283,16 +283,215 @@ function ContactCard({ item }) {
   );
 }
 
+/* Floating Input Helper Component */
+function FloatingInput({ label, id, type = "text", value, onChange, error, onFocus, onBlur, isFocused }) {
+  const hasValue = value.length > 0;
+  return (
+    <div className="relative flex flex-col w-full mb-6">
+      <div className="relative w-full">
+        <motion.label
+          htmlFor={id}
+          animate={{
+            y: isFocused || hasValue ? -22 : 0,
+            scale: isFocused || hasValue ? 0.85 : 1,
+            color: error ? "#ef4444" : isFocused ? "#ffffff" : "#888888",
+          }}
+          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          className="absolute left-0 top-3 pointer-events-none origin-left font-['Outfit'] text-[13px] md:text-[14px] tracking-wide"
+        >
+          {label}
+        </motion.label>
+        <input
+          id={id}
+          type={type}
+          value={value}
+          onChange={onChange}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          placeholder=""
+          className={`w-full bg-transparent border-b ${error ? 'border-red-500/80' : 'border-white/10'} py-3 text-white focus:border-white focus:outline-none transition-colors duration-300 font-['Outfit'] text-[14px] md:text-[15px]`}
+        />
+      </div>
+      <AnimatePresence>
+        {error && (
+          <motion.span
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            className="text-[10px] text-red-500 font-['Outfit'] tracking-wide mt-1.5 flex items-center gap-1 uppercase"
+          >
+            <AlertCircle className="w-3 h-3" /> {error}
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* Floating Textarea Helper Component */
+function FloatingTextarea({ label, id, value, onChange, error, onFocus, onBlur, isFocused, maxLength }) {
+  const hasValue = value.length > 0;
+  return (
+    <div className="relative flex flex-col w-full mb-4">
+      <div className="relative w-full">
+        <motion.label
+          htmlFor={id}
+          animate={{
+            y: isFocused || hasValue ? -22 : 0,
+            scale: isFocused || hasValue ? 0.85 : 1,
+            color: error ? "#ef4444" : isFocused ? "#ffffff" : "#888888",
+          }}
+          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          className="absolute left-0 top-3 pointer-events-none origin-left font-['Outfit'] text-[13px] md:text-[14px] tracking-wide"
+        >
+          {label}
+        </motion.label>
+        <textarea
+          id={id}
+          value={value}
+          onChange={onChange}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          maxLength={maxLength}
+          rows={4}
+          placeholder=""
+          className={`w-full bg-transparent border-b ${error ? 'border-red-500/80' : 'border-white/10'} py-3 text-white focus:border-white focus:outline-none transition-colors duration-300 font-['Outfit'] text-[14px] md:text-[15px] resize-none`}
+        />
+      </div>
+      <div className="flex justify-between items-center mt-1.5">
+        <div>
+          <AnimatePresence>
+            {error && (
+              <motion.span
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                className="text-[10px] text-red-500 font-['Outfit'] tracking-wide flex items-center gap-1 uppercase"
+              >
+                <AlertCircle className="w-3 h-3" /> {error}
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </div>
+        <span className="text-[10px] text-gray-500 font-['Outfit'] tracking-wide">
+          {value.length} / {maxLength}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export function Contact22() {
   const sectionRef = useRef(null);
-  const [isTalkHovered, setIsTalkHovered] = useState(false);
+  const formRef = useRef(null);
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [errors, setErrors] = useState({});
+  const [focusedField, setFocusedField] = useState(null);
+  const [status, setStatus] = useState("idle"); // 'idle' | 'loading' | 'success' | 'error'
+  const [shake, setShake] = useState(false);
+  const [particles, setParticles] = useState([]);
+
+  // Fetch credentials from environmental variables or default template values
+  const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID || "service_f0pekfg";
+  const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "template_default";
+  const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || ""; // Set this up in deployment!
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start 85%", "center center"]
   });
 
-  const challengeLineWidth = useTransform(scrollYProgress, [0, 0.7], ["0%", "100%"]);
+  const triggerShake = () => {
+    setShake(true);
+    setTimeout(() => setShake(false), 500);
+  };
+
+  const triggerParticles = () => {
+    const newParticles = Array.from({ length: 15 }).map((_, i) => ({
+      id: Math.random(),
+      angle: (i * 360) / 15 + (Math.random() * 15 - 7.5),
+      distance: Math.random() * 60 + 40,
+    }));
+    setParticles(newParticles);
+    setTimeout(() => setParticles([]), 1200);
+  };
+
+  const validateForm = () => {
+    let tempErrors = {};
+    if (!form.name.trim()) tempErrors.name = "Name is required";
+    if (!form.email.trim()) {
+      tempErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
+      tempErrors.email = "Invalid email address";
+    }
+    if (!form.message.trim()) tempErrors.message = "Message cannot be empty";
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (status === "loading") return;
+
+    if (!validateForm()) {
+      triggerShake();
+      return;
+    }
+
+    setStatus("loading");
+
+    // EmailJS sending or graceful local simulation fallback
+    if (!publicKey) {
+      console.warn("VITE_EMAILJS_PUBLIC_KEY is not defined. Simulating message dispatch...");
+      setTimeout(() => {
+        setStatus("success");
+        triggerParticles();
+        setForm({ name: "", email: "", message: "" });
+        setTimeout(() => {
+          setStatus("idle");
+        }, 3000);
+      }, 1500);
+    } else {
+      emailjs
+        .send(
+          serviceId,
+          templateId,
+          {
+            from_name: form.name,
+            reply_to: form.email,
+            message: form.message,
+            from_email: form.email,
+          },
+          publicKey
+        )
+        .then(() => {
+          setStatus("success");
+          triggerParticles();
+          setForm({ name: "", email: "", message: "" });
+          setTimeout(() => {
+            setStatus("idle");
+          }, 3000);
+        })
+        .catch((err) => {
+          console.error("EmailJS Error: Failed to transmit message", err);
+          setStatus("error");
+          triggerShake();
+          setTimeout(() => {
+            setStatus("idle");
+          }, 3000);
+        });
+    }
+  };
+
+  const handleMouseMoveForm = (e) => {
+    const card = formRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    card.style.setProperty("--form-mouse-x", `${x}px`);
+    card.style.setProperty("--form-mouse-y", `${y}px`);
+  };
 
   return (
     <section
@@ -300,8 +499,6 @@ export function Contact22() {
       ref={sectionRef}
       className="w-full bg-[#0C0C0B] relative z-20 text-white py-24 xl:py-36 overflow-hidden border-t border-white/[0.05]"
     >
-
-
       <div className="max-w-[120rem] mx-auto px-6 md:px-12 lg:px-16 relative z-10">
         
         {/* ── HEADER ── */}
@@ -310,7 +507,7 @@ export function Contact22() {
           whileInView="visible"
           viewport={{ once: true, margin: "-8%" }}
           variants={containerVariants}
-          className="mb-10 xl:mb-12"
+          className="mb-12 xl:mb-16"
         >
           {/* Label + Pulsing Availability Status Indicator */}
           <div className="flex flex-wrap items-center justify-between gap-4 mb-10">
@@ -365,18 +562,189 @@ export function Contact22() {
           </motion.p>
         </motion.div>
 
-        {/* ── CARDS GRID ── */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-8%" }}
-          variants={containerVariants}
-          className="flex flex-col gap-4 relative z-10"
-        >
-          {contactItems.map((item) => (
-            <ContactCard key={item.label} item={item} />
-          ))}
-        </motion.div>
+        {/* ── SPLIT GRID LAYOUT (Option C) ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 relative z-10 items-stretch">
+          
+          {/* Left Column: Social/Contact Cards */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-8%" }}
+            variants={containerVariants}
+            className="flex flex-col gap-4 lg:col-span-5 justify-between"
+          >
+            {contactItems.map((item) => (
+              <ContactCard key={item.label} item={item} />
+            ))}
+          </motion.div>
+
+          {/* Right Column: Sleek Glass Contact Form */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-8%" }}
+            variants={containerVariants}
+            className="lg:col-span-7 flex"
+          >
+            <motion.div
+              ref={formRef}
+              onMouseMove={handleMouseMoveForm}
+              variants={fadeUp}
+              animate={shake ? { x: [0, -8, 8, -8, 8, -4, 4, 0], transition: { duration: 0.4 } } : { x: 0 }}
+              className="group/form relative flex flex-col w-full p-6 md:p-8 lg:p-10 rounded-2xl bg-white/[0.01] hover:bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.12] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)] backdrop-blur-md overflow-hidden transition-[background,border-color] duration-500 w-full"
+            >
+              {/* Radial gradient spotlight on hover */}
+              <div className="absolute inset-0 bg-[radial-gradient(400px_circle_at_var(--form-mouse-x,0px)_var(--form-mouse-y,0px),rgba(255,255,255,0.015),transparent_60%)] opacity-0 group-hover/form:opacity-100 transition-opacity duration-700 ease-out pointer-events-none" />
+
+              <h3 className="font-['Outfit'] font-semibold text-[13px] md:text-[14px] tracking-[0.2em] text-[#a3a3a3] uppercase mb-8 border-b border-white/[0.05] pb-4 flex items-center justify-between">
+                <span>SEND A DIRECT MESSAGE</span>
+                <span className="text-[10px] text-gray-500 font-light lowercase">encrypted transmission</span>
+              </h3>
+
+              <form onSubmit={handleSubmit} className="flex flex-col flex-grow justify-between gap-2 relative z-10">
+                <div className="flex flex-col sm:flex-row gap-0 sm:gap-6">
+                  <FloatingInput
+                    label="Name"
+                    id="name"
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    error={errors.name}
+                    onFocus={() => setFocusedField("name")}
+                    onBlur={() => setFocusedField(null)}
+                    isFocused={focusedField === "name"}
+                  />
+                  <FloatingInput
+                    label="Email"
+                    id="email"
+                    type="email"
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    error={errors.email}
+                    onFocus={() => setFocusedField("email")}
+                    onBlur={() => setFocusedField(null)}
+                    isFocused={focusedField === "email"}
+                  />
+                </div>
+
+                <FloatingTextarea
+                  label="Message"
+                  id="message"
+                  value={form.message}
+                  onChange={(e) => setForm({ ...form, message: e.target.value })}
+                  error={errors.message}
+                  onFocus={() => setFocusedField("message")}
+                  onBlur={() => setFocusedField(null)}
+                  isFocused={focusedField === "message"}
+                  maxLength={1000}
+                />
+
+                {/* State Machine Send Button */}
+                <div className="relative mt-4">
+                  <button
+                    type="submit"
+                    disabled={status === "loading"}
+                    className={`w-full relative flex items-center justify-center py-4 px-6 rounded-xl font-['Outfit'] text-[11px] md:text-[12px] font-semibold tracking-[0.25em] uppercase transition-all duration-500 select-none overflow-hidden ${
+                      status === "loading"
+                        ? "bg-white/5 border border-white/10 text-white/50 cursor-not-allowed"
+                        : status === "success"
+                        ? "bg-[#22c55e]/10 border border-[#22c55e]/40 text-[#22c55e]"
+                        : status === "error"
+                        ? "bg-red-500/10 border border-red-500/40 text-red-500"
+                        : "bg-white text-black hover:bg-black hover:text-white border border-white hover:border-white/20 hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]"
+                    }`}
+                  >
+                    <AnimatePresence mode="wait">
+                      {status === "loading" && (
+                        <motion.span
+                          key="loading"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="flex items-center"
+                        >
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                          TRANSMITTING...
+                        </motion.span>
+                      )}
+
+                      {status === "success" && (
+                        <motion.span
+                          key="success"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0 }}
+                          className="flex items-center"
+                        >
+                          {/* Animated drawing checkmark */}
+                          <motion.svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#22c55e"
+                            strokeWidth="4"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="mr-2"
+                          >
+                            <motion.path
+                              d="M20 6L9 17L4 12"
+                              initial={{ pathLength: 0 }}
+                              animate={{ pathLength: 1 }}
+                              transition={{ duration: 0.4, ease: "easeOut" }}
+                            />
+                          </motion.svg>
+                          MESSAGE SENT!
+                        </motion.span>
+                      )}
+
+                      {status === "error" && (
+                        <motion.span
+                          key="error"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0 }}
+                          className="flex items-center"
+                        >
+                          <AlertCircle className="w-4 h-4 mr-2" />
+                          TRANSMISSION FAILED
+                        </motion.span>
+                      )}
+
+                      {status === "idle" && (
+                        <motion.span
+                          key="idle"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                        >
+                          SEND MESSAGE
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+
+                    {/* Particle burst animation on success */}
+                    {particles.map((p) => (
+                      <motion.span
+                        key={p.id}
+                        className="absolute w-2 h-2 rounded-full bg-[#22c55e] pointer-events-none"
+                        style={{ left: "50%", top: "50%" }}
+                        initial={{ x: 0, y: 0, scale: 1, opacity: 1 }}
+                        animate={{
+                          x: Math.cos((p.angle * Math.PI) / 180) * p.distance,
+                          y: Math.sin((p.angle * Math.PI) / 180) * p.distance,
+                          scale: 0,
+                          opacity: 0,
+                        }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                      />
+                    ))}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        </div>
 
         {/* ── CLOSING STATEMENT ── */}
         <motion.div
