@@ -312,7 +312,7 @@ function FloatingInput({ label, id, type = "text", value, onChange, error, onFoc
           onFocus={onFocus}
           onBlur={onBlur}
           placeholder=""
-          className={`w-full bg-transparent border-b ${error ? 'border-red-500/80' : 'border-white/10'} py-3 text-white focus:border-white focus:outline-none transition-colors duration-300 font-['Outfit'] text-[14px] md:text-[15px]`}
+          className={`w-full bg-transparent border-b ${error ? 'border-red-500/80' : 'border-white/10'} py-3 text-white focus:border-white focus:outline-none transition-colors duration-300 font-['Outfit'] text-[16px] md:text-[15px]`}
         />
       </div>
       <AnimatePresence>
@@ -358,7 +358,7 @@ function FloatingTextarea({ label, id, value, onChange, error, onFocus, onBlur, 
           maxLength={maxLength}
           rows={4}
           placeholder=""
-          className={`w-full bg-transparent border-b ${error ? 'border-red-500/80' : 'border-white/10'} py-3 text-white focus:border-white focus:outline-none transition-colors duration-300 font-['Outfit'] text-[14px] md:text-[15px] resize-none`}
+          className={`w-full bg-transparent border-b ${error ? 'border-red-500/80' : 'border-white/10'} py-3 text-white focus:border-white focus:outline-none transition-colors duration-300 font-['Outfit'] text-[16px] md:text-[15px] resize-none`}
         />
       </div>
       <div className="flex justify-between items-center mt-1.5">
