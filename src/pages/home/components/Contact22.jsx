@@ -157,34 +157,35 @@ function ContactCard({ item }) {
   };
 
   const cardContent = (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-6 relative z-10 pointer-events-none w-full">
-      {/* Left: Icon + Label + Subtext */}
-      <div className="flex items-start sm:items-center gap-4 sm:gap-5 w-full sm:w-auto">
-        <div className="p-3 md:p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.06] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)] group-hover:border-white/[0.1] transition-colors duration-500 shrink-0 mt-0.5 sm:mt-0">
-          <Icon
-            className="w-5 h-5 md:w-6 md:h-6 text-gray-400 group-hover:text-[var(--brand-icon)] transition-colors duration-500"
-            strokeWidth={1.5}
-          />
-        </div>
-        <div className="flex flex-col">
+    <div className="flex gap-4 items-start relative z-10 pointer-events-none w-full">
+      {/* Icon */}
+      <div className="p-3 md:p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.06] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)] group-hover:border-white/[0.1] transition-colors duration-500 shrink-0 mt-0.5">
+        <Icon
+          className="w-5 h-5 md:w-6 md:h-6 text-gray-400 group-hover:text-[var(--brand-icon)] transition-colors duration-500"
+          strokeWidth={1.5}
+        />
+      </div>
+
+      {/* Content Stack */}
+      <div className="flex-1 flex flex-col min-w-0 pr-2 text-left">
+        {/* Header line: Label + Arrow */}
+        <div className="flex items-center justify-between gap-4 w-full">
           <span className="font-['Outfit'] font-semibold text-[11px] md:text-[12px] tracking-[0.2em] text-gray-300 group-hover:text-white transition-colors uppercase">
             {item.label}
           </span>
-          <span className="font-['Outfit'] text-[10px] md:text-[11px] text-gray-400 font-light tracking-wide mt-1">
-            {item.subtext}
-          </span>
+          {!item.numbers && (
+            <ArrowUpRight className="w-4 h-4 text-gray-600 group-hover:text-gray-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300 shrink-0" />
+          )}
         </div>
-      </div>
-      
-      {/* Right: Value + Arrow */}
-      <div className={`flex items-center justify-between sm:justify-end gap-6 sm:gap-8 w-full sm:w-auto pl-[52px] sm:pl-0 ${item.numbers ? 'pointer-events-auto' : ''}`}>
-        <div className={`relative w-full sm:w-[220px] md:w-[280px] flex ${item.numbers ? 'flex-col items-start sm:items-end gap-2' : 'h-6 items-center justify-start sm:justify-end'} overflow-hidden`}>
+
+        {/* Value */}
+        <div className={`relative mt-1.5 w-full flex overflow-hidden ${item.numbers ? 'flex-col items-start gap-1.5 pointer-events-auto' : 'h-6 items-center'}`}>
           {item.numbers ? (
             item.numbers.map((num, idx) => (
               <div 
                 key={idx} 
                 onClick={(e) => handleNumberCopy(e, num)}
-                className="group/num relative flex items-center justify-start sm:justify-end w-full cursor-pointer"
+                className="group/num relative flex items-center justify-start w-full cursor-pointer"
               >
                 <AnimatePresence mode="wait">
                   {copiedId !== num.value ? (
@@ -222,7 +223,7 @@ function ContactCard({ item }) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2, ease: "easeOut" }}
-                  className="absolute left-0 sm:left-auto sm:right-0 font-['Outfit'] text-[14px] sm:text-[15px] md:text-[16px] font-medium text-gray-300 group-hover:text-white transition-colors duration-300 truncate"
+                  className="absolute left-0 font-['Outfit'] text-[14px] sm:text-[15px] md:text-[16px] font-medium text-gray-300 group-hover:text-white transition-colors duration-300 truncate"
                 >
                   {item.value}
                 </motion.span>
@@ -233,7 +234,7 @@ function ContactCard({ item }) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2, ease: "easeOut" }}
-                  className="absolute left-0 sm:left-auto sm:right-0 font-['Outfit'] text-[12px] sm:text-[13px] font-semibold text-[var(--brand-icon)] tracking-wider flex items-center justify-start sm:justify-end gap-1.5 uppercase"
+                  className="absolute left-0 font-['Outfit'] text-[12px] sm:text-[13px] font-semibold text-[var(--brand-icon)] tracking-wider flex items-center justify-start gap-1.5 uppercase"
                 >
                   <Check className="w-3.5 h-3.5" strokeWidth={2.5} /> Copied
                 </motion.span>
@@ -241,9 +242,11 @@ function ContactCard({ item }) {
             </AnimatePresence>
           )}
         </div>
-        {!item.numbers && (
-          <ArrowUpRight className="w-5 h-5 text-gray-600 group-hover:text-gray-300 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300 shrink-0" />
-        )}
+
+        {/* Subtext */}
+        <span className="font-['Outfit'] text-[10px] md:text-[11px] text-gray-400 font-light tracking-wide mt-2 leading-relaxed">
+          {item.subtext}
+        </span>
       </div>
     </div>
   );
