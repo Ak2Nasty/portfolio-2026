@@ -60,8 +60,8 @@ function randomFood(s) {
   let pos;
   do {
     pos = {
-      x: Math.floor(Math.random() * COLS),
-      y: Math.floor(Math.random() * ROWS),
+      x: 1 + Math.floor(Math.random() * (COLS - 2)),
+      y: 1 + Math.floor(Math.random() * (ROWS - 2)),
     };
   } while (s.snake.some((seg) => seg.x === pos.x && seg.y === pos.y));
   
