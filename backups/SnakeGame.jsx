@@ -6,7 +6,7 @@ import { useLenis } from "lenis/react";
 const CELL        = 24;
 const COLS        = 16;
 const ROWS        = 16;
-const CANVAS_SIZE = CELL * COLS; // 528px
+const CANVAS_SIZE = CELL * COLS; // 384px
 const RADIUS      = 5;
 const BASE_SPEED  = 160;
 const MIN_SPEED   = 75;
@@ -60,8 +60,8 @@ function randomFood(s) {
   let pos;
   do {
     pos = {
-      x: Math.floor(Math.random() * COLS),
-      y: Math.floor(Math.random() * ROWS),
+      x: 1 + Math.floor(Math.random() * (COLS - 2)),
+      y: 1 + Math.floor(Math.random() * (ROWS - 2)),
     };
   } while (s.snake.some((seg) => seg.x === pos.x && seg.y === pos.y));
   
@@ -2097,11 +2097,25 @@ export function SnakeGame({ isOpen, onClose }) {
 
     s.rafId = requestAnimationFrame(draw);
   }, []);
-  // ── Lenis stop/start ──
+  // ── Scroll lock ──
   useEffect(() => {
     if (!isOpen) return;
     lenis?.stop();
-    return () => { lenis?.start(); };
+    document.body.style.overflow = "hidden";
+
+    const preventScroll = (e) => {
+      e.preventDefault();
+    };
+
+    window.addEventListener("wheel", preventScroll, { passive: false });
+    window.addEventListener("touchmove", preventScroll, { passive: false });
+
+    return () => {
+      lenis?.start();
+      document.body.style.overflow = "";
+      window.removeEventListener("wheel", preventScroll);
+      window.removeEventListener("touchmove", preventScroll);
+    };
   }, [isOpen, lenis]);
 
   // ── Open / close loop ──
