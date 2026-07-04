@@ -2248,10 +2248,33 @@ export function SnakeGame({ isOpen, onClose }) {
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-800 bg-black/40">
               <span
-                className="font-['Outfit'] font-bold text-[13px] tracking-[0.2em] text-[#16a34a]"
+                className="font-['Outfit'] font-bold text-[13px] tracking-[0.2em] text-[#16a34a] flex items-center"
                 style={{ textShadow: "0 0 14px rgba(22,163,74,0.8)" }}
               >
-                ▋ SNAKE.EXE
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  style={{ filter: "drop-shadow(0 0 8px rgba(22,163,74,0.8))" }}
+                  className="mr-2.5"
+                >
+                  {/* Rounded Snake Head */}
+                  <rect x="2" y="2" width="20" height="20" rx="5.5" fill="#16a34a" />
+                  {/* Golden Sphere Eyes */}
+                  <circle cx="7" cy="9" r="3.2" fill="#fbbf24" stroke="#080807" strokeWidth="0.5" />
+                  <circle cx="17" cy="9" r="3.2" fill="#fbbf24" stroke="#080807" strokeWidth="0.5" />
+                  {/* Slit Pupils */}
+                  <ellipse cx="7" cy="9" rx="0.7" ry="2.0" fill="#080807" />
+                  <ellipse cx="17" cy="9" rx="0.7" ry="2.0" fill="#080807" />
+                  {/* Mouth Line */}
+                  <path d="M 6 15 Q 12 18 18 15" stroke="#080807" strokeWidth="1.2" strokeLinecap="round" />
+                  {/* Canines / Fangs */}
+                  <polygon points="8,15.5 9,18 10,15.5" fill="#f5f5e6" />
+                  <polygon points="14,15.5 15,18 16,15.5" fill="#f5f5e6" />
+                </svg>
+                SNAKE.EXE
               </span>
               <div className="flex items-center gap-6">
                 <span className="font-['Outfit'] text-[11px] text-zinc-400 tracking-[0.15em] uppercase font-medium">
