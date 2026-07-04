@@ -2274,7 +2274,7 @@ export function SnakeGame({ isOpen, onClose }) {
             exit={{ opacity: 0,    y: 48, scale: 0.94 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             className="bg-[#0C0C0B] border border-zinc-800 rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.65)] w-[calc(100%-16px)] sm:w-full mx-2 sm:mx-4"
-            style={{ maxWidth: 520 }}
+            style={{ maxWidth: 620 }}
           >
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-800 bg-black/40">
