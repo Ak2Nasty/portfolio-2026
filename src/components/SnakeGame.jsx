@@ -1515,6 +1515,13 @@ function drawSnakeHead(ctx, head, dir, food, state, timestamp, chompTime) {
     }
   }
 
+  // Nostrils
+  ctx.fillStyle = "#080807";
+  ctx.beginPath();
+  ctx.ellipse(CELL / 2 - 3.2, -1.8, 0.7, 1.2, 0.4, 0, Math.PI * 2);
+  ctx.ellipse(CELL / 2 - 3.2, 1.8, 0.7, 1.2, -0.4, 0, Math.PI * 2);
+  ctx.fill();
+
   // Eyes
   const eyeFwd  = CELL * 0.14;
   const eyeSide = CELL * 0.23;
@@ -2268,6 +2275,9 @@ export function SnakeGame({ isOpen, onClose }) {
                   {/* Slit Pupils */}
                   <ellipse cx="7" cy="9" rx="0.7" ry="2.0" fill="#080807" />
                   <ellipse cx="17" cy="9" rx="0.7" ry="2.0" fill="#080807" />
+                  {/* Nostrils */}
+                  <ellipse cx="10.5" cy="11.5" rx="0.6" ry="1.0" transform="rotate(25 10.5 11.5)" fill="#080807" />
+                  <ellipse cx="13.5" cy="11.5" rx="0.6" ry="1.0" transform="rotate(-25 13.5 11.5)" fill="#080807" />
                   {/* Mouth Line */}
                   <path d="M 6 15 Q 12 18 18 15" stroke="#080807" strokeWidth="1.2" strokeLinecap="round" />
                   {/* Forked Tongue */}
