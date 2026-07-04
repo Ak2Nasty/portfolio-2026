@@ -1566,13 +1566,13 @@ function drawSnakeHead(ctx, head, dir, food, state, timestamp, chompTime) {
   if (state === "DEAD") {
     showTongue = true;
   } else {
-    const cycle = (timestamp % 1600) / 1600;
-    if (cycle < 0.18) {
-      const t = cycle / 0.18;
+    const cycle = (timestamp % 2500) / 2500;
+    if (cycle < 0.12) {
+      const t = cycle / 0.12;
       tongueExt = Math.sin(t * Math.PI);
       showTongue = true;
-    } else if (cycle >= 0.24 && cycle < 0.42) {
-      const t = (cycle - 0.24) / 0.18;
+    } else if (cycle >= 0.16 && cycle < 0.28) {
+      const t = (cycle - 0.16) / 0.12;
       tongueExt = Math.sin(t * Math.PI);
       showTongue = true;
     }
