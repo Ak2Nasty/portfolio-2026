@@ -60,8 +60,8 @@ function randomFood(s) {
   let pos;
   do {
     pos = {
-      x: 1 + Math.floor(Math.random() * (COLS - 2)),
-      y: 1 + Math.floor(Math.random() * (ROWS - 2)),
+      x: Math.floor(Math.random() * COLS),
+      y: Math.floor(Math.random() * ROWS),
     };
   } while (s.snake.some((seg) => seg.x === pos.x && seg.y === pos.y));
   
@@ -95,8 +95,14 @@ function randomFood(s) {
 
 // ─── Food Drawing Router ──────────────────────────────────────────────────────
 function drawFood(ctx, food, snakeHead, timestamp) {
-  const cx = food.x * CELL + CELL / 2;
-  const cy = food.y * CELL + CELL / 2;
+  let cx = food.x * CELL + CELL / 2;
+  let cy = food.y * CELL + CELL / 2;
+
+  // Inset edge-spawning prey slightly by 1.8px so they don't press directly against the border walls
+  if (food.x === 0) cx += 1.8;
+  if (food.x === COLS - 1) cx -= 1.8;
+  if (food.y === 0) cy += 1.8;
+  if (food.y === ROWS - 1) cy -= 1.8;
 
   // Vector from food center to snake head
   let ux = 0;
