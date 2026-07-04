@@ -4,6 +4,9 @@ import { useLenis } from "lenis/react";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 const CELL        = 24;
+const COLS        = 16;
+const ROWS        = 16;
+const CANVAS_SIZE = CELL * COLS; // 384px
 const RADIUS      = 5;
 const BASE_SPEED  = 160;
 const MIN_SPEED   = 75;
@@ -57,8 +60,8 @@ function randomFood(s) {
   let pos;
   do {
     pos = {
-      x: Math.floor(Math.random() * s.cols),
-      y: Math.floor(Math.random() * s.rows),
+      x: Math.floor(Math.random() * COLS),
+      y: Math.floor(Math.random() * ROWS),
     };
   } while (s.snake.some((seg) => seg.x === pos.x && seg.y === pos.y));
   
@@ -1620,27 +1623,12 @@ export function SnakeGame({ isOpen, onClose }) {
   const canvasRef = useRef(null);
   const lenis     = useLenis();
 
-  // Dynamic grid setup based on screen size (Mobile: 16x16 / Desktop: 22x22)
-  const getGridConfig = () => {
-    const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
-    const cols = isMobile ? 16 : 22;
-    const rows = isMobile ? 16 : 22;
-    return {
-      cols,
-      rows,
-      canvasSize: CELL * cols
-    };
-  };
-
-  const initialGrid = getGridConfig();
-  const [canvasSize, setCanvasSize] = useState(initialGrid.canvasSize);
-
   const g = useRef({
     state:      "IDLE",
-    snake:      [{ x: Math.floor(initialGrid.cols / 2), y: Math.floor(initialGrid.rows / 2) }],
+    snake:      [{ x: 8, y: 8 }],
     dir:        { x: 1, y: 0 },
     nextDir:    { x: 1, y: 0 },
-    food:       { x: Math.floor(initialGrid.cols / 2) + 4, y: Math.floor(initialGrid.rows / 2), type: 0 },
+    food:       { x: 12, y: 8, type: 0 },
     score:      0,
     highScore:  parseInt(localStorage.getItem("snakeHighScore") || "0"),
     lastMove:   0,
@@ -1658,10 +1646,6 @@ export function SnakeGame({ isOpen, onClose }) {
     preyPool:   [],
     // Creative/Premium features
     foodMoveCounter: 0,
-    // Dynamic dimensions
-    cols:       initialGrid.cols,
-    rows:       initialGrid.rows,
-    canvasSize: initialGrid.canvasSize,
   });
 
   const [score,        setScore]        = useState(0);
@@ -1670,20 +1654,12 @@ export function SnakeGame({ isOpen, onClose }) {
 
   const startGame = useCallback(() => {
     const s     = g.current;
-    const grid  = getGridConfig();
-    s.cols      = grid.cols;
-    s.rows      = grid.rows;
-    s.canvasSize = grid.canvasSize;
-    setCanvasSize(grid.canvasSize);
-
-    const midX  = Math.floor(grid.cols / 2);
-    const midY  = Math.floor(grid.rows / 2);
-    s.snake     = [{ x: midX, y: midY }];
+    s.snake     = [{ x: 8, y: 8 }];
     s.dir       = { x: 1, y: 0 };
     s.nextDir   = { x: 1, y: 0 };
     s.preyPool  = []; // Reset pool for fresh shuffle
     s.foodMoveCounter = 0;
-    s.food      = { x: midX + 4, y: midY, type: 0 };
+    s.food      = randomFood(s);
     s.score     = 0;
     s.state     = "PLAYING";
     s.lastMove  = 0;
@@ -1722,7 +1698,7 @@ export function SnakeGame({ isOpen, onClose }) {
             const nx = s.food.x + d.x;
             const ny = s.food.y + d.y;
             // Bounds check
-            if (nx >= 0 && nx < s.cols && ny >= 0 && ny < s.rows) {
+            if (nx >= 0 && nx < COLS && ny >= 0 && ny < ROWS) {
               // Body segment check
               const hitsBody = s.snake.some((seg) => seg.x === nx && seg.y === ny);
               if (!hitsBody) {
@@ -1744,14 +1720,14 @@ export function SnakeGame({ isOpen, onClose }) {
       }
 
       const head    = { x: s.snake[0].x + s.dir.x, y: s.snake[0].y + s.dir.y };
-      const wallHit = head.x < 0 || head.x >= s.cols || head.y < 0 || head.y >= s.rows;
+      const wallHit = head.x < 0 || head.x >= COLS || head.y < 0 || head.y >= ROWS;
       const selfHit = !wallHit && s.snake.some((seg) => seg.x === head.x && seg.y === head.y);
 
       if (wallHit || selfHit) {
         s.state     = "DEAD";
         s.deathTime = timestamp;
-        s.impactX   = Math.min(Math.max(head.x, 0), s.cols - 1) * CELL + CELL / 2;
-        s.impactY   = Math.min(Math.max(head.y, 0), s.rows - 1) * CELL + CELL / 2;
+        s.impactX   = Math.min(Math.max(head.x, 0), COLS - 1) * CELL + CELL / 2;
+        s.impactY   = Math.min(Math.max(head.y, 0), ROWS - 1) * CELL + CELL / 2;
         if (s.score > s.highScore) {
           s.highScore = s.score;
           localStorage.setItem("snakeHighScore", s.score);
@@ -1843,25 +1819,25 @@ export function SnakeGame({ isOpen, onClose }) {
 
     // Background flat color (clean, no vignette)
     ctx.fillStyle = "#0C0C0B";
-    ctx.fillRect(-20, -20, s.canvasSize + 40, s.canvasSize + 40);
+    ctx.fillRect(-20, -20, CANVAS_SIZE + 40, CANVAS_SIZE + 40);
 
     // Red death flash
     if (s.state === "DEAD" && s.deathTime) {
       const flashT = Math.max(0, 1 - timeSinceDeath / 450);
       if (flashT > 0) {
         ctx.fillStyle = `rgba(220, 30, 30, ${flashT * 0.40})`;
-        ctx.fillRect(-20, -20, s.canvasSize + 40, s.canvasSize + 40);
+        ctx.fillRect(-20, -20, CANVAS_SIZE + 40, CANVAS_SIZE + 40);
       }
     }
 
     // Grid
     ctx.strokeStyle = "rgba(255,255,255,0.03)";
     ctx.lineWidth   = 0.5;
-    for (let x = 0; x <= s.cols; x++) {
-      ctx.beginPath(); ctx.moveTo(x * CELL, 0); ctx.lineTo(x * CELL, s.canvasSize); ctx.stroke();
+    for (let x = 0; x <= COLS; x++) {
+      ctx.beginPath(); ctx.moveTo(x * CELL, 0); ctx.lineTo(x * CELL, CANVAS_SIZE); ctx.stroke();
     }
-    for (let y = 0; y <= s.rows; y++) {
-      ctx.beginPath(); ctx.moveTo(0, y * CELL); ctx.lineTo(s.canvasSize, y * CELL); ctx.stroke();
+    for (let y = 0; y <= ROWS; y++) {
+      ctx.beginPath(); ctx.moveTo(0, y * CELL); ctx.lineTo(CANVAS_SIZE, y * CELL); ctx.stroke();
     }
 
     // Impact burst lines
@@ -2072,39 +2048,39 @@ export function SnakeGame({ isOpen, onClose }) {
     // IDLE overlay
     if (s.state === "IDLE") {
       ctx.fillStyle = "rgba(12,12,11,0.78)";
-      ctx.fillRect(0, 0, s.canvasSize, s.canvasSize);
+      ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
       ctx.textAlign   = "center";
       ctx.shadowBlur  = 18;
       ctx.shadowColor = "#16a34a";
       ctx.fillStyle   = "#16a34a";
       ctx.font        = "bold 16px 'Outfit', sans-serif";
-      ctx.fillText("PRESS ENTER TO START", s.canvasSize / 2, s.canvasSize / 2 - 6);
+      ctx.fillText("PRESS ENTER TO START", CANVAS_SIZE / 2, CANVAS_SIZE / 2 - 6);
       ctx.shadowBlur  = 0;
       ctx.fillStyle   = "rgba(255,255,255,0.3)";
       ctx.font        = "12px 'Outfit', sans-serif";
-      ctx.fillText("ARROW KEYS \u00B7 WASD \u00B7 SWIPE", s.canvasSize / 2, s.canvasSize / 2 + 22);
+      ctx.fillText("ARROW KEYS \u00B7 WASD \u00B7 SWIPE", CANVAS_SIZE / 2, CANVAS_SIZE / 2 + 22);
     }
 
     // DEAD overlay
     if (s.state === "DEAD" && timeSinceDeath > 300) {
       const overlayT  = Math.min(1, (timeSinceDeath - 300) / 300);
       ctx.fillStyle   = `rgba(12,12,11,${0.72 * overlayT})`;
-      ctx.fillRect(0, 0, s.canvasSize, s.canvasSize);
+      ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
       if (overlayT > 0.5) {
         ctx.textAlign   = "center";
         ctx.globalAlpha = (overlayT - 0.5) * 2;
         ctx.fillStyle   = "rgba(255,255,255,0.92)";
         ctx.font        = "bold 18px 'Outfit', sans-serif";
-        ctx.fillText("GAME OVER", s.canvasSize / 2, s.canvasSize / 2 - 20);
+        ctx.fillText("GAME OVER", CANVAS_SIZE / 2, CANVAS_SIZE / 2 - 20);
         ctx.shadowBlur  = 14;
         ctx.shadowColor = "#16a34a";
         ctx.fillStyle   = "#16a34a";
         ctx.font        = "14px 'Outfit', sans-serif";
-        ctx.fillText(`SCORE: ${s.score}`, s.canvasSize / 2, s.canvasSize / 2 + 10);
+        ctx.fillText(`SCORE: ${s.score}`, CANVAS_SIZE / 2, CANVAS_SIZE / 2 + 10);
         ctx.shadowBlur  = 0;
         ctx.fillStyle   = "rgba(255,255,255,0.28)";
         ctx.font        = "12px 'Outfit', sans-serif";
-        ctx.fillText("ENTER / TAP TO RETRY", s.canvasSize / 2, s.canvasSize / 2 + 38);
+        ctx.fillText("ENTER / TAP TO RETRY", CANVAS_SIZE / 2, CANVAS_SIZE / 2 + 38);
         ctx.globalAlpha = 1;
       }
     }
@@ -2113,8 +2089,8 @@ export function SnakeGame({ isOpen, onClose }) {
     // Subtle CRT scanlines
     ctx.fillStyle = "rgba(34, 197, 94, 0.014)";
     ctx.shadowBlur = 0;
-    for (let y = 0; y < s.canvasSize; y += 4) {
-      ctx.fillRect(0, y, s.canvasSize, 1.2);
+    for (let y = 0; y < CANVAS_SIZE; y += 4) {
+      ctx.fillRect(0, y, CANVAS_SIZE, 1.2);
     }
 
     ctx.restore();
@@ -2163,24 +2139,11 @@ export function SnakeGame({ isOpen, onClose }) {
       setDisplayState("IDLE");
       return;
     }
-    
-    // Set dynamic grid values on open
-    const grid = getGridConfig();
-    g.current.cols = grid.cols;
-    g.current.rows = grid.rows;
-    g.current.canvasSize = grid.canvasSize;
-    setCanvasSize(grid.canvasSize);
-
-    const midX = Math.floor(grid.cols / 2);
-    const midY = Math.floor(grid.rows / 2);
-    g.current.snake = [{ x: midX, y: midY }];
-    g.current.food  = { x: midX + 4, y: midY, type: 0 };
-
     const canvas = canvasRef.current;
     if (canvas) {
       const dpr = Math.max(window.devicePixelRatio || 1, 1);
-      canvas.width  = grid.canvasSize * dpr;
-      canvas.height = grid.canvasSize * dpr;
+      canvas.width  = CANVAS_SIZE * dpr;
+      canvas.height = CANVAS_SIZE * dpr;
       canvas.getContext("2d").setTransform(dpr, 0, 0, dpr, 0, 0);
     }
     g.current.rafId = requestAnimationFrame(draw);
@@ -2274,7 +2237,7 @@ export function SnakeGame({ isOpen, onClose }) {
             exit={{ opacity: 0,    y: 48, scale: 0.94 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             className="bg-[#0C0C0B] border border-zinc-800 rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.65)] w-[calc(100%-16px)] sm:w-full mx-2 sm:mx-4"
-            style={{ maxWidth: 620 }}
+            style={{ maxWidth: 520 }}
           >
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-800 bg-black/40">
@@ -2314,8 +2277,8 @@ export function SnakeGame({ isOpen, onClose }) {
             <div className="p-2 sm:p-5 bg-black/20 flex justify-center">
               <canvas
                 ref={canvasRef}
-                width={canvasSize}
-                height={canvasSize}
+                width={CANVAS_SIZE}
+                height={CANVAS_SIZE}
                 className="w-full rounded-xl border border-zinc-800/80 shadow-[inset_0_0_20px_rgba(0,0,0,0.8)]"
                 style={{ aspectRatio: "1 / 1" }}
               />
