@@ -1566,13 +1566,13 @@ function drawSnakeHead(ctx, head, dir, food, state, timestamp, chompTime) {
   if (state === "DEAD") {
     showTongue = true;
   } else {
-    const cycle = (timestamp % 2500) / 2500;
-    if (cycle < 0.12) {
-      const t = cycle / 0.12;
+    const cycle = (timestamp % 1600) / 1600;
+    if (cycle < 0.18) {
+      const t = cycle / 0.18;
       tongueExt = Math.sin(t * Math.PI);
       showTongue = true;
-    } else if (cycle >= 0.16 && cycle < 0.28) {
-      const t = (cycle - 0.16) / 0.12;
+    } else if (cycle >= 0.24 && cycle < 0.42) {
+      const t = (cycle - 0.24) / 0.18;
       tongueExt = Math.sin(t * Math.PI);
       showTongue = true;
     }
@@ -2270,6 +2270,8 @@ export function SnakeGame({ isOpen, onClose }) {
                   <ellipse cx="17" cy="9" rx="0.7" ry="2.0" fill="#080807" />
                   {/* Mouth Line */}
                   <path d="M 6 15 Q 12 18 18 15" stroke="#080807" strokeWidth="1.2" strokeLinecap="round" />
+                  {/* Forked Tongue */}
+                  <path d="M 12 16.5 L 12 21.5 M 12 21.5 L 10 23.5 M 12 21.5 L 14 23.5" stroke="#dc2626" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
                   {/* Canines / Fangs */}
                   <polygon points="8,15.5 9,18 10,15.5" fill="#f5f5e6" />
                   <polygon points="14,15.5 15,18 16,15.5" fill="#f5f5e6" />
