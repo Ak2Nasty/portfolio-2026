@@ -5,13 +5,14 @@ import { SnakeGame } from "./SnakeGame";
 // ─────────────────────────────────────────────
 // Right-Click Custom Context Menu
 // ─────────────────────────────────────────────
-function ContextMenu({ onPlayGame }) {
+function ContextMenu({ onPlayGame, gameOpen }) {
   const [menu, setMenu] = useState(null); // { x, y }
   const lastTapTime = useRef(0);
   const tapCount = useRef(0);
   const lastOpenTime = useRef(0);
 
   useEffect(() => {
+    if (gameOpen) return;
     // Desktop: right-click
     const handleContextMenu = (e) => {
       e.preventDefault();
@@ -58,7 +59,7 @@ function ContextMenu({ onPlayGame }) {
       document.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [gameOpen]);
 
   // Clamp to viewport edges
   const getPos = () => {
@@ -241,7 +242,7 @@ export function EasterEggs() {
       <ConsoleEasterEgg />
       <TabTitleChange />
       <IdleToast />
-      <ContextMenu onPlayGame={() => setGameOpen(true)} />
+      <ContextMenu onPlayGame={() => setGameOpen(true)} gameOpen={gameOpen} />
       <SnakeGame isOpen={gameOpen} onClose={() => setGameOpen(false)} />
     </>
   );
