@@ -1656,6 +1656,18 @@ function drawSnakeHead(ctx, head, dir, food, state, timestamp, chompTime) {
   }
   ctx.rotate(angle);
 
+  // Chomp Head Bulge/Chew Juice animation (bulges out by 35% on eating food)
+  let headScale = 1.0;
+  if (chompTime !== null && state !== "DEAD") {
+    const elapsed = timestamp - chompTime;
+    const chompDuration = 350; // 350ms total chewing pulse duration
+    if (elapsed < chompDuration) {
+      const t = elapsed / chompDuration;
+      headScale = 1.0 + 0.35 * Math.sin(t * Math.PI);
+    }
+  }
+  ctx.scale(headScale, headScale);
+
   // Soft Rounded Square Head Body
   ctx.shadowColor = state === "DEAD" ? "rgba(220,30,30,0.5)" : "#16a34a";
   ctx.shadowBlur  = 18;
