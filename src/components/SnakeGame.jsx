@@ -68,7 +68,12 @@ function randomFood(s) {
   // Shuffle bag implementation: cycle through all 20 prey without repeats
   if (!s.preyPool || s.preyPool.length === 0) {
     const pool = [];
-    for (let i = 0; i < 20; i++) {
+    // Standard prey (0 to 19)
+    for (let i = 0; i <= 19; i++) {
+      pool.push(i);
+    }
+    // New prey (23 to 58)
+    for (let i = 23; i <= 58; i++) {
       pool.push(i);
     }
     // Shuffle the pool
@@ -86,7 +91,7 @@ function randomFood(s) {
     // Standard prey from pool
     pos.type = s.preyPool.pop();
     // Make sure standard prey doesn't clash with mini-boss IDs
-    if (pos.type === 20 || pos.type === 21) {
+    if (pos.type === 20 || pos.type === 21 || pos.type === 22) {
       pos.type = Math.floor(Math.random() * 2); // default to rat/frog
     }
   }
@@ -162,12 +167,49 @@ function drawFood(ctx, food, snakeHead, timestamp) {
     case 18: drawEarthwormFood(ctx, ux, uy, timestamp); break;
     case 19: drawCricketFood(ctx, ux, uy, timestamp); break;
     case 20:
-    case 21: drawGoldenEggFood(ctx, timestamp); break;
+    case 21:
+    case 22: drawGoldenEggFood(ctx, timestamp); break;
+    case 23: drawVoleFood(ctx, ux, uy, timestamp); break;
+    case 24: drawShrewFood(ctx, ux, uy, timestamp); break;
+    case 25: drawChipmunkFood(ctx, ux, uy, timestamp); break;
+    case 26: drawHareFood(ctx, ux, uy, timestamp); break;
+    case 27: drawBatFood(ctx, ux, uy, timestamp); break;
+    case 28: drawOpossumFood(ctx, ux, uy, timestamp); break;
+    case 29: drawMonkeyFood(ctx, ux, uy, timestamp); break;
+    case 30: drawDeerFood(ctx, ux, uy, timestamp); break;
+    case 31: drawPigFood(ctx, ux, uy, timestamp); break;
+    case 32: drawPigeonFood(ctx, ux, uy, timestamp); break;
+    case 33: drawSparrowFood(ctx, ux, uy, timestamp); break;
+    case 34: drawQuailFood(ctx, ux, uy, timestamp); break;
+    case 35: drawParrotFood(ctx, ux, uy, timestamp); break;
+    case 36: drawNestlingFood(ctx, ux, uy, timestamp); break;
+    case 37: drawGeckoFood(ctx, ux, uy, timestamp); break;
+    case 38: drawSkinkFood(ctx, ux, uy, timestamp); break;
+    case 39: drawIguanaFood(ctx, ux, uy, timestamp); break;
+    case 40: drawTurtleFood(ctx, ux, uy, timestamp); break;
+    case 41: drawTurtleEggsFood(ctx, timestamp); break;
+    case 42: drawCrocodileHatchlingFood(ctx, ux, uy, timestamp); break;
+    case 43: drawSalamanderFood(ctx, ux, uy, timestamp); break;
+    case 44: drawNewtFood(ctx, ux, uy, timestamp); break;
+    case 45: drawTadpolesFood(ctx, ux, uy, timestamp); break;
+    case 46: drawMinnowsFood(ctx, ux, uy, timestamp); break;
+    case 47: drawCatfishFood(ctx, ux, uy, timestamp); break;
+    case 48: drawCarpFood(ctx, ux, uy, timestamp); break;
+    case 49: drawTroutFood(ctx, ux, uy, timestamp); break;
+    case 50: drawEelsFood(ctx, ux, uy, timestamp); break;
+    case 51: drawGoldfishFood(ctx, ux, uy, timestamp); break;
+    case 52: drawGrasshopperFood(ctx, ux, uy, timestamp); break;
+    case 53: drawCockroachFood(ctx, ux, uy, timestamp); break;
+    case 54: drawBeetleFood(ctx, ux, uy, timestamp); break;
+    case 55: drawCaterpillarFood(ctx, ux, uy, timestamp); break;
+    case 56: drawSpiderFood(ctx, ux, uy, timestamp); break;
+    case 57: drawScorpionFood(ctx, ux, uy, timestamp); break;
+    case 58: drawReptileEggsFood(ctx, timestamp); break;
     default: drawEggFood(ctx, timestamp); break;
   }
 
   // Draw sweat droplet if the prey is panicked (ignore for normal and golden eggs)
-  if (isPanicked && type !== 2 && type !== 20 && type !== 21) {
+  if (isPanicked && type !== 2 && type !== 20 && type !== 21 && type !== 22 && type !== 41 && type !== 58) {
     ctx.fillStyle = "#38bdf8"; // Light sky blue
     ctx.beginPath();
     const sx = 5.0;
@@ -2379,4 +2421,973 @@ export function SnakeGame({ isOpen, onClose }) {
       )}
     </AnimatePresence>
   );
+}
+
+
+// 🐀 23. Vole (stouter mouse, small ears, warm brown)
+function drawVoleFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(120, 53, 4, 0.25)"; ctx.shadowBlur = 5;
+  const earTwitch = Math.sin(timestamp / 150) > 0.88 ? Math.sin(timestamp / 25) * 1.2 : 0;
+  // Ears
+  ctx.fillStyle = "#854d0e";
+  ctx.beginPath(); ctx.arc(-5.2, -4.2 + earTwitch, 3.2, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(5.2, -4.2 + earTwitch, 3.2, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#fda4af";
+  ctx.beginPath(); ctx.arc(-5.2, -4.2 + earTwitch, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(5.2, -4.2 + earTwitch, 1.8, 0, Math.PI * 2); ctx.fill();
+  // Stout Body
+  ctx.fillStyle = "#a16207";
+  roundRect(ctx, -7.5, -4.5, 15, 11, 4.2); ctx.fill();
+  // Snout
+  ctx.fillStyle = "#fda4af";
+  ctx.beginPath(); ctx.arc(0, 5.0, 1.5, 0, Math.PI * 2); ctx.fill();
+  // Tracking Eyes
+  const px = ux * 1.2; const py = uy * 1.2;
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath(); ctx.arc(-3.0, -1.0, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(3.0, -1.0, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#18181b";
+  ctx.beginPath(); ctx.arc(-3.0 + px, -1.0 + py, 0.7, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(3.0 + px, -1.0 + py, 0.7, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🐭 24. Shrew (pointed snout, dark grey)
+function drawShrewFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(75, 85, 99, 0.25)"; ctx.shadowBlur = 4;
+  // Pointy Body & Snout
+  ctx.fillStyle = "#374151";
+  roundRect(ctx, -6.5, -4.5, 13, 9, 3.8); ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(-4.5, 3.5); ctx.lineTo(0, 7.5); ctx.lineTo(4.5, 3.5); ctx.closePath(); ctx.fill();
+  // Nose tip
+  ctx.fillStyle = "#f43f5e";
+  ctx.beginPath(); ctx.arc(0, 7.5, 1.2, 0, Math.PI * 2); ctx.fill();
+  // Whiskers
+  ctx.strokeStyle = "#9ca3af"; ctx.lineWidth = 0.5;
+  ctx.beginPath(); ctx.moveTo(-3, 4); ctx.lineTo(-8, 5); ctx.moveTo(3, 4); ctx.lineTo(8, 5); ctx.stroke();
+  // Tiny Eyes
+  const px = ux * 0.8; const py = uy * 0.8;
+  ctx.fillStyle = "#111827";
+  ctx.beginPath(); ctx.arc(-2.4, -0.5, 1.2, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.4, -0.5, 1.2, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🐿️ 25. Chipmunk (striped brown back, white cheeks)
+function drawChipmunkFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(180, 83, 9, 0.3)"; ctx.shadowBlur = 5;
+  // Ears
+  ctx.fillStyle = "#b45309";
+  ctx.beginPath(); ctx.arc(-5.0, -4.5, 2.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(5.0, -4.5, 2.8, 0, Math.PI * 2); ctx.fill();
+  // Body
+  ctx.fillStyle = "#d97706";
+  roundRect(ctx, -8.0, -4.5, 16, 11, 4.0); ctx.fill();
+  // White/Black Stripes on forehead/sides
+  ctx.fillStyle = "#1e293b";
+  roundRect(ctx, -5.0, -4.5, 1.8, 7.0, 0.5); ctx.fill();
+  roundRect(ctx, 3.2, -4.5, 1.8, 7.0, 0.5); ctx.fill();
+  ctx.fillStyle = "#f8fafc";
+  roundRect(ctx, -4.2, -3.5, 1.0, 5.0, 0.5); ctx.fill();
+  roundRect(ctx, 3.2, -3.5, 1.0, 5.0, 0.5); ctx.fill();
+  // Cheeks
+  ctx.fillStyle = "#f8fafc";
+  ctx.beginPath(); ctx.arc(-5.5, 2.5, 2.2, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(5.5, 2.5, 2.2, 0, Math.PI * 2); ctx.fill();
+  // Eyes
+  const px = ux * 1.2; const py = uy * 1.2;
+  ctx.fillStyle = "#1e293b";
+  ctx.beginPath(); ctx.arc(-3.2, -0.8, 2.0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(3.2, -0.8, 2.0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath(); ctx.arc(-3.2 + px * 0.5, -0.8 + py * 0.5, 0.5, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(3.2 + px * 0.5, -0.8 + py * 0.5, 0.5, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🐇 26. Hare (longer ears, taller body, wild brown)
+function drawHareFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(133, 77, 14, 0.25)"; ctx.shadowBlur = 5;
+  const earTwitch = Math.sin(timestamp / 180) * 1.5;
+  // Long Ears
+  ctx.fillStyle = "#713f12";
+  roundRect(ctx, -5.0, -13.0 + earTwitch * 0.4, 2.8, 9.0, 1.2); ctx.fill();
+  roundRect(ctx, 2.2, -13.0 + earTwitch * 0.4, 2.8, 9.0, 1.2); ctx.fill();
+  ctx.fillStyle = "#fda4af";
+  roundRect(ctx, -4.2, -11.0 + earTwitch * 0.4, 1.2, 6.0, 0.6); ctx.fill();
+  roundRect(ctx, 3.0, -11.0 + earTwitch * 0.4, 1.2, 6.0, 0.6); ctx.fill();
+  // Body
+  ctx.fillStyle = "#854d0e";
+  roundRect(ctx, -7.5, -4.0, 15, 11, 4.5); ctx.fill();
+  // Eyes
+  const px = ux * 1.4; const py = uy * 1.4;
+  ctx.fillStyle = "#b45309";
+  ctx.beginPath(); ctx.arc(-3.2, -1.0, 2.4, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(3.2, -1.0, 2.4, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#1e293b";
+  ctx.beginPath(); ctx.arc(-3.2 + px, -1.0 + py, 0.9, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(3.2 + px, -1.0 + py, 0.9, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🦇 27. Bat (dark charcoal, folded side wings)
+function drawBatFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(30, 41, 59, 0.35)"; ctx.shadowBlur = 6;
+  const wingFlap = Math.sin(timestamp / 90) * 1.2;
+  // Folded Wings
+  ctx.fillStyle = "#0f172a";
+  ctx.beginPath();
+  ctx.moveTo(-6, -2); ctx.lineTo(-12 + wingFlap, -4); ctx.lineTo(-8, 6); ctx.closePath(); ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(6, -2); ctx.lineTo(12 - wingFlap, -4); ctx.lineTo(8, 6); ctx.closePath(); ctx.fill();
+  // Pointy ears
+  ctx.fillStyle = "#0f172a";
+  ctx.beginPath();
+  ctx.moveTo(-5, -4); ctx.lineTo(-3, -9); ctx.lineTo(-1, -4); ctx.closePath(); ctx.fill();
+  ctx.moveTo(1, -4); ctx.lineTo(3, -9); ctx.lineTo(5, -4); ctx.closePath(); ctx.fill();
+  // Body
+  ctx.fillStyle = "#1e293b";
+  roundRect(ctx, -6.0, -4.0, 12, 10, 4.0); ctx.fill();
+  // Vampire Fangs
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath();
+  ctx.moveTo(-2.0, 2.5); ctx.lineTo(-1.5, 4.2); ctx.lineTo(-1.0, 2.5); ctx.closePath(); ctx.fill();
+  ctx.moveTo(1.0, 2.5); ctx.lineTo(1.5, 4.2); ctx.lineTo(2.0, 2.5); ctx.closePath(); ctx.fill();
+  // Eyes
+  const px = ux * 1.1; const py = uy * 1.1;
+  ctx.fillStyle = "#ef4444"; // Red eyes
+  ctx.beginPath(); ctx.arc(-2.4, -0.8, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.4, -0.8, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#000000";
+  ctx.beginPath(); ctx.arc(-2.4 + px, -0.8 + py, 0.6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.4 + px, -0.8 + py, 0.6, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🐨 28. Opossum (white face, pink nose, grey outline)
+function drawOpossumFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(107, 114, 128, 0.25)"; ctx.shadowBlur = 5;
+  // Grey body outline
+  ctx.fillStyle = "#4b5563";
+  roundRect(ctx, -7.5, -4.5, 15, 11, 4.0); ctx.fill();
+  // White Face
+  ctx.fillStyle = "#f8fafc";
+  roundRect(ctx, -5.5, -2.5, 11, 8, 3.2); ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(-5.5, 1.0); ctx.lineTo(0, 5.8); ctx.lineTo(5.5, 1.0); ctx.closePath(); ctx.fill();
+  // Pink Nose
+  ctx.fillStyle = "#fda4af";
+  ctx.beginPath(); ctx.arc(0, 5.8, 1.4, 0, Math.PI * 2); ctx.fill();
+  // Bead Eyes
+  const px = ux * 0.9; const py = uy * 0.9;
+  ctx.fillStyle = "#09090b";
+  ctx.beginPath(); ctx.arc(-2.6, 0.2, 1.6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.6, 0.2, 1.6, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🐒 29. Monkey (round brown ears, peach skin face)
+function drawMonkeyFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(120, 53, 4, 0.3)"; ctx.shadowBlur = 6;
+  // Round ears
+  ctx.fillStyle = "#78350f";
+  ctx.beginPath(); ctx.arc(-7.8, -1.8, 3.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(7.8, -1.8, 3.8, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#fed7aa";
+  ctx.beginPath(); ctx.arc(-7.8, -1.8, 2.0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(7.8, -1.8, 2.0, 0, Math.PI * 2); ctx.fill();
+  // Head
+  ctx.fillStyle = "#78350f";
+  roundRect(ctx, -7.0, -4.5, 14, 11, 4.8); ctx.fill();
+  // Face Skin Overlay
+  ctx.fillStyle = "#fed7aa";
+  roundRect(ctx, -5.0, -2.5, 10, 8, 3.2); ctx.fill();
+  // Eyes
+  const px = ux * 1.3; const py = uy * 1.3;
+  ctx.fillStyle = "#1e293b";
+  ctx.beginPath(); ctx.arc(-2.4, -0.6, 2.0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.4, -0.6, 2.0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath(); ctx.arc(-2.4 + px * 0.4, -0.6 + py * 0.4, 0.6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.4 + px * 0.4, -0.6 + py * 0.4, 0.6, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🦌 30. Deer (light brown, forehead spots)
+function drawDeerFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(217, 119, 6, 0.25)"; ctx.shadowBlur = 5;
+  // Ears
+  ctx.fillStyle = "#b45309";
+  ctx.beginPath(); ctx.arc(-6.5, -5.0, 3.2, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(6.5, -5.0, 3.2, 0, Math.PI * 2); ctx.fill();
+  // Head
+  ctx.fillStyle = "#d97706";
+  roundRect(ctx, -7.0, -4.5, 14, 11, 4.0); ctx.fill();
+  // White Spots on forehead
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath();
+  ctx.arc(-2.5, -2.8, 0.6, 0, Math.PI * 2);
+  ctx.arc(0, -3.2, 0.6, 0, Math.PI * 2);
+  ctx.arc(2.5, -2.8, 0.6, 0, Math.PI * 2);
+  ctx.fill();
+  // Snout
+  ctx.fillStyle = "#f8fafc";
+  roundRect(ctx, -2.8, 3.2, 5.6, 3.2, 1.2); ctx.fill();
+  ctx.fillStyle = "#1e293b";
+  ctx.beginPath(); ctx.arc(0, 5.4, 1.2, 0, Math.PI * 2); ctx.fill();
+  // Eyes
+  const px = ux * 1.2; const py = uy * 1.2;
+  ctx.fillStyle = "#18181b";
+  ctx.beginPath(); ctx.arc(-2.8, 0.2, 2.0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.8, 0.2, 2.0, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🐷 31. Pig (pink, large snout with nostrils)
+function drawPigFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(244, 63, 94, 0.2)"; ctx.shadowBlur = 5;
+  // Floppy Ears
+  ctx.fillStyle = "#f472b6";
+  ctx.beginPath(); ctx.arc(-6.5, -4.8, 3.4, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(6.5, -4.8, 3.4, 0, Math.PI * 2); ctx.fill();
+  // Body
+  ctx.fillStyle = "#fbcfe8";
+  roundRect(ctx, -8.0, -4.5, 16, 11, 4.5); ctx.fill();
+  // Large pink Snout
+  ctx.fillStyle = "#f472b6";
+  roundRect(ctx, -4.0, 2.2, 8.0, 5.2, 1.8); ctx.fill();
+  // Snout Holes
+  ctx.fillStyle = "#9d174d";
+  ctx.beginPath(); ctx.arc(-1.5, 4.8, 0.7, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(1.5, 4.8, 0.7, 0, Math.PI * 2); ctx.fill();
+  // Eyes
+  const px = ux * 1.1; const py = uy * 1.1;
+  ctx.fillStyle = "#18181b";
+  ctx.beginPath(); ctx.arc(-3.2, -0.6, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(3.2, -0.6, 1.8, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🐦 32. Pigeon (slate blue head, iridescent neck)
+function drawPigeonFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(71, 85, 105, 0.3)"; ctx.shadowBlur = 5;
+  // Head
+  ctx.fillStyle = "#475569";
+  roundRect(ctx, -7.0, -4.5, 14, 10, 4.2); ctx.fill();
+  // Iridescent collar
+  const neckGrad = ctx.createLinearGradient(-5, 3, 5, 3);
+  neckGrad.addColorStop(0, "#0d9488"); // teal
+  neckGrad.addColorStop(1, "#c026d3"); // magenta
+  ctx.fillStyle = neckGrad;
+  roundRect(ctx, -5.5, 2.5, 11, 2.8, 0.8); ctx.fill();
+  // Beak
+  ctx.fillStyle = "#f97316";
+  ctx.beginPath();
+  ctx.moveTo(-2.0, 4.5); ctx.lineTo(0, 9.0); ctx.lineTo(2.0, 4.5); ctx.closePath(); ctx.fill();
+  // Orange-Ringed Eyes
+  const px = ux * 1.3; const py = uy * 1.3;
+  ctx.fillStyle = "#ea580c";
+  ctx.beginPath(); ctx.arc(-3.0, -0.6, 2.4, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(3.0, -0.6, 2.4, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#0f172a";
+  ctx.beginPath(); ctx.arc(-3.0 + px, -0.6 + py, 1.0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(3.0 + px, -0.6 + py, 1.0, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🐦 33. Sparrow (brown head, black bib)
+function drawSparrowFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(124, 45, 18, 0.25)"; ctx.shadowBlur = 5;
+  // Head
+  ctx.fillStyle = "#7c2d12";
+  roundRect(ctx, -6.8, -4.5, 13.6, 10, 4.0); ctx.fill();
+  // White Cheeks
+  ctx.fillStyle = "#f8fafc";
+  ctx.beginPath(); ctx.arc(-4.5, 2.5, 2.2, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(4.5, 2.5, 2.2, 0, Math.PI * 2); ctx.fill();
+  // Black Bib
+  ctx.fillStyle = "#18181b";
+  ctx.beginPath();
+  ctx.moveTo(-2.5, 4.5); ctx.lineTo(0, 7.5); ctx.lineTo(2.5, 4.5); ctx.closePath(); ctx.fill();
+  // Beak
+  ctx.fillStyle = "#eab308";
+  ctx.beginPath();
+  ctx.moveTo(-1.8, 3.8); ctx.lineTo(0, 7.2); ctx.lineTo(1.8, 3.8); ctx.closePath(); ctx.fill();
+  // Eyes
+  const px = ux * 1.2; const py = uy * 1.2;
+  ctx.fillStyle = "#111827";
+  ctx.beginPath(); ctx.arc(-2.8, -0.8, 2.0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.8, -0.8, 2.0, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🐦 34. Quail (plump bird, teardrop plume)
+function drawQuailFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(120, 53, 4, 0.25)"; ctx.shadowBlur = 5;
+  // Plume feather (bobs slightly)
+  const plumeBob = Math.sin(timestamp / 75) * 0.6;
+  ctx.strokeStyle = "#18181b"; ctx.lineWidth = 1.0;
+  ctx.beginPath();
+  ctx.moveTo(0, -4.5);
+  ctx.quadraticCurveTo(-3.0, -8.0 + plumeBob * 0.5, -4.5 + plumeBob, -11.0 + plumeBob * 0.2);
+  ctx.stroke();
+  ctx.fillStyle = "#18181b";
+  ctx.beginPath(); ctx.arc(-4.5 + plumeBob, -11.0 + plumeBob * 0.2, 1.8, 0, Math.PI * 2); ctx.fill();
+  // Head
+  ctx.fillStyle = "#78350f";
+  roundRect(ctx, -7.0, -4.5, 14, 10, 4.2); ctx.fill();
+  // Speckled Pattern
+  ctx.fillStyle = "#d97706";
+  ctx.beginPath(); ctx.arc(-2.8, -2.8, 0.5, 0, Math.PI * 2); ctx.arc(2.8, -2.8, 0.5, 0, Math.PI * 2); ctx.fill();
+  // Beak
+  ctx.fillStyle = "#d97706";
+  ctx.beginPath();
+  ctx.moveTo(-1.6, 4.0); ctx.lineTo(0, 7.2); ctx.lineTo(1.6, 4.0); ctx.closePath(); ctx.fill();
+  // Eyes
+  const px = ux * 1.2; const py = uy * 1.2;
+  ctx.fillStyle = "#18181b";
+  ctx.beginPath(); ctx.arc(-2.8, -0.5, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.8, -0.5, 1.8, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🦜 35. Parrot (emerald green, yellow face, black curved beak)
+function drawParrotFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(16, 185, 129, 0.35)"; ctx.shadowBlur = 6;
+  // Head
+  ctx.fillStyle = "#10b981";
+  roundRect(ctx, -7.2, -4.5, 14.4, 10, 4.5); ctx.fill();
+  // Yellow cheeks/face
+  ctx.fillStyle = "#facc15";
+  ctx.beginPath(); ctx.arc(-4.2, 2.0, 2.4, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(4.2, 2.0, 2.4, 0, Math.PI * 2); ctx.fill();
+  // Red Crest tip
+  ctx.fillStyle = "#ef4444";
+  ctx.beginPath();
+  ctx.moveTo(-2.5, -4.5); ctx.lineTo(0, -8.2); ctx.lineTo(2.5, -4.5); ctx.closePath(); ctx.fill();
+  // Curved Beak (hooked parrot beak)
+  ctx.fillStyle = "#1f2937";
+  ctx.beginPath();
+  ctx.moveTo(-2.0, 3.5);
+  ctx.quadraticCurveTo(0, 8.5, 0, 9.8);
+  ctx.quadraticCurveTo(0, 4.5, 2.0, 3.5);
+  ctx.closePath(); ctx.fill();
+  // Eyes
+  const px = ux * 1.3; const py = uy * 1.3;
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath(); ctx.arc(-2.8, -0.8, 2.2, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.8, -0.8, 2.2, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#111827";
+  ctx.beginPath(); ctx.arc(-2.8 + px, -0.8 + py, 1.0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.8 + px, -0.8 + py, 1.0, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🐣 36. Nestling (pink raw body, open yellow beak)
+function drawNestlingFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(244, 63, 94, 0.25)"; ctx.shadowBlur = 5;
+  // Pink baby body
+  ctx.fillStyle = "#fda4af";
+  roundRect(ctx, -7.0, -4.5, 14, 10, 4.8); ctx.fill();
+  // Tiny yellow feather tufts
+  ctx.strokeStyle = "#fbbf24"; ctx.lineWidth = 0.8;
+  ctx.beginPath();
+  ctx.moveTo(-4, -4.5); ctx.lineTo(-5, -6.5);
+  ctx.moveTo(4, -4.5); ctx.lineTo(5, -6.5);
+  ctx.stroke();
+  // Massive open beak (wobbles)
+  const openWobble = Math.sin(timestamp * 0.05) * 1.2;
+  ctx.fillStyle = "#facc15";
+  ctx.strokeStyle = "#eab308"; ctx.lineWidth = 1.0;
+  ctx.beginPath();
+  ctx.moveTo(-4.5, 1.0);
+  ctx.lineTo(0, -3.2 + openWobble);
+  ctx.lineTo(4.5, 1.0);
+  ctx.lineTo(0, 5.2 - openWobble);
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  // Inside mouth red
+  ctx.fillStyle = "#f43f5e";
+  ctx.beginPath();
+  ctx.moveTo(-3.0, 1.0); ctx.lineTo(0, -1.0 + openWobble * 0.4); ctx.lineTo(3.0, 1.0); ctx.lineTo(0, 3.0 - openWobble * 0.4);
+  ctx.closePath(); ctx.fill();
+  // Closed bead eyes
+  ctx.strokeStyle = "#475569"; ctx.lineWidth = 1.0; ctx.beginPath();
+  ctx.arc(-3.5, -1.5, 1.0, 0, Math.PI, true);
+  ctx.arc(3.5, -1.5, 1.0, 0, Math.PI, true);
+  ctx.stroke();
+}
+
+// 🦎 37. Gecko (neon green, suction toes)
+function drawGeckoFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(34, 197, 94, 0.35)"; ctx.shadowBlur = 6;
+  // Little pads / limbs
+  ctx.fillStyle = "#22c55e";
+  ctx.beginPath(); ctx.arc(-6.8, -4.8, 2.0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(6.8, -4.8, 2.0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-6.8, 4.8, 2.0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(6.8, 4.8, 2.0, 0, Math.PI * 2); ctx.fill();
+  // Body
+  ctx.fillStyle = "#4ade80";
+  roundRect(ctx, -6.2, -4.5, 12.4, 9, 3.8); ctx.fill();
+  // Eyes (vertical pupils)
+  const px = ux * 1.2; const py = uy * 1.2;
+  ctx.fillStyle = "#fbbf24";
+  ctx.beginPath(); ctx.arc(-2.8, -1.5, 2.4, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.8, -1.5, 2.4, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#1e293b";
+  ctx.beginPath(); ctx.ellipse(-2.8 + px, -1.5 + py, 0.6, 1.8, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(2.8 + px, -1.5 + py, 0.6, 1.8, 0, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🦎 38. Skink (metallic brown back, electric blue tail)
+function drawSkinkFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(6, 182, 212, 0.3)"; ctx.shadowBlur = 5;
+  // Electric blue tail poking out bottom (wiggles)
+  const tailWiggle = Math.sin(timestamp / 60) * 1.5;
+  ctx.strokeStyle = "#06b6d4"; ctx.lineWidth = 2.4; ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(0, 4.5);
+  ctx.quadraticCurveTo(tailWiggle, 8.0, tailWiggle * 1.4, 11.2);
+  ctx.stroke();
+  // Body
+  ctx.fillStyle = "#374151";
+  roundRect(ctx, -5.5, -4.5, 11, 9, 3.5); ctx.fill();
+  // Copper stripes
+  ctx.fillStyle = "#ea580c";
+  roundRect(ctx, -3.8, -4.5, 0.8, 9.0, 0.2); ctx.fill();
+  roundRect(ctx, 3.0, -4.5, 0.8, 9.0, 0.2); ctx.fill();
+  // Eyes
+  const px = ux * 1.0; const py = uy * 1.0;
+  ctx.fillStyle = "#fbbf24";
+  ctx.beginPath(); ctx.arc(-2.4, -1.0, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.4, -1.0, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#111827";
+  ctx.beginPath(); ctx.arc(-2.4 + px, -1.0 + py, 0.7, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.4 + px, -1.0 + py, 0.7, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🦎 39. Iguana (crest spikes, olive green)
+function drawIguanaFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(132, 204, 22, 0.3)"; ctx.shadowBlur = 5;
+  // Crest Spikes (drawn behind body)
+  ctx.fillStyle = "#84cc16";
+  ctx.beginPath();
+  ctx.moveTo(-4, -4.5); ctx.lineTo(-4, -7.0); ctx.lineTo(-2, -4.5);
+  ctx.moveTo(-1, -4.5); ctx.lineTo(-1, -7.5); ctx.lineTo(1, -4.5);
+  ctx.moveTo(3, -4.5); ctx.lineTo(3, -7.0); ctx.lineTo(5, -4.5);
+  ctx.fill();
+  // Body
+  ctx.fillStyle = "#65a30d";
+  roundRect(ctx, -6.5, -4.5, 13, 9, 3.6); ctx.fill();
+  // Dewlap throat fold
+  ctx.fillStyle = "#84cc16";
+  roundRect(ctx, -3.5, 2.5, 7.0, 3.2, 1.2); ctx.fill();
+  // Eyes
+  const px = ux * 1.2; const py = uy * 1.2;
+  ctx.fillStyle = "#facc15";
+  ctx.beginPath(); ctx.arc(-2.8, -1.0, 2.2, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.8, -1.0, 2.2, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#1e293b";
+  ctx.beginPath(); ctx.arc(-2.8 + px, -1.0 + py, 0.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.8 + px, -1.0 + py, 0.8, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🐢 40. Turtle (green shell segments, head poking out)
+function drawTurtleFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(21, 128, 61, 0.3)"; ctx.shadowBlur = 5;
+  // Head (pokes out slightly based on timestamp)
+  const headBob = Math.sin(timestamp / 200) * 0.8;
+  ctx.fillStyle = "#4ade80";
+  ctx.beginPath(); ctx.arc(0, 5.0 + headBob, 2.8, 0, Math.PI * 2); ctx.fill();
+  // Tiny Eyes on head
+  ctx.fillStyle = "#111827";
+  ctx.beginPath(); ctx.arc(-1.0, 5.5 + headBob, 0.5, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(1.0, 5.5 + headBob, 0.5, 0, Math.PI * 2); ctx.fill();
+  // Turtle Shell
+  ctx.fillStyle = "#15803d";
+  ctx.beginPath(); ctx.arc(0, 0, 7.5, 0, Math.PI * 2); ctx.fill();
+  // Shell Rim
+  ctx.strokeStyle = "#166534"; ctx.lineWidth = 1.0;
+  ctx.stroke();
+  // Shell Inner Grid lines
+  ctx.strokeStyle = "rgba(255,255,255,0.18)"; ctx.lineWidth = 0.65;
+  ctx.beginPath();
+  ctx.moveTo(-5.5, 0); ctx.lineTo(5.5, 0);
+  ctx.moveTo(0, -5.5); ctx.lineTo(0, 5.5);
+  ctx.stroke();
+}
+
+// 🥚 41. Turtle Eggs (soft, leathery, deflated beige egg)
+function drawTurtleEggsFood(ctx, timestamp) {
+  ctx.shadowColor = "rgba(254, 240, 138, 0.15)"; ctx.shadowBlur = 4;
+  // Leathery deflated shape
+  ctx.beginPath();
+  ctx.moveTo(0, -6.5);
+  ctx.bezierCurveTo(4.2, -6.5, 6.0, 1.0, 5.2, 4.2);
+  ctx.bezierCurveTo(4.5, 7.5, 2.5, 8.5, 0, 8.5);
+  ctx.bezierCurveTo(-2.5, 8.5, -4.5, 7.5, -5.2, 4.2);
+  ctx.bezierCurveTo(-6.0, 1.0, -4.2, -6.5, 0, -6.5);
+  ctx.closePath();
+  // Shading
+  const grad = ctx.createRadialGradient(-1.8, -2.0, 1.2, 0, 1.5, 8.0);
+  grad.addColorStop(0, "#fef08a"); // highlights
+  grad.addColorStop(0.4, "#fef9c3"); // light cream
+  grad.addColorStop(1.0, "#ca8a04"); // soft brown-yellow
+  ctx.fillStyle = grad; ctx.fill();
+  // Slightly wrinkled overlay lines
+  ctx.strokeStyle = "rgba(0,0,0,0.12)"; ctx.lineWidth = 0.5;
+  ctx.beginPath();
+  ctx.moveTo(-2.5, -1.0); ctx.quadraticCurveTo(0, 0, 2.5, -1.0);
+  ctx.moveTo(-3.2, 2.5); ctx.quadraticCurveTo(0, 3.5, 3.2, 2.5);
+  ctx.stroke();
+}
+
+// 🐊 42. Crocodile Hatchling (long snout, scaly green ridges)
+function drawCrocodileHatchlingFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(22, 101, 52, 0.3)"; ctx.shadowBlur = 5;
+  // Head
+  ctx.fillStyle = "#15803d";
+  roundRect(ctx, -5.5, -4.5, 11, 8, 3.0); ctx.fill();
+  // Long Snout (croc shape)
+  ctx.fillStyle = "#166534";
+  roundRect(ctx, -3.2, 2.5, 6.4, 6.0, 1.0); ctx.fill();
+  // Nose holes
+  ctx.fillStyle = "#111827";
+  ctx.beginPath(); ctx.arc(-1.0, 7.2, 0.5, 0, Math.PI * 2); ctx.arc(1.0, 7.2, 0.5, 0, Math.PI * 2); ctx.fill();
+  // Scared yellow eyes
+  const px = ux * 1.1; const py = uy * 1.1;
+  ctx.fillStyle = "#facc15";
+  ctx.beginPath(); ctx.arc(-2.4, -0.6, 2.0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.4, -0.6, 2.0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#111827";
+  ctx.beginPath(); ctx.ellipse(-2.4 + px, -0.6 + py, 0.5, 1.4, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(2.8 + px, -0.6 + py, 0.5, 1.4, 0, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🦎 43. Salamander (black body, yellow spots)
+function drawSalamanderFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(250, 204, 21, 0.25)"; ctx.shadowBlur = 5;
+  // Body
+  ctx.fillStyle = "#1f2937";
+  roundRect(ctx, -6.5, -4.5, 13, 9, 3.8); ctx.fill();
+  // Bright yellow spots
+  ctx.fillStyle = "#facc15";
+  ctx.beginPath();
+  ctx.arc(-3.5, -2.5, 1.5, 0, Math.PI * 2);
+  ctx.arc(3.5, 2.5, 1.5, 0, Math.PI * 2);
+  ctx.arc(0, 0, 1.2, 0, Math.PI * 2);
+  ctx.fill();
+  // Eyes
+  const px = ux * 1.0; const py = uy * 1.0;
+  ctx.fillStyle = "#facc15";
+  ctx.beginPath(); ctx.arc(-2.6, -1.8, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.6, -1.8, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#111827";
+  ctx.beginPath(); ctx.arc(-2.6 + px, -1.8 + py, 0.7, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.6 + px, -1.8 + py, 0.7, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🦎 44. Newt (olive back, orange belly hint)
+function drawNewtFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(234, 88, 12, 0.25)"; ctx.shadowBlur = 5;
+  // Orange belly poking out on sides
+  ctx.fillStyle = "#ea580c";
+  roundRect(ctx, -7.0, -4.5, 14, 9, 4.0); ctx.fill();
+  // Olive Back overlay
+  ctx.fillStyle = "#3f6212";
+  roundRect(ctx, -5.5, -4.5, 11, 9, 3.5); ctx.fill();
+  // Eyes
+  const px = ux * 1.0; const py = uy * 1.0;
+  ctx.fillStyle = "#facc15";
+  ctx.beginPath(); ctx.arc(-2.4, -1.2, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.4, -1.2, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#111827";
+  ctx.beginPath(); ctx.arc(-2.4 + px, -1.2 + py, 0.7, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.4 + px, -1.2 + py, 0.7, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🐟 45. Tadpole (bulbous black head, wiggling tail)
+function drawTadpolesFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(17, 24, 39, 0.3)"; ctx.shadowBlur = 4;
+  // Long wiggling tail (sways at 7Hz)
+  const tailSway = Math.sin(timestamp / 50) * 2.0;
+  ctx.strokeStyle = "#374151"; ctx.lineWidth = 1.6; ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(0, 3.8);
+  ctx.quadraticCurveTo(tailSway, 7.0, tailSway * 1.5, 10.8);
+  ctx.stroke();
+  // Bulbous Head
+  ctx.fillStyle = "#111827";
+  ctx.beginPath(); ctx.arc(0, -0.5, 5.2, 0, Math.PI * 2); ctx.fill();
+  // Tiny Eyes
+  const px = ux * 0.8; const py = uy * 0.8;
+  ctx.fillStyle = "#9ca3af";
+  ctx.beginPath(); ctx.arc(-2.0, -1.8, 1.0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.0, -1.8, 1.0, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🐟 46. Minnow (slender silver-blue fish)
+function drawMinnowsFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(148, 163, 184, 0.3)"; ctx.shadowBlur = 4;
+  const tailSway = Math.sin(timestamp / 65) * 1.5;
+  // Tail fin
+  ctx.fillStyle = "#64748b";
+  ctx.beginPath();
+  ctx.moveTo(0, 4.2);
+  ctx.lineTo(-3.5 + tailSway, 7.8);
+  ctx.lineTo(3.5 + tailSway, 7.8);
+  ctx.closePath(); ctx.fill();
+  // Slender Body
+  ctx.fillStyle = "#94a3b8";
+  ctx.beginPath();
+  ctx.ellipse(0, -1.0, 3.8, 6.2, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // Shiny blue stripe
+  ctx.fillStyle = "#38bdf8";
+  ctx.beginPath();
+  ctx.ellipse(0, -1.0, 1.0, 5.0, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // Eyes
+  const px = ux * 0.8; const py = uy * 0.8;
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath(); ctx.arc(-1.8, -3.2, 1.4, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(1.8, -3.2, 1.4, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#1e293b";
+  ctx.beginPath(); ctx.arc(-1.8 + px, -3.2 + py, 0.6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(1.8 + px, -3.2 + py, 0.6, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🐟 47. Catfish (barbels whiskers, flat grey head)
+function drawCatfishFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(71, 85, 105, 0.3)"; ctx.shadowBlur = 5;
+  // 4 Whiskers (barbels - wiggle slightly)
+  const whiskerBob = Math.sin(timestamp / 100) * 0.8;
+  ctx.strokeStyle = "#334155"; ctx.lineWidth = 1.0;
+  ctx.beginPath();
+  // Upper left/right barbels
+  ctx.moveTo(-2.5, 3.0); ctx.lineTo(-8.5, 4.5 + whiskerBob);
+  ctx.moveTo(2.5, 3.0); ctx.lineTo(8.5, 4.5 - whiskerBob);
+  // Lower left/right barbels
+  ctx.moveTo(-1.5, 4.5); ctx.lineTo(-6.5, 7.0 + whiskerBob * 0.5);
+  ctx.moveTo(1.5, 4.5); ctx.lineTo(6.5, 7.0 - whiskerBob * 0.5);
+  ctx.stroke();
+  // Flat head / body
+  ctx.fillStyle = "#475569";
+  roundRect(ctx, -7.0, -4.5, 14, 9, 3.5); ctx.fill();
+  // Tail
+  ctx.fillStyle = "#334155";
+  ctx.beginPath();
+  ctx.moveTo(0, 4.5); ctx.lineTo(-2.8, 8.5); ctx.lineTo(2.8, 8.5);
+  ctx.closePath(); ctx.fill();
+  // Eyes
+  const px = ux * 0.9; const py = uy * 0.9;
+  ctx.fillStyle = "#1e293b";
+  ctx.beginPath(); ctx.arc(-2.8, -1.5, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.8, -1.5, 1.8, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🐟 48. Carp (golden orange scales, barbels)
+function drawCarpFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(245, 158, 11, 0.35)"; ctx.shadowBlur = 5;
+  // Tail
+  const tailSway = Math.sin(timestamp / 70) * 1.5;
+  ctx.fillStyle = "#d97706";
+  ctx.beginPath();
+  ctx.moveTo(0, 4.5); ctx.lineTo(-3.8 + tailSway, 8.5); ctx.lineTo(3.8 + tailSway, 8.5);
+  ctx.closePath(); ctx.fill();
+  // Plump body
+  ctx.fillStyle = "#f59e0b";
+  ctx.beginPath(); ctx.ellipse(0, -0.8, 4.8, 6.2, 0, 0, Math.PI * 2); ctx.fill();
+  // Scale lines grid
+  ctx.strokeStyle = "rgba(146, 64, 14, 0.2)"; ctx.lineWidth = 0.65;
+  ctx.beginPath();
+  ctx.moveTo(-4.5, -2); ctx.lineTo(4.5, -2);
+  ctx.moveTo(-4.8, 1); ctx.lineTo(4.8, 1);
+  ctx.stroke();
+  // Tiny chin barbels
+  ctx.strokeStyle = "#92400e"; ctx.lineWidth = 0.8;
+  ctx.beginPath();
+  ctx.moveTo(-1.2, 4.8); ctx.lineTo(-2.8, 6.5);
+  ctx.moveTo(1.2, 4.8); ctx.lineTo(2.8, 6.5);
+  ctx.stroke();
+  // Eyes
+  const px = ux * 1.1; const py = uy * 1.1;
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath(); ctx.arc(-2.4, -3.2, 2.0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.4, -3.2, 2.0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#1e293b";
+  ctx.beginPath(); ctx.arc(-2.4 + px, -3.2 + py, 0.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.4 + px, -3.2 + py, 0.8, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🐟 49. Trout (olive back, pink iridescent side stripe)
+function drawTroutFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(236, 72, 153, 0.25)"; ctx.shadowBlur = 5;
+  const tailSway = Math.sin(timestamp / 60) * 1.5;
+  // Tail fin
+  ctx.fillStyle = "#166534";
+  ctx.beginPath();
+  ctx.moveTo(0, 4.5); ctx.lineTo(-3.8 + tailSway, 8.5); ctx.lineTo(3.8 + tailSway, 8.5);
+  ctx.closePath(); ctx.fill();
+  // Slender Body (olive back)
+  ctx.fillStyle = "#15803d";
+  ctx.beginPath(); ctx.ellipse(0, -0.8, 4.0, 6.2, 0, 0, Math.PI * 2); ctx.fill();
+  // Pink side stripe
+  ctx.fillStyle = "#f472b6";
+  ctx.beginPath(); ctx.ellipse(0, -0.8, 1.2, 5.0, 0, 0, Math.PI * 2); ctx.fill();
+  // Speckles
+  ctx.fillStyle = "#111827";
+  ctx.beginPath(); ctx.arc(-1.5, -1.0, 0.4, 0, Math.PI * 2); ctx.arc(1.5, 1.0, 0.4, 0, Math.PI * 2); ctx.fill();
+  // Eyes
+  const px = ux * 1.0; const py = uy * 1.0;
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath(); ctx.arc(-1.8, -3.0, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(1.8, -3.0, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#111827";
+  ctx.beginPath(); ctx.arc(-1.8 + px, -3.0 + py, 0.7, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(1.8 + px, -3.0 + py, 0.7, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🐍 50. Eels (long continuous fin, smooth grey)
+function drawEelsFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(51, 65, 85, 0.3)"; ctx.shadowBlur = 5;
+  // Long continuous fin wiggling
+  const eelSway = Math.sin(timestamp / 50) * 2.2;
+  ctx.strokeStyle = "#1e293b"; ctx.lineWidth = 3.6; ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(0, 4.0);
+  ctx.quadraticCurveTo(eelSway, 8.0, eelSway * 1.5, 12.0);
+  ctx.stroke();
+  // Body core
+  ctx.strokeStyle = "#475569"; ctx.lineWidth = 2.4;
+  ctx.beginPath();
+  ctx.moveTo(0, 4.0);
+  ctx.quadraticCurveTo(eelSway, 8.0, eelSway * 1.5, 12.0);
+  ctx.stroke();
+  // Slender Head
+  ctx.fillStyle = "#475569";
+  ctx.beginPath(); ctx.ellipse(0, 0, 3.2, 5.0, 0, 0, Math.PI * 2); ctx.fill();
+  // Tiny Eyes
+  const px = ux * 0.7; const py = uy * 0.7;
+  ctx.fillStyle = "#facc15";
+  ctx.beginPath(); ctx.arc(-1.5, -2.2, 0.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(1.5, -2.2, 0.8, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🐠 51. Goldfish (bright orange-red, fan tail)
+function drawGoldfishFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(249, 115, 22, 0.35)"; ctx.shadowBlur = 5;
+  const tailSway = Math.sin(timestamp / 60) * 1.8;
+  // Wide fan tail fin (2 overlapping wings)
+  ctx.fillStyle = "#ea580c";
+  ctx.beginPath();
+  ctx.moveTo(0, 4.5);
+  ctx.lineTo(-5.2 + tailSway, 8.5);
+  ctx.lineTo(0 + tailSway, 6.2);
+  ctx.lineTo(5.2 + tailSway, 8.5);
+  ctx.closePath(); ctx.fill();
+  // Plump body
+  ctx.fillStyle = "#f97316";
+  ctx.beginPath(); ctx.ellipse(0, -0.6, 5.0, 6.2, 0, 0, Math.PI * 2); ctx.fill();
+  // Eyes
+  const px = ux * 1.2; const py = uy * 1.2;
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath(); ctx.arc(-2.4, -3.2, 2.2, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.4, -3.2, 2.2, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#111827";
+  ctx.beginPath(); ctx.arc(-2.4 + px, -3.2 + py, 0.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.4 + px, -3.2 + py, 0.8, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🦗 52. Grasshopper (bright green, jumping legs)
+function drawGrasshopperFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(101, 163, 13, 0.25)"; ctx.shadowBlur = 5;
+  // Hind Legs (angled capsule shapes)
+  ctx.fillStyle = "#4d7c0f";
+  ctx.save();
+  ctx.translate(-5.5, 0); ctx.rotate(-0.4); roundRect(ctx, -1.5, -4, 2.5, 8, 1); ctx.restore();
+  ctx.save();
+  ctx.translate(5.5, 0); ctx.rotate(0.4); roundRect(ctx, -1.0, -4, 2.5, 8, 1); ctx.restore();
+  // Body
+  ctx.fillStyle = "#65a30d";
+  roundRect(ctx, -5.2, -4.5, 10.4, 9.5, 3.2); ctx.fill();
+  // Antennae (sways)
+  const antSway = Math.sin(timestamp / 100) * 0.8;
+  ctx.strokeStyle = "#4d7c0f"; ctx.lineWidth = 0.8;
+  ctx.beginPath();
+  ctx.moveTo(-1.8, -4.5); ctx.quadraticCurveTo(-4, -8.0, -5.5 + antSway, -11.0);
+  ctx.moveTo(1.8, -4.5); ctx.quadraticCurveTo(4, -8.0, 5.5 - antSway, -11.0);
+  ctx.stroke();
+  // Eyes
+  const px = ux * 1.0; const py = uy * 1.0;
+  ctx.fillStyle = "#facc15";
+  ctx.beginPath(); ctx.arc(-2.2, -1.8, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.2, -1.8, 1.8, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🪳 53. Cockroach (flat reddish-brown body, long antennae)
+function drawCockroachFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(120, 53, 4, 0.3)"; ctx.shadowBlur = 5;
+  // Segmented thin legs poking out
+  ctx.strokeStyle = "#451a03"; ctx.lineWidth = 0.8;
+  ctx.beginPath();
+  ctx.moveTo(-5, -2); ctx.lineTo(-8, -3);
+  ctx.moveTo(-5, 1); ctx.lineTo(-9, 1);
+  ctx.moveTo(5, -2); ctx.lineTo(8, -3);
+  ctx.moveTo(5, 1); ctx.lineTo(9, 1);
+  ctx.stroke();
+  // Flat body shell
+  ctx.fillStyle = "#78350f";
+  roundRect(ctx, -5.8, -4.5, 11.6, 9.5, 3.8); ctx.fill();
+  // Shiny shell highlights
+  ctx.fillStyle = "rgba(251, 191, 36, 0.12)";
+  roundRect(ctx, -3.8, -3.5, 7.6, 3.5, 1.0); ctx.fill();
+  // Long Antennae
+  const antSway = Math.sin(timestamp / 80) * 1.0;
+  ctx.strokeStyle = "#451a03"; ctx.lineWidth = 0.65;
+  ctx.beginPath();
+  ctx.moveTo(-1.5, -4.5); ctx.quadraticCurveTo(-5, -9, -7.5 + antSway, -13.0);
+  ctx.moveTo(1.5, -4.5); ctx.quadraticCurveTo(5, -9, 7.5 - antSway, -13.0);
+  ctx.stroke();
+  // Tiny bead eyes
+  const px = ux * 0.8; const py = uy * 0.8;
+  ctx.fillStyle = "#09090b";
+  ctx.beginPath(); ctx.arc(-2.0, -2.4, 1.2, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.0, -2.4, 1.2, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🐞 54. Beetle (glossy black round shell)
+function drawBeetleFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(15, 23, 42, 0.35)"; ctx.shadowBlur = 5;
+  // Legs
+  ctx.strokeStyle = "#020617"; ctx.lineWidth = 0.8;
+  ctx.beginPath();
+  ctx.moveTo(-5, -2); ctx.lineTo(-8, -3);
+  ctx.moveTo(-5, 2); ctx.lineTo(-8, 3);
+  ctx.moveTo(5, -2); ctx.lineTo(8, -3);
+  ctx.moveTo(5, 2); ctx.lineTo(8, 3);
+  ctx.stroke();
+  // Round Head/Thorax
+  ctx.fillStyle = "#0f172a";
+  roundRect(ctx, -6.0, -4.5, 12, 10, 4.2); ctx.fill();
+  // Shell split line
+  ctx.strokeStyle = "#1e293b"; ctx.lineWidth = 0.8;
+  ctx.beginPath(); ctx.moveTo(0, -4.5); ctx.lineTo(0, 5.5); ctx.stroke();
+  // Glossy highlight glint
+  ctx.fillStyle = "rgba(255,255,255,0.18)";
+  ctx.beginPath(); ctx.ellipse(-2.5, -2.0, 1.0, 2.0, -0.4, 0, Math.PI * 2); ctx.fill();
+  // Eyes
+  const px = ux * 1.0; const py = uy * 1.0;
+  ctx.fillStyle = "#fbbf24";
+  ctx.beginPath(); ctx.arc(-2.4, -2.2, 1.6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.4, -2.2, 1.6, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🐛 55. Caterpillar (bright green segmented loops)
+function drawCaterpillarFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(132, 204, 22, 0.3)"; ctx.shadowBlur = 4;
+  const loopBob = Math.sin(timestamp / 100);
+  // 4 overlapping circles for body segments
+  ctx.fillStyle = "#84cc16";
+  ctx.beginPath();
+  ctx.arc(-4.5, 1.8 + loopBob * 0.4, 3.2, 0, Math.PI * 2);
+  ctx.arc(-1.5, -0.8 - loopBob * 0.4, 3.2, 0, Math.PI * 2);
+  ctx.arc(1.5, 1.8 + loopBob * 0.4, 3.2, 0, Math.PI * 2);
+  ctx.arc(4.5, -0.8 - loopBob * 0.4, 3.2, 0, Math.PI * 2);
+  ctx.fill();
+  // Dark spots
+  ctx.fillStyle = "#4d7c0f";
+  ctx.beginPath();
+  ctx.arc(-4.5, 1.8 + loopBob * 0.4, 0.6, 0, Math.PI * 2);
+  ctx.arc(1.5, 1.8 + loopBob * 0.4, 0.6, 0, Math.PI * 2);
+  ctx.fill();
+  // Tiny antennae
+  ctx.strokeStyle = "#4d7c0f"; ctx.lineWidth = 0.8;
+  ctx.beginPath();
+  ctx.moveTo(4.5, -3.0 - loopBob * 0.4); ctx.lineTo(6.2, -5.2);
+  ctx.stroke();
+  // Eyes on front segment
+  const px = ux * 0.9; const py = uy * 0.9;
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath(); ctx.arc(3.6, -1.8 - loopBob * 0.4, 1.2, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#111827";
+  ctx.beginPath(); ctx.arc(3.6 + px * 0.5, -1.8 - loopBob * 0.4 + py * 0.5, 0.6, 0, Math.PI * 2); ctx.fill();
+}
+
+// 🕷️ 56. Spider (black body, 8 thin legs)
+function drawSpiderFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(220, 38, 38, 0.15)"; ctx.shadowBlur = 5;
+  const legShifty = Math.sin(timestamp / 70) * 0.8;
+  // 8 Thin Legs
+  ctx.strokeStyle = "#09090b"; ctx.lineWidth = 0.75;
+  ctx.beginPath();
+  // Left 4 legs
+  ctx.moveTo(-2, -1); ctx.lineTo(-8, -4 + legShifty);
+  ctx.moveTo(-2, 0); ctx.lineTo(-9, 0 - legShifty);
+  ctx.moveTo(-2, 1); ctx.lineTo(-8, 3 + legShifty);
+  ctx.moveTo(-2, 2); ctx.lineTo(-7, 6 - legShifty);
+  // Right 4 legs
+  ctx.moveTo(2, -1); ctx.lineTo(8, -4 - legShifty);
+  ctx.moveTo(2, 0); ctx.lineTo(9, 0 + legShifty);
+  ctx.moveTo(2, 1); ctx.lineTo(8, 3 - legShifty);
+  ctx.moveTo(2, 2); ctx.lineTo(7, 6 + legShifty);
+  ctx.stroke();
+  // Round Abdomen / Head
+  ctx.fillStyle = "#09090b";
+  ctx.beginPath(); ctx.arc(0, -1.0, 4.8, 0, Math.PI * 2); ctx.fill();
+  // Red hourglass highlight
+  ctx.fillStyle = "#dc2626";
+  ctx.beginPath();
+  ctx.moveTo(-1.2, -2.8); ctx.lineTo(1.2, -2.8); ctx.lineTo(0, -1.2); ctx.closePath();
+  ctx.moveTo(-1.2, 0.4); ctx.lineTo(1.2, 0.4); ctx.lineTo(0, -1.2); ctx.closePath();
+  ctx.fill();
+  // Tiny red eyes (front bead eyes)
+  ctx.fillStyle = "#ef4444";
+  ctx.beginPath();
+  ctx.arc(-1.6, 2.2, 0.6, 0, Math.PI * 2);
+  ctx.arc(1.6, 2.2, 0.6, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// 🦂 57. Scorpion (claws, sting tail curved up)
+function drawScorpionFood(ctx, ux, uy, timestamp) {
+  ctx.shadowColor = "rgba(69, 26, 3, 0.3)"; ctx.shadowBlur = 5;
+  // Tail curved up (wiggles)
+  const tailSway = Math.sin(timestamp / 65) * 1.5;
+  ctx.strokeStyle = "#451a03"; ctx.lineWidth = 1.8; ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(0, -3.2);
+  ctx.quadraticCurveTo(-4 + tailSway, -6.5, -2 + tailSway, -11.0);
+  ctx.stroke();
+  // Poison Stinger bulb
+  ctx.fillStyle = "#ea580c";
+  ctx.beginPath(); ctx.arc(-2 + tailSway, -11.0, 1.4, 0, Math.PI * 2); ctx.fill();
+  // Body segments
+  ctx.fillStyle = "#451a03";
+  roundRect(ctx, -5.5, -4.5, 11, 9, 3.8); ctx.fill();
+  // Claws
+  ctx.strokeStyle = "#451a03"; ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.moveTo(-3, 2.5); ctx.quadraticCurveTo(-7, 5.0, -6, 7.5);
+  ctx.moveTo(3, 2.5); ctx.quadraticCurveTo(7, 5.0, 6, 7.5);
+  ctx.stroke();
+  // Eyes
+  ctx.fillStyle = "#ea580c";
+  ctx.beginPath();
+  ctx.arc(-1.6, 1.5, 0.7, 0, Math.PI * 2);
+  ctx.arc(1.6, 1.5, 0.7, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// 🥚 58. Reptile Eggs (wrinkled white/cream oval)
+function drawReptileEggsFood(ctx, timestamp) {
+  ctx.shadowColor = "rgba(228, 228, 231, 0.15)"; ctx.shadowBlur = 4;
+  // Elongated leathery egg shape
+  ctx.beginPath();
+  ctx.moveTo(0, -8.2);
+  ctx.bezierCurveTo(4.2, -8.2, 5.2, 1.8, 5.2, 5.8);
+  ctx.bezierCurveTo(5.2, 9.8, 2.8, 10.8, 0, 10.8);
+  ctx.bezierCurveTo(-2.8, 10.8, -5.2, 9.8, -5.2, 5.8);
+  ctx.bezierCurveTo(-5.2, 1.8, -4.2, -8.2, 0, -8.2);
+  ctx.closePath();
+  // Shading
+  const grad = ctx.createRadialGradient(-1.8, -2.5, 1.4, 0, 1.8, 10.2);
+  grad.addColorStop(0, "#ffffff"); // highlights
+  grad.addColorStop(0.4, "#fafafa"); // soft white-grey
+  grad.addColorStop(1.0, "#a1a1aa"); // slate-grey shadows
+  ctx.fillStyle = grad; ctx.fill();
+  // Wrinkle crease lines
+  ctx.strokeStyle = "rgba(0,0,0,0.1)"; ctx.lineWidth = 0.5;
+  ctx.beginPath();
+  ctx.moveTo(-2.8, -2.5); ctx.quadraticCurveTo(0, -1.5, 2.8, -2.5);
+  ctx.moveTo(-3.8, 4.2); ctx.quadraticCurveTo(0, 5.2, 3.8, 4.2);
+  ctx.stroke();
 }
