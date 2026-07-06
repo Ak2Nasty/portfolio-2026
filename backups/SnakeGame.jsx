@@ -444,11 +444,11 @@ function drawFrogFood(ctx, ux, uy, timestamp) {
 }
 
 
-// 🥚 3. Luminous 3D Pearl Egg (Food)
+// 🥚 3. Luminous 3D Pearl Egg (Food - shifting iridescent pastel pearl)
 function drawEggFood(ctx, timestamp) {
-  // Soft neutral white shadow glow
-  ctx.shadowColor = "rgba(255, 255, 255, 0.15)";
-  ctx.shadowBlur = 6;
+  // Soft cyan/pink shadow glow
+  ctx.shadowColor = "rgba(165, 243, 252, 0.25)";
+  ctx.shadowBlur = 8;
 
   // Egg Body (mathematically smooth egg curve, scaled up by 1.2x)
   ctx.beginPath();
@@ -459,33 +459,34 @@ function drawEggFood(ctx, timestamp) {
   ctx.bezierCurveTo(-6.72, 1.44, -5.28, -8.16, 0, -8.16);
   ctx.closePath();
 
-  // 3D Shading Gradient (light from top-left, pearl/slate-silver shading)
+  // Shading Gradient (shifting iridescence: pearl-white to soft peach to lavender-blue)
   const grad = ctx.createRadialGradient(-2.2, -2.6, 1.4, 0, 1.8, 10.2);
   grad.addColorStop(0, "#ffffff");      // hot highlight core
-  grad.addColorStop(0.35, "#f1f5f9");   // slate-100 neutral light
-  grad.addColorStop(1.0, "#64748b");    // slate-500 3D shadow rim
+  grad.addColorStop(0.3, "#fef3c7");     // soft peach/yellow highlight
+  grad.addColorStop(0.65, "#f472b6");    // soft pink midtone
+  grad.addColorStop(1.0, "#a78bfa");     // lavender-blue shadow rim
   ctx.fillStyle = grad;
   ctx.fill();
 
-  // Crisp silver shell outline
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
-  ctx.lineWidth = 0.65;
+  // Crisp iridescent outline
+  ctx.strokeStyle = "rgba(165, 243, 252, 0.55)";
+  ctx.lineWidth = 0.75;
   ctx.stroke();
 
   ctx.shadowBlur = 0;
 
   // Gloss highlight glint
-  ctx.fillStyle = "rgba(255, 255, 255, 0.65)";
+  ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
   ctx.beginPath();
   ctx.arc(-2.4, -3.8, 1.2, 0, Math.PI * 2);
   ctx.fill();
 }
 
-// 👑 22. Luminous 3D Golden Egg (Mini-boss, gives +3 points)
+// 👑 22. Luminous 3D Golden Egg (Mini-boss, gives +3 points, wears royal gold crown)
 function drawGoldenEggFood(ctx, timestamp) {
-  // Rich golden shadow glow
-  ctx.shadowColor = "rgba(250, 204, 21, 0.45)";
-  ctx.shadowBlur = 8;
+  // Ultra-rich golden shadow glow
+  ctx.shadowColor = "rgba(250, 204, 21, 0.75)";
+  ctx.shadowBlur = 12;
 
   // Egg Body (mathematically smooth egg curve, scaled up by 1.2x)
   ctx.beginPath();
@@ -498,21 +499,43 @@ function drawGoldenEggFood(ctx, timestamp) {
 
   // 3D Shading Gradient (light from top-left, rich gold metallic shading)
   const grad = ctx.createRadialGradient(-2.2, -2.6, 1.4, 0, 1.8, 10.2);
-  grad.addColorStop(0, "#fef08a");      // bright gold highlight
-  grad.addColorStop(0.35, "#fbbf24");   // amber-400 core
-  grad.addColorStop(1.0, "#92400e");    // amber-800 deep metallic shadow
+  grad.addColorStop(0, "#ffffff");      // core hot highlight
+  grad.addColorStop(0.18, "#fef08a");   // bright gold highlight
+  grad.addColorStop(0.55, "#d97706");   // dark gold/amber core
+  grad.addColorStop(1.0, "#7c2d12");    // deep brown-rust metallic shadow
   ctx.fillStyle = grad;
   ctx.fill();
 
   // Crisp gold shell outline
-  ctx.strokeStyle = "rgba(250, 204, 21, 0.6)";
-  ctx.lineWidth = 0.75;
+  ctx.strokeStyle = "rgba(250, 204, 21, 0.8)";
+  ctx.lineWidth = 0.85;
   ctx.stroke();
+
+  // Tiny Royal Gold Crown on top of the egg! (hilarious and premium)
+  ctx.fillStyle = "#facc15";
+  ctx.strokeStyle = "#92400e"; ctx.lineWidth = 0.65;
+  ctx.beginPath();
+  ctx.moveTo(-3.5, -7.8);
+  ctx.lineTo(-4.8, -11.5); // left peak
+  ctx.lineTo(-2.2, -9.5);
+  ctx.lineTo(0, -12.5);    // center peak
+  ctx.lineTo(2.2, -9.5);
+  ctx.lineTo(4.8, -11.5);  // right peak
+  ctx.lineTo(3.5, -7.8);
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  
+  // Tiny crown ruby jewels
+  ctx.fillStyle = "#ef4444";
+  ctx.beginPath();
+  ctx.arc(-4.8, -11.5, 0.5, 0, Math.PI*2);
+  ctx.arc(0, -12.5, 0.5, 0, Math.PI*2);
+  ctx.arc(4.8, -11.5, 0.5, 0, Math.PI*2);
+  ctx.fill();
 
   ctx.shadowBlur = 0;
 
   // Gloss highlight glint
-  ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
+  ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
   ctx.beginPath();
   ctx.arc(-2.4, -3.8, 1.2, 0, Math.PI * 2);
   ctx.fill();
@@ -3039,29 +3062,33 @@ function drawTurtleFood(ctx, ux, uy, timestamp) {
   ctx.stroke();
 }
 
-// 🥚 41. Turtle Eggs (soft, leathery, deflated beige egg)
+// 🥚 41. Turtle Eggs (Clutch of 3 small, round, leathery beige eggs in a nest)
 function drawTurtleEggsFood(ctx, timestamp) {
-  ctx.shadowColor = "rgba(254, 240, 138, 0.15)"; ctx.shadowBlur = 4;
-  // Leathery deflated shape
-  ctx.beginPath();
-  ctx.moveTo(0, -6.5);
-  ctx.bezierCurveTo(4.2, -6.5, 6.0, 1.0, 5.2, 4.2);
-  ctx.bezierCurveTo(4.5, 7.5, 2.5, 8.5, 0, 8.5);
-  ctx.bezierCurveTo(-2.5, 8.5, -4.5, 7.5, -5.2, 4.2);
-  ctx.bezierCurveTo(-6.0, 1.0, -4.2, -6.5, 0, -6.5);
-  ctx.closePath();
-  // Shading
-  const grad = ctx.createRadialGradient(-1.8, -2.0, 1.2, 0, 1.5, 8.0);
-  grad.addColorStop(0, "#fef08a"); // highlights
-  grad.addColorStop(0.4, "#fef9c3"); // light cream
-  grad.addColorStop(1.0, "#ca8a04"); // soft brown-yellow
-  ctx.fillStyle = grad; ctx.fill();
-  // Slightly wrinkled overlay lines
-  ctx.strokeStyle = "rgba(0,0,0,0.12)"; ctx.lineWidth = 0.5;
-  ctx.beginPath();
-  ctx.moveTo(-2.5, -1.0); ctx.quadraticCurveTo(0, 0, 2.5, -1.0);
-  ctx.moveTo(-3.2, 2.5); ctx.quadraticCurveTo(0, 3.5, 3.2, 2.5);
-  ctx.stroke();
+  ctx.shadowColor = "rgba(120, 113, 108, 0.2)"; ctx.shadowBlur = 4;
+
+  // Helper function to draw a single round leathery egg
+  const drawSingleRoundEgg = (ox, oy, rad) => {
+    ctx.save();
+    ctx.translate(ox, oy);
+    ctx.beginPath();
+    ctx.arc(0, 0, rad, 0, Math.PI * 2);
+    const grad = ctx.createRadialGradient(-rad * 0.3, -rad * 0.3, rad * 0.15, 0, 0, rad * 1.1);
+    grad.addColorStop(0, "#ffffff");     // highlight
+    grad.addColorStop(0.35, "#fafaf9");  // beige cream
+    grad.addColorStop(1.0, "#d6d3d1");   // warm shadow
+    ctx.fillStyle = grad; ctx.fill();
+    ctx.strokeStyle = "rgba(120, 113, 108, 0.35)"; ctx.lineWidth = 0.55;
+    ctx.stroke();
+    // Tiny crease wrinkle
+    ctx.strokeStyle = "rgba(0,0,0,0.08)"; ctx.lineWidth = 0.4;
+    ctx.beginPath(); ctx.moveTo(-rad*0.5, rad*0.2); ctx.quadraticCurveTo(0, rad*0.4, rad*0.5, rad*0.2); ctx.stroke();
+    ctx.restore();
+  };
+
+  // Draw 3 overlapping eggs in a nest cluster
+  drawSingleRoundEgg(-2.8, 2.2, 4.4); // bottom-left egg
+  drawSingleRoundEgg(2.8, 2.2, 4.4);  // bottom-right egg
+  drawSingleRoundEgg(0, -2.6, 4.6);   // top centered egg
 }
 
 // 🐊 42. Crocodile Hatchling (crawling baby crocodile body)
@@ -3541,27 +3568,38 @@ function drawScorpionFood(ctx, ux, uy, timestamp) {
   ctx.fill();
 }
 
-// 🥚 58. Reptile Eggs (wrinkled white/cream oval)
+// 🥚 58. Reptile Eggs (Clutch of 2 elongated, matte cream-grey eggs side-by-side)
 function drawReptileEggsFood(ctx, timestamp) {
-  ctx.shadowColor = "rgba(228, 228, 231, 0.15)"; ctx.shadowBlur = 4;
-  // Elongated leathery egg shape
-  ctx.beginPath();
-  ctx.moveTo(0, -8.2);
-  ctx.bezierCurveTo(4.2, -8.2, 5.2, 1.8, 5.2, 5.8);
-  ctx.bezierCurveTo(5.2, 9.8, 2.8, 10.8, 0, 10.8);
-  ctx.bezierCurveTo(-2.8, 10.8, -5.2, 9.8, -5.2, 5.8);
-  ctx.bezierCurveTo(-5.2, 1.8, -4.2, -8.2, 0, -8.2);
-  ctx.closePath();
-  // Shading
-  const grad = ctx.createRadialGradient(-1.8, -2.5, 1.4, 0, 1.8, 10.2);
-  grad.addColorStop(0, "#ffffff"); // highlights
-  grad.addColorStop(0.4, "#fafafa"); // soft white-grey
-  grad.addColorStop(1.0, "#a1a1aa"); // slate-grey shadows
-  ctx.fillStyle = grad; ctx.fill();
-  // Wrinkle crease lines
-  ctx.strokeStyle = "rgba(0,0,0,0.1)"; ctx.lineWidth = 0.5;
-  ctx.beginPath();
-  ctx.moveTo(-2.8, -2.5); ctx.quadraticCurveTo(0, -1.5, 2.8, -2.5);
-  ctx.moveTo(-3.8, 4.2); ctx.quadraticCurveTo(0, 5.2, 3.8, 4.2);
-  ctx.stroke();
+  ctx.shadowColor = "rgba(168, 162, 158, 0.18)"; ctx.shadowBlur = 4;
+
+  // Helper function to draw a single elongated leathery egg
+  const drawSingleElongatedEgg = (ox, oy, angle) => {
+    ctx.save();
+    ctx.translate(ox, oy);
+    ctx.rotate(angle);
+    ctx.beginPath();
+    ctx.moveTo(0, -7.5);
+    ctx.bezierCurveTo(3.8, -7.5, 4.5, 1.8, 4.5, 5.2);
+    ctx.bezierCurveTo(4.5, 8.8, 2.2, 9.8, 0, 9.8);
+    ctx.bezierCurveTo(-2.2, 9.8, -4.5, 8.8, -4.5, 5.2);
+    ctx.bezierCurveTo(-4.5, 1.8, -3.8, -7.5, 0, -7.5);
+    ctx.closePath();
+
+    const grad = ctx.createRadialGradient(-1.4, -2.2, 1.2, 0, 1.5, 8.5);
+    grad.addColorStop(0, "#ffffff");     // highlight
+    grad.addColorStop(0.35, "#fafaf9");  // soft beige cream
+    grad.addColorStop(1.0, "#a8a29e");   // warm shadow
+    ctx.fillStyle = grad; ctx.fill();
+    ctx.strokeStyle = "rgba(120, 113, 108, 0.35)"; ctx.lineWidth = 0.55;
+    ctx.stroke();
+
+    // Crease line
+    ctx.strokeStyle = "rgba(0,0,0,0.08)"; ctx.lineWidth = 0.45;
+    ctx.beginPath(); ctx.moveTo(-2.4, -1.8); ctx.quadraticCurveTo(0, -1.0, 2.4, -1.8); ctx.stroke();
+    ctx.restore();
+  };
+
+  // Draw 2 elongated eggs side-by-side, slightly splayed outwards
+  drawSingleElongatedEgg(-2.8, 0.8, -0.15); // left egg
+  drawSingleElongatedEgg(2.8, -0.8, 0.15);  // right egg
 }
