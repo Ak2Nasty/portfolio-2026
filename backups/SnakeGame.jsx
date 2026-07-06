@@ -2978,9 +2978,21 @@ function drawIguanaFood(ctx, ux, uy, timestamp) {
   ctx.beginPath(); ctx.arc(1.8 + px * 0.5, -2.6 + py * 0.5, 0.8, 0, Math.PI * 2); ctx.fill();
 }
 
-// 🐢 40. Turtle (green shell segments, head poking out)
+// 🐢 40. Turtle (green shell segments, head and flippers poking out)
 function drawTurtleFood(ctx, ux, uy, timestamp) {
   ctx.shadowColor = "rgba(21, 128, 61, 0.3)"; ctx.shadowBlur = 5;
+
+  // 4 Flippers poking out from the shell (drawn behind)
+  ctx.fillStyle = "#4ade80";
+  // Front-left flipper
+  ctx.beginPath(); ctx.ellipse(-5.5, 3.5, 1.8, 3.5, -0.6, 0, Math.PI * 2); ctx.fill();
+  // Front-right flipper
+  ctx.beginPath(); ctx.ellipse(5.5, 3.5, 1.8, 3.5, 0.6, 0, Math.PI * 2); ctx.fill();
+  // Rear-left flipper
+  ctx.beginPath(); ctx.ellipse(-5.0, -4.5, 1.4, 2.8, 0.4, 0, Math.PI * 2); ctx.fill();
+  // Rear-right flipper
+  ctx.beginPath(); ctx.ellipse(5.0, -4.5, 1.4, 2.8, -0.4, 0, Math.PI * 2); ctx.fill();
+
   // Head (pokes out slightly based on timestamp)
   const headBob = Math.sin(timestamp / 200) * 0.8;
   ctx.fillStyle = "#4ade80";
