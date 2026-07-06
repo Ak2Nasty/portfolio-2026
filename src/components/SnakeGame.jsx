@@ -1711,8 +1711,8 @@ export function SnakeGame({ isOpen, onClose }) {
     s.nextDir   = { x: 1, y: 0 };
     s.preyPool  = []; // Reset pool for fresh shuffle
     s.foodMoveCounter = 0;
-    s.food      = randomFood(s);
     s.score     = 0;
+    s.food      = randomFood(s);
     s.state     = "PLAYING";
     s.lastMove  = 0;
     s.speed     = BASE_SPEED;
