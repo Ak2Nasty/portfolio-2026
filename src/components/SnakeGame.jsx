@@ -2531,12 +2531,20 @@ function drawHareFood(ctx, ux, uy, timestamp) {
 function drawBatFood(ctx, ux, uy, timestamp) {
   ctx.shadowColor = "rgba(30, 41, 59, 0.35)"; ctx.shadowBlur = 6;
   const wingFlap = Math.sin(timestamp / 90) * 1.2;
-  // Folded Wings
+  // Folded Wings with scalloped edges
   ctx.fillStyle = "#0f172a";
   ctx.beginPath();
-  ctx.moveTo(-6, -2); ctx.lineTo(-12 + wingFlap, -4); ctx.lineTo(-8, 6); ctx.closePath(); ctx.fill();
+  ctx.moveTo(-4, -1);
+  ctx.lineTo(-12 + wingFlap, -4);
+  ctx.quadraticCurveTo(-10, 2, -7, 5);
+  ctx.quadraticCurveTo(-5, 2, -4, 1);
+  ctx.closePath(); ctx.fill();
   ctx.beginPath();
-  ctx.moveTo(6, -2); ctx.lineTo(12 - wingFlap, -4); ctx.lineTo(8, 6); ctx.closePath(); ctx.fill();
+  ctx.moveTo(4, -1);
+  ctx.lineTo(12 - wingFlap, -4);
+  ctx.quadraticCurveTo(10, 2, 7, 5);
+  ctx.quadraticCurveTo(5, 2, 4, 1);
+  ctx.closePath(); ctx.fill();
   // Pointy ears
   ctx.fillStyle = "#0f172a";
   ctx.beginPath();
@@ -2594,22 +2602,38 @@ function drawMonkeyFood(ctx, ux, uy, timestamp) {
   // Head
   ctx.fillStyle = "#78350f";
   roundRect(ctx, -7.0, -4.5, 14, 11, 4.8); ctx.fill();
-  // Face Skin Overlay
+  // Heart-shaped Face Mask (extremely monkey-like)
   ctx.fillStyle = "#fed7aa";
-  roundRect(ctx, -5.0, -2.5, 10, 8, 3.2); ctx.fill();
+  ctx.beginPath();
+  ctx.arc(-2.2, -1.2, 2.8, 0, Math.PI * 2);
+  ctx.arc(2.2, -1.2, 2.8, 0, Math.PI * 2);
+  ctx.arc(0, 1.2, 3.2, 0, Math.PI * 2);
+  ctx.fill();
   // Eyes
   const px = ux * 1.3; const py = uy * 1.3;
   ctx.fillStyle = "#1e293b";
-  ctx.beginPath(); ctx.arc(-2.4, -0.6, 2.0, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(2.4, -0.6, 2.0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-2.2, -0.6, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.2, -0.6, 1.8, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = "#ffffff";
-  ctx.beginPath(); ctx.arc(-2.4 + px * 0.4, -0.6 + py * 0.4, 0.6, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(2.4 + px * 0.4, -0.6 + py * 0.4, 0.6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-2.2 + px * 0.4, -0.6 + py * 0.4, 0.6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.2 + px * 0.4, -0.6 + py * 0.4, 0.6, 0, Math.PI * 2); ctx.fill();
 }
 
 // 🦌 30. Deer (light brown, forehead spots)
 function drawDeerFood(ctx, ux, uy, timestamp) {
   ctx.shadowColor = "rgba(217, 119, 6, 0.25)"; ctx.shadowBlur = 5;
+  // Branching Antlers (highly accurate buck look)
+  ctx.strokeStyle = "#78350f"; ctx.lineWidth = 1.0; ctx.lineCap = "round";
+  // Left antler
+  ctx.beginPath();
+  ctx.moveTo(-3, -4.5); ctx.lineTo(-5.5, -9.5);
+  ctx.moveTo(-4.2, -7.0); ctx.lineTo(-6.8, -7.0);
+  ctx.stroke();
+  // Right antler
+  ctx.beginPath();
+  ctx.moveTo(3, -4.5); ctx.lineTo(5.5, -9.5);
+  ctx.moveTo(4.2, -7.0); ctx.lineTo(6.8, -7.0);
+  ctx.stroke();
   // Ears
   ctx.fillStyle = "#b45309";
   ctx.beginPath(); ctx.arc(-6.5, -5.0, 3.2, 0, Math.PI * 2); ctx.fill();
@@ -2897,11 +2921,23 @@ function drawTurtleFood(ctx, ux, uy, timestamp) {
   // Shell Rim
   ctx.strokeStyle = "#166534"; ctx.lineWidth = 1.0;
   ctx.stroke();
-  // Shell Inner Grid lines
-  ctx.strokeStyle = "rgba(255,255,255,0.18)"; ctx.lineWidth = 0.65;
+  // Shell Inner Hexagonal Scutes (highly accurate turtle shell)
+  ctx.strokeStyle = "rgba(255,255,255,0.22)"; ctx.lineWidth = 0.65;
   ctx.beginPath();
-  ctx.moveTo(-5.5, 0); ctx.lineTo(5.5, 0);
-  ctx.moveTo(0, -5.5); ctx.lineTo(0, 5.5);
+  for (let k = 0; k < 6; k++) {
+    const angle = (k * Math.PI) / 3;
+    const x = Math.cos(angle) * 3.2;
+    const y = Math.sin(angle) * 3.2;
+    if (k === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.closePath(); ctx.stroke();
+  ctx.beginPath();
+  for (let k = 0; k < 6; k++) {
+    const angle = (k * Math.PI) / 3;
+    ctx.moveTo(Math.cos(angle) * 3.2, Math.sin(angle) * 3.2);
+    ctx.lineTo(Math.cos(angle) * 7.5, Math.sin(angle) * 7.5);
+  }
   ctx.stroke();
 }
 
@@ -3048,16 +3084,16 @@ function drawMinnowsFood(ctx, ux, uy, timestamp) {
 // 🐟 47. Catfish (barbels whiskers, flat grey head)
 function drawCatfishFood(ctx, ux, uy, timestamp) {
   ctx.shadowColor = "rgba(71, 85, 105, 0.3)"; ctx.shadowBlur = 5;
-  // 4 Whiskers (barbels - wiggle slightly)
+  // 4 Curved Barbels / Whiskers (highly realistic catfish feel)
   const whiskerBob = Math.sin(timestamp / 100) * 0.8;
-  ctx.strokeStyle = "#334155"; ctx.lineWidth = 1.0;
+  ctx.strokeStyle = "#334155"; ctx.lineWidth = 0.85;
   ctx.beginPath();
-  // Upper left/right barbels
-  ctx.moveTo(-2.5, 3.0); ctx.lineTo(-8.5, 4.5 + whiskerBob);
-  ctx.moveTo(2.5, 3.0); ctx.lineTo(8.5, 4.5 - whiskerBob);
-  // Lower left/right barbels
-  ctx.moveTo(-1.5, 4.5); ctx.lineTo(-6.5, 7.0 + whiskerBob * 0.5);
-  ctx.moveTo(1.5, 4.5); ctx.lineTo(6.5, 7.0 - whiskerBob * 0.5);
+  // Upper barbels
+  ctx.moveTo(-2.5, 3.0); ctx.bezierCurveTo(-5.5, 3.0, -8.0, 5.0, -9.5, 5.2 + whiskerBob);
+  ctx.moveTo(2.5, 3.0); ctx.bezierCurveTo(5.5, 3.0, 8.0, 5.0, 9.5, 5.2 - whiskerBob);
+  // Lower barbels
+  ctx.moveTo(-1.5, 4.5); ctx.bezierCurveTo(-3.5, 5.0, -5.5, 7.5, -6.8, 7.8 + whiskerBob * 0.5);
+  ctx.moveTo(1.5, 4.5); ctx.bezierCurveTo(3.5, 5.0, 5.5, 7.5, 6.8, 7.8 - whiskerBob * 0.5);
   ctx.stroke();
   // Flat head / body
   ctx.fillStyle = "#475569";
@@ -3306,19 +3342,19 @@ function drawCaterpillarFood(ctx, ux, uy, timestamp) {
 function drawSpiderFood(ctx, ux, uy, timestamp) {
   ctx.shadowColor = "rgba(220, 38, 38, 0.15)"; ctx.shadowBlur = 5;
   const legShifty = Math.sin(timestamp / 70) * 0.8;
-  // 8 Thin Legs
-  ctx.strokeStyle = "#09090b"; ctx.lineWidth = 0.75;
+  // 8 Jointed Legs (highly accurate arachnid layout)
+  ctx.strokeStyle = "#09090b"; ctx.lineWidth = 0.85;
   ctx.beginPath();
-  // Left 4 legs
-  ctx.moveTo(-2, -1); ctx.lineTo(-8, -4 + legShifty);
-  ctx.moveTo(-2, 0); ctx.lineTo(-9, 0 - legShifty);
-  ctx.moveTo(-2, 1); ctx.lineTo(-8, 3 + legShifty);
-  ctx.moveTo(-2, 2); ctx.lineTo(-7, 6 - legShifty);
-  // Right 4 legs
-  ctx.moveTo(2, -1); ctx.lineTo(8, -4 - legShifty);
-  ctx.moveTo(2, 0); ctx.lineTo(9, 0 + legShifty);
-  ctx.moveTo(2, 1); ctx.lineTo(8, 3 - legShifty);
-  ctx.moveTo(2, 2); ctx.lineTo(7, 6 + legShifty);
+  // Left 4 legs with bends
+  ctx.moveTo(-2, -1); ctx.lineTo(-5, -4 + legShifty * 0.5); ctx.lineTo(-8, -2 + legShifty);
+  ctx.moveTo(-2, 0); ctx.lineTo(-6, -1 - legShifty * 0.5); ctx.lineTo(-9, 1 - legShifty);
+  ctx.moveTo(-2, 1); ctx.lineTo(-5, 3 + legShifty * 0.5); ctx.lineTo(-8, 5 + legShifty);
+  ctx.moveTo(-2, 2); ctx.lineTo(-4, 5 - legShifty * 0.5); ctx.lineTo(-7, 7.5 - legShifty);
+  // Right 4 legs with bends
+  ctx.moveTo(2, -1); ctx.lineTo(5, -4 - legShifty * 0.5); ctx.lineTo(8, -2 - legShifty);
+  ctx.moveTo(2, 0); ctx.lineTo(6, -1 + legShifty * 0.5); ctx.lineTo(9, 1 + legShifty);
+  ctx.moveTo(2, 1); ctx.lineTo(5, 3 - legShifty * 0.5); ctx.lineTo(8, 5 - legShifty);
+  ctx.moveTo(2, 2); ctx.lineTo(4, 5 + legShifty * 0.5); ctx.lineTo(7, 7.5 + legShifty);
   ctx.stroke();
   // Round Abdomen / Head
   ctx.fillStyle = "#09090b";
@@ -3353,11 +3389,21 @@ function drawScorpionFood(ctx, ux, uy, timestamp) {
   // Body segments
   ctx.fillStyle = "#451a03";
   roundRect(ctx, -5.5, -4.5, 11, 9, 3.8); ctx.fill();
-  // Claws
+  // Claws with pincers (highly accurate claw details)
   ctx.strokeStyle = "#451a03"; ctx.lineWidth = 1.2;
   ctx.beginPath();
   ctx.moveTo(-3, 2.5); ctx.quadraticCurveTo(-7, 5.0, -6, 7.5);
   ctx.moveTo(3, 2.5); ctx.quadraticCurveTo(7, 5.0, 6, 7.5);
+  ctx.stroke();
+  ctx.fillStyle = "#451a03";
+  ctx.beginPath();
+  ctx.arc(-6, 7.5, 1.6, 0, Math.PI * 2);
+  ctx.arc(6, 7.5, 1.6, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = "#ea580c"; ctx.lineWidth = 0.55;
+  ctx.beginPath();
+  ctx.arc(-6, 7.5, 1.2, -Math.PI * 0.5, Math.PI * 0.5);
+  ctx.arc(6, 7.5, 1.2, -Math.PI * 0.5, Math.PI * 0.5);
   ctx.stroke();
   // Eyes
   ctx.fillStyle = "#ea580c";
