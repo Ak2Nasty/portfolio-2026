@@ -100,6 +100,7 @@ function randomFood(s) {
 
 // ─── Food Drawing Router ──────────────────────────────────────────────────────
 function drawFood(ctx, food, snakeHead, timestamp) {
+  const type = food.type ?? 0;
   let cx = food.x * CELL + CELL / 2;
   let cy = food.y * CELL + CELL / 2;
 
@@ -142,9 +143,20 @@ function drawFood(ctx, food, snakeHead, timestamp) {
 
   // Soft breathing scale animation (pulses at 4.5Hz)
   const breath = Math.sin(timestamp / 220) * 0.035;
-  ctx.scale(1.15 + breath, 1.15 + breath);
+  
+  // Customize base scale per food type to ensure ALL animals fill the cell box as much as possible
+  let baseScale = 1.45; // Default upscale for smaller animals, insects, reptiles, and fish
+  if (type === 0 || type === 3 || type === 4 || type === 5 || type === 6 || type === 7 || type === 9) {
+    // Large front-facing rodent faces (Rat, Mouse, Hamster, Gerbil, Rabbit, Guinea Pig, Squirrel)
+    baseScale = 1.25;
+  } else if (type === 2 || type === 22 || type === 41 || type === 58) {
+    // Eggs (Pearl Egg, Golden Egg, Turtle Eggs, Reptile Eggs)
+    baseScale = 1.18;
+  }
+  
+  const scaleVal = baseScale + breath;
+  ctx.scale(scaleVal, scaleVal);
 
-  const type = food.type ?? 0;
   switch (type) {
     case 0:  drawRatFood(ctx, ux, uy, timestamp); break;
     case 1:  drawFrogFood(ctx, ux, uy, timestamp); break;
