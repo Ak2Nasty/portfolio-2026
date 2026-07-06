@@ -482,11 +482,11 @@ function drawEggFood(ctx, timestamp) {
   ctx.fill();
 }
 
-// 👑 22. Luminous 3D Golden Egg (Mini-boss, gives +3 points, wears royal gold crown)
+// 👑 22. Luminous 3D Golden Egg (Mini-boss, gives +3 points)
 function drawGoldenEggFood(ctx, timestamp) {
-  // Ultra-rich golden shadow glow
-  ctx.shadowColor = "rgba(250, 204, 21, 0.75)";
-  ctx.shadowBlur = 12;
+  // Rich golden shadow glow
+  ctx.shadowColor = "rgba(250, 204, 21, 0.45)";
+  ctx.shadowBlur = 8;
 
   // Egg Body (mathematically smooth egg curve, scaled up by 1.2x)
   ctx.beginPath();
@@ -499,43 +499,21 @@ function drawGoldenEggFood(ctx, timestamp) {
 
   // 3D Shading Gradient (light from top-left, rich gold metallic shading)
   const grad = ctx.createRadialGradient(-2.2, -2.6, 1.4, 0, 1.8, 10.2);
-  grad.addColorStop(0, "#ffffff");      // core hot highlight
-  grad.addColorStop(0.18, "#fef08a");   // bright gold highlight
-  grad.addColorStop(0.55, "#d97706");   // dark gold/amber core
-  grad.addColorStop(1.0, "#7c2d12");    // deep brown-rust metallic shadow
+  grad.addColorStop(0, "#fef08a");      // bright gold highlight
+  grad.addColorStop(0.35, "#fbbf24");   // amber-400 core
+  grad.addColorStop(1.0, "#92400e");    // amber-800 deep metallic shadow
   ctx.fillStyle = grad;
   ctx.fill();
 
   // Crisp gold shell outline
-  ctx.strokeStyle = "rgba(250, 204, 21, 0.8)";
-  ctx.lineWidth = 0.85;
+  ctx.strokeStyle = "rgba(250, 204, 21, 0.6)";
+  ctx.lineWidth = 0.75;
   ctx.stroke();
-
-  // Tiny Royal Gold Crown on top of the egg! (hilarious and premium)
-  ctx.fillStyle = "#facc15";
-  ctx.strokeStyle = "#92400e"; ctx.lineWidth = 0.65;
-  ctx.beginPath();
-  ctx.moveTo(-3.5, -7.8);
-  ctx.lineTo(-4.8, -11.5); // left peak
-  ctx.lineTo(-2.2, -9.5);
-  ctx.lineTo(0, -12.5);    // center peak
-  ctx.lineTo(2.2, -9.5);
-  ctx.lineTo(4.8, -11.5);  // right peak
-  ctx.lineTo(3.5, -7.8);
-  ctx.closePath(); ctx.fill(); ctx.stroke();
-  
-  // Tiny crown ruby jewels
-  ctx.fillStyle = "#ef4444";
-  ctx.beginPath();
-  ctx.arc(-4.8, -11.5, 0.5, 0, Math.PI*2);
-  ctx.arc(0, -12.5, 0.5, 0, Math.PI*2);
-  ctx.arc(4.8, -11.5, 0.5, 0, Math.PI*2);
-  ctx.fill();
 
   ctx.shadowBlur = 0;
 
   // Gloss highlight glint
-  ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+  ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
   ctx.beginPath();
   ctx.arc(-2.4, -3.8, 1.2, 0, Math.PI * 2);
   ctx.fill();
