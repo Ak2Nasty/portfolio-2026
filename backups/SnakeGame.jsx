@@ -2478,11 +2478,14 @@ function drawShrewFood(ctx, ux, uy, timestamp) {
   // Whiskers
   ctx.strokeStyle = "#9ca3af"; ctx.lineWidth = 0.5;
   ctx.beginPath(); ctx.moveTo(-3, 4); ctx.lineTo(-8, 5); ctx.moveTo(3, 4); ctx.lineTo(8, 5); ctx.stroke();
-  // Tiny Eyes
+  // Shocked beady eyes (wide white scleras with tiny pupils)
   const px = ux * 0.8; const py = uy * 0.8;
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath(); ctx.arc(-2.4, -0.5, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.4, -0.5, 1.8, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = "#111827";
-  ctx.beginPath(); ctx.arc(-2.4, -0.5, 1.2, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(2.4, -0.5, 1.2, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-2.4 + px * 0.4, -0.5 + py * 0.4, 0.6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.4 + px * 0.4, -0.5 + py * 0.4, 0.6, 0, Math.PI * 2); ctx.fill();
 }
 
 // 🐿️ 25. Chipmunk (striped brown back, white cheeks)
@@ -2595,11 +2598,14 @@ function drawOpossumFood(ctx, ux, uy, timestamp) {
   // Pink Nose
   ctx.fillStyle = "#fda4af";
   ctx.beginPath(); ctx.arc(0, 5.8, 1.4, 0, Math.PI * 2); ctx.fill();
-  // Bead Eyes
+  // Shocked eyes (wide white scleras, tiny pinpoint pupils)
   const px = ux * 0.9; const py = uy * 0.9;
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath(); ctx.arc(-2.6, 0.2, 2.2, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.6, 0.2, 2.2, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = "#09090b";
-  ctx.beginPath(); ctx.arc(-2.6, 0.2, 1.6, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(2.6, 0.2, 1.6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-2.6 + px * 0.5, 0.2 + py * 0.5, 0.6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.6 + px * 0.5, 0.2 + py * 0.5, 0.6, 0, Math.PI * 2); ctx.fill();
 }
 
 // 🐒 29. Monkey (round brown ears, peach skin face)
@@ -2666,11 +2672,14 @@ function drawDeerFood(ctx, ux, uy, timestamp) {
   roundRect(ctx, -2.8, 3.2, 5.6, 3.2, 1.2); ctx.fill();
   ctx.fillStyle = "#1e293b";
   ctx.beginPath(); ctx.arc(0, 5.4, 1.2, 0, Math.PI * 2); ctx.fill();
-  // Eyes
+  // Shocked Deer eyes
   const px = ux * 1.2; const py = uy * 1.2;
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath(); ctx.arc(-2.8, 0.2, 2.4, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.8, 0.2, 2.4, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = "#18181b";
-  ctx.beginPath(); ctx.arc(-2.8, 0.2, 2.0, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(2.8, 0.2, 2.0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-2.8 + px * 0.5, 0.2 + py * 0.5, 0.6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.8 + px * 0.5, 0.2 + py * 0.5, 0.6, 0, Math.PI * 2); ctx.fill();
 }
 
 // 🐷 31. Pig (pink, large snout with nostrils)
@@ -2690,11 +2699,14 @@ function drawPigFood(ctx, ux, uy, timestamp) {
   ctx.fillStyle = "#9d174d";
   ctx.beginPath(); ctx.arc(-1.5, 4.8, 0.7, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath(); ctx.arc(1.5, 4.8, 0.7, 0, Math.PI * 2); ctx.fill();
-  // Eyes
+  // Petrified Pig eyes
   const px = ux * 1.1; const py = uy * 1.1;
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath(); ctx.arc(-3.2, -0.6, 2.4, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(3.2, -0.6, 2.4, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = "#18181b";
-  ctx.beginPath(); ctx.arc(-3.2, -0.6, 1.8, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(3.2, -0.6, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-3.2 + px * 0.5, -0.6 + py * 0.5, 0.6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(3.2 + px * 0.5, -0.6 + py * 0.5, 0.6, 0, Math.PI * 2); ctx.fill();
 }
 
 // 🐦 32. Pigeon (slate blue head, iridescent neck)
@@ -2741,11 +2753,14 @@ function drawSparrowFood(ctx, ux, uy, timestamp) {
   ctx.fillStyle = "#eab308";
   ctx.beginPath();
   ctx.moveTo(-1.8, 3.8); ctx.lineTo(0, 7.2); ctx.lineTo(1.8, 3.8); ctx.closePath(); ctx.fill();
-  // Eyes
+  // Petrified wide-eyed sparrow
   const px = ux * 1.2; const py = uy * 1.2;
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath(); ctx.arc(-2.8, -0.8, 2.4, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.8, -0.8, 2.4, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = "#111827";
-  ctx.beginPath(); ctx.arc(-2.8, -0.8, 2.0, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(2.8, -0.8, 2.0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-2.8 + px * 0.5, -0.8 + py * 0.5, 0.6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.8 + px * 0.5, -0.8 + py * 0.5, 0.6, 0, Math.PI * 2); ctx.fill();
 }
 
 // 🐦 34. Quail (plump bird, teardrop plume)
@@ -2770,11 +2785,14 @@ function drawQuailFood(ctx, ux, uy, timestamp) {
   ctx.fillStyle = "#d97706";
   ctx.beginPath();
   ctx.moveTo(-1.6, 4.0); ctx.lineTo(0, 7.2); ctx.lineTo(1.6, 4.0); ctx.closePath(); ctx.fill();
-  // Eyes
+  // Shocked wide-eyed quail
   const px = ux * 1.2; const py = uy * 1.2;
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath(); ctx.arc(-2.8, -0.5, 2.4, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.8, -0.5, 2.4, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = "#18181b";
-  ctx.beginPath(); ctx.arc(-2.8, -0.5, 1.8, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(2.8, -0.5, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-2.8 + px * 0.5, -0.5 + py * 0.5, 0.6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.8 + px * 0.5, -0.5 + py * 0.5, 0.6, 0, Math.PI * 2); ctx.fill();
 }
 
 // 🦜 35. Parrot (emerald green, yellow face, black curved beak)
@@ -3236,11 +3254,14 @@ function drawCatfishFood(ctx, ux, uy, timestamp) {
   ctx.beginPath();
   ctx.moveTo(0, 4.5); ctx.lineTo(-2.8, 8.5); ctx.lineTo(2.8, 8.5);
   ctx.closePath(); ctx.fill();
-  // Eyes
+  // Wide petrified fish eyes
   const px = ux * 0.9; const py = uy * 0.9;
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath(); ctx.arc(-2.8, -1.5, 2.2, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.8, -1.5, 2.2, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = "#1e293b";
-  ctx.beginPath(); ctx.arc(-2.8, -1.5, 1.8, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(2.8, -1.5, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-2.8 + px * 0.5, -1.5 + py * 0.5, 0.6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.8 + px * 0.5, -1.5 + py * 0.5, 0.6, 0, Math.PI * 2); ctx.fill();
 }
 
 // 🐟 48. Carp (golden orange scales, barbels)
@@ -3406,11 +3427,14 @@ function drawCockroachFood(ctx, ux, uy, timestamp) {
   ctx.moveTo(-1.5, -4.5); ctx.quadraticCurveTo(-5, -9, -7.5 + antSway, -13.0);
   ctx.moveTo(1.5, -4.5); ctx.quadraticCurveTo(5, -9, 7.5 - antSway, -13.0);
   ctx.stroke();
-  // Tiny bead eyes
+  // Shocked insect eyes
   const px = ux * 0.8; const py = uy * 0.8;
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath(); ctx.arc(-2.0, -2.4, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.0, -2.4, 1.8, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = "#09090b";
-  ctx.beginPath(); ctx.arc(-2.0, -2.4, 1.2, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(2.0, -2.4, 1.2, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-2.0 + px * 0.4, -2.4 + py * 0.4, 0.5, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.0 + px * 0.4, -2.4 + py * 0.4, 0.5, 0, Math.PI * 2); ctx.fill();
 }
 
 // 🐞 54. Beetle (glossy black round shell)
@@ -3433,11 +3457,14 @@ function drawBeetleFood(ctx, ux, uy, timestamp) {
   // Glossy highlight glint
   ctx.fillStyle = "rgba(255,255,255,0.18)";
   ctx.beginPath(); ctx.ellipse(-2.5, -2.0, 1.0, 2.0, -0.4, 0, Math.PI * 2); ctx.fill();
-  // Eyes
+  // Panicked yellow compound eyes
   const px = ux * 1.0; const py = uy * 1.0;
-  ctx.fillStyle = "#fbbf24";
-  ctx.beginPath(); ctx.arc(-2.4, -2.2, 1.6, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(2.4, -2.2, 1.6, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#facc15";
+  ctx.beginPath(); ctx.arc(-2.4, -2.2, 2.0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.4, -2.2, 2.0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#0f172a";
+  ctx.beginPath(); ctx.arc(-2.4 + px * 0.5, -2.2 + py * 0.5, 0.6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.4 + px * 0.5, -2.2 + py * 0.5, 0.6, 0, Math.PI * 2); ctx.fill();
 }
 
 // 🐛 55. Caterpillar (bright green segmented loops)
@@ -3538,12 +3565,14 @@ function drawScorpionFood(ctx, ux, uy, timestamp) {
   ctx.arc(-6, 7.5, 1.2, -Math.PI * 0.5, Math.PI * 0.5);
   ctx.arc(6, 7.5, 1.2, -Math.PI * 0.5, Math.PI * 0.5);
   ctx.stroke();
-  // Eyes
-  ctx.fillStyle = "#ea580c";
-  ctx.beginPath();
-  ctx.arc(-1.6, 1.5, 0.7, 0, Math.PI * 2);
-  ctx.arc(1.6, 1.5, 0.7, 0, Math.PI * 2);
-  ctx.fill();
+  // Shocked scorpion eyes
+  const px = ux * 0.7; const py = uy * 0.7;
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath(); ctx.arc(-1.6, 1.5, 1.4, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(1.6, 1.5, 1.4, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#451a03";
+  ctx.beginPath(); ctx.arc(-1.6 + px * 0.4, 1.5 + py * 0.4, 0.5, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(1.6 + px * 0.4, 1.5 + py * 0.4, 0.5, 0, Math.PI * 2); ctx.fill();
 }
 
 // 🥚 58. Reptile Eggs (Clutch of 2 elongated, matte cream-grey eggs side-by-side)
