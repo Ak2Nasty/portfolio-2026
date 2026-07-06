@@ -2829,79 +2829,153 @@ function drawNestlingFood(ctx, ux, uy, timestamp) {
   ctx.stroke();
 }
 
-// 🦎 37. Gecko (neon green, suction toes)
+// 🦎 37. Gecko (sinuous neon green crawling body, suction pad toes)
 function drawGeckoFood(ctx, ux, uy, timestamp) {
   ctx.shadowColor = "rgba(34, 197, 94, 0.35)"; ctx.shadowBlur = 6;
-  // Little pads / limbs
-  ctx.fillStyle = "#22c55e";
-  ctx.beginPath(); ctx.arc(-6.8, -4.8, 2.0, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(6.8, -4.8, 2.0, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(-6.8, 4.8, 2.0, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(6.8, 4.8, 2.0, 0, Math.PI * 2); ctx.fill();
-  // Body
+  const wiggle = Math.sin(timestamp / 70) * 1.6;
+
+  // 4 Legs with circular suction toes
+  ctx.strokeStyle = "#16a34a"; ctx.lineWidth = 1.5; ctx.lineCap = "round";
+  // Front legs & toes
+  ctx.beginPath(); ctx.moveTo(-2.5, -2); ctx.lineTo(-6, -4); ctx.stroke();
+  ctx.fillStyle = "#22c55e"; ctx.beginPath(); ctx.arc(-6, -4, 1.6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(2.5, -2); ctx.lineTo(6, -4); ctx.stroke();
+  ctx.fillStyle = "#22c55e"; ctx.beginPath(); ctx.arc(6, -4, 1.6, 0, Math.PI * 2); ctx.fill();
+  // Back legs & toes
+  ctx.beginPath(); ctx.moveTo(-2.5, 3); ctx.lineTo(-6.5, 4.5); ctx.stroke();
+  ctx.fillStyle = "#22c55e"; ctx.beginPath(); ctx.arc(-6.5, 4.5, 1.6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(2.5, 3); ctx.lineTo(6.5, 4.5); ctx.stroke();
+  ctx.fillStyle = "#22c55e"; ctx.beginPath(); ctx.arc(6.5, 4.5, 1.6, 0, Math.PI * 2); ctx.fill();
+
+  // Long wiggling tail
+  ctx.strokeStyle = "#4ade80"; ctx.lineWidth = 2.0; ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(0, 4.5);
+  ctx.quadraticCurveTo(wiggle, 8.2, wiggle * 1.4, 11.2);
+  ctx.stroke();
+
+  // Sinuous Gecko Body
   ctx.fillStyle = "#4ade80";
-  roundRect(ctx, -6.2, -4.5, 12.4, 9, 3.8); ctx.fill();
-  // Eyes (vertical pupils)
-  const px = ux * 1.2; const py = uy * 1.2;
-  ctx.fillStyle = "#fbbf24";
-  ctx.beginPath(); ctx.arc(-2.8, -1.5, 2.4, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(2.8, -1.5, 2.4, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 3.4, 5.0, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Head
+  ctx.fillStyle = "#22c55e";
+  ctx.beginPath();
+  ctx.moveTo(-2.8, -3.5); ctx.lineTo(0, -6.8); ctx.lineTo(2.8, -3.5);
+  ctx.closePath(); ctx.fill();
+
+  // Vertical Slit Eyes
+  const px = ux * 1.1; const py = uy * 1.1;
+  ctx.fillStyle = "#facc15";
+  ctx.beginPath(); ctx.arc(-1.8, -2.6, 1.8, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = "#1e293b";
-  ctx.beginPath(); ctx.ellipse(-2.8 + px, -1.5 + py, 0.6, 1.8, 0, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.ellipse(2.8 + px, -1.5 + py, 0.6, 1.8, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(-1.8 + px * 0.5, -2.6 + py * 0.5, 0.4, 1.2, 0, 0, Math.PI * 2); ctx.fill();
+
+  ctx.fillStyle = "#facc15";
+  ctx.beginPath(); ctx.arc(1.8, -2.6, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#1e293b";
+  ctx.beginPath(); ctx.ellipse(1.8 + px * 0.5, -2.6 + py * 0.5, 0.4, 1.2, 0, 0, Math.PI * 2); ctx.fill();
 }
 
-// 🦎 38. Skink (metallic brown back, electric blue tail)
+// 🦎 38. Skink (crawling metallic grey body, electric blue tail)
 function drawSkinkFood(ctx, ux, uy, timestamp) {
   ctx.shadowColor = "rgba(6, 182, 212, 0.3)"; ctx.shadowBlur = 5;
-  // Electric blue tail poking out bottom (wiggles)
   const tailWiggle = Math.sin(timestamp / 60) * 1.5;
+
+  // 4 Legs
+  ctx.strokeStyle = "#1f2937"; ctx.lineWidth = 1.4; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(-2, -1); ctx.lineTo(-6, -3); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(2, -1); ctx.lineTo(6, -3); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-2, 3); ctx.lineTo(-6, 4.2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(2, 3); ctx.lineTo(6, 4.2); ctx.stroke();
+
+  // Electric blue tail (long & wiggling)
   ctx.strokeStyle = "#06b6d4"; ctx.lineWidth = 2.4; ctx.lineCap = "round";
   ctx.beginPath();
   ctx.moveTo(0, 4.5);
   ctx.quadraticCurveTo(tailWiggle, 8.0, tailWiggle * 1.4, 11.2);
   ctx.stroke();
-  // Body
+
+  // Slender Sinuous Body
   ctx.fillStyle = "#374151";
-  roundRect(ctx, -5.5, -4.5, 11, 9, 3.5); ctx.fill();
-  // Copper stripes
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 3.2, 5.0, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Head
+  ctx.fillStyle = "#1f2937";
+  ctx.beginPath();
+  ctx.moveTo(-2.5, -3.2); ctx.lineTo(0, -6.5); ctx.lineTo(2.5, -3.2);
+  ctx.closePath(); ctx.fill();
+
+  // Copper stripes down back
   ctx.fillStyle = "#ea580c";
-  roundRect(ctx, -3.8, -4.5, 0.8, 9.0, 0.2); ctx.fill();
-  roundRect(ctx, 3.0, -4.5, 0.8, 9.0, 0.2); ctx.fill();
+  roundRect(ctx, -1.8, -3.0, 0.6, 6.8, 0.1); ctx.fill();
+  roundRect(ctx, 1.2, -3.0, 0.6, 6.8, 0.1); ctx.fill();
+
   // Eyes
   const px = ux * 1.0; const py = uy * 1.0;
   ctx.fillStyle = "#fbbf24";
-  ctx.beginPath(); ctx.arc(-2.4, -1.0, 1.8, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(2.4, -1.0, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-1.6, -2.4, 1.4, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(1.6, -2.4, 1.4, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = "#111827";
-  ctx.beginPath(); ctx.arc(-2.4 + px, -1.0 + py, 0.7, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(2.4 + px, -1.0 + py, 0.7, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-1.6 + px * 0.5, -2.4 + py * 0.5, 0.6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(1.6 + px * 0.5, -2.4 + py * 0.5, 0.6, 0, Math.PI * 2); ctx.fill();
 }
 
-// 🦎 39. Iguana (crest spikes, olive green)
+// 🦎 39. Iguana (crawling olive green body with spiky spine ridges)
 function drawIguanaFood(ctx, ux, uy, timestamp) {
-  ctx.shadowColor = "rgba(132, 204, 22, 0.3)"; ctx.shadowBlur = 5;
-  // Crest Spikes (drawn behind body)
+  ctx.shadowColor = "rgba(132, 204, 22, 0.35)"; ctx.shadowBlur = 5;
+  const wiggle = Math.sin(timestamp / 70) * 1.4;
+
+  // 4 Legs
+  ctx.strokeStyle = "#4d7c0f"; ctx.lineWidth = 1.6; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(-2.5, -1.5); ctx.lineTo(-6.5, -3.5); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(2.5, -1.5); ctx.lineTo(6.5, -3.5); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-2.5, 3.0); ctx.lineTo(-6.5, 4.5); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(2.5, 3.0); ctx.lineTo(6.5, 4.5); ctx.stroke();
+
+  // Tail
+  ctx.strokeStyle = "#65a30d"; ctx.lineWidth = 2.2; ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(0, 4.5);
+  ctx.quadraticCurveTo(wiggle, 8.2, wiggle * 1.4, 11.2);
+  ctx.stroke();
+
+  // Spikes along back (crest)
   ctx.fillStyle = "#84cc16";
   ctx.beginPath();
-  ctx.moveTo(-4, -4.5); ctx.lineTo(-4, -7.0); ctx.lineTo(-2, -4.5);
-  ctx.moveTo(-1, -4.5); ctx.lineTo(-1, -7.5); ctx.lineTo(1, -4.5);
-  ctx.moveTo(3, -4.5); ctx.lineTo(3, -7.0); ctx.lineTo(5, -4.5);
+  ctx.moveTo(-1, -2.5); ctx.lineTo(-2, -5.5); ctx.lineTo(0, -2.5);
+  ctx.moveTo(0, 0); ctx.lineTo(-1, -3.0); ctx.lineTo(1, 0);
+  ctx.moveTo(1, 2.5); ctx.lineTo(0, -0.5); ctx.lineTo(2, 2.5);
   ctx.fill();
+
   // Body
   ctx.fillStyle = "#65a30d";
-  roundRect(ctx, -6.5, -4.5, 13, 9, 3.6); ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 3.6, 5.2, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Head
+  ctx.fillStyle = "#4d7c0f";
+  ctx.beginPath();
+  ctx.moveTo(-2.8, -3.5); ctx.lineTo(0, -6.8); ctx.lineTo(2.8, -3.5);
+  ctx.closePath(); ctx.fill();
+
   // Dewlap throat fold
   ctx.fillStyle = "#84cc16";
-  roundRect(ctx, -3.5, 2.5, 7.0, 3.2, 1.2); ctx.fill();
+  roundRect(ctx, -2.0, 2.2, 4.0, 2.8, 1.0); ctx.fill();
+
   // Eyes
   const px = ux * 1.2; const py = uy * 1.2;
   ctx.fillStyle = "#facc15";
-  ctx.beginPath(); ctx.arc(-2.8, -1.0, 2.2, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(2.8, -1.0, 2.2, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-1.8, -2.6, 2.0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(1.8, -2.6, 2.0, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = "#1e293b";
-  ctx.beginPath(); ctx.arc(-2.8 + px, -1.0 + py, 0.8, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(2.8 + px, -1.0 + py, 0.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-1.8 + px * 0.5, -2.6 + py * 0.5, 0.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(1.8 + px * 0.5, -2.6 + py * 0.5, 0.8, 0, Math.PI * 2); ctx.fill();
 }
 
 // 🐢 40. Turtle (green shell segments, head poking out)
@@ -2966,26 +3040,56 @@ function drawTurtleEggsFood(ctx, timestamp) {
   ctx.stroke();
 }
 
-// 🐊 42. Crocodile Hatchling (long snout, scaly green ridges)
+// 🐊 42. Crocodile Hatchling (crawling baby crocodile body)
 function drawCrocodileHatchlingFood(ctx, ux, uy, timestamp) {
-  ctx.shadowColor = "rgba(22, 101, 52, 0.3)"; ctx.shadowBlur = 5;
-  // Head
-  ctx.fillStyle = "#15803d";
-  roundRect(ctx, -5.5, -4.5, 11, 8, 3.0); ctx.fill();
-  // Long Snout (croc shape)
+  ctx.shadowColor = "rgba(22, 101, 52, 0.35)"; ctx.shadowBlur = 5;
+  const wiggle = Math.sin(timestamp / 65) * 1.4;
+
+  // 4 Legs
+  ctx.strokeStyle = "#166534"; ctx.lineWidth = 1.6; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(-2.5, -1.0); ctx.lineTo(-6.5, -3.0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(2.5, -1.0); ctx.lineTo(6.5, -3.0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-2.5, 3.5); ctx.lineTo(-6.5, 5.0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(2.5, 3.5); ctx.lineTo(6.5, 5.0); ctx.stroke();
+
+  // Scaly Tail (wiggling)
+  ctx.strokeStyle = "#15803d"; ctx.lineWidth = 2.2; ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(0, 5.0);
+  ctx.quadraticCurveTo(wiggle, 8.8, wiggle * 1.4, 11.8);
+  ctx.stroke();
+
+  // Bumpy ridges on back
   ctx.fillStyle = "#166534";
-  roundRect(ctx, -3.2, 2.5, 6.4, 6.0, 1.0); ctx.fill();
+  ctx.beginPath();
+  ctx.arc(-1.2, -1.0, 0.7, 0, Math.PI * 2);
+  ctx.arc(1.2, -1.0, 0.7, 0, Math.PI * 2);
+  ctx.arc(-1.2, 1.5, 0.7, 0, Math.PI * 2);
+  ctx.arc(1.2, 1.5, 0.7, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Head Base
+  ctx.fillStyle = "#15803d";
+  ctx.beginPath();
+  ctx.ellipse(0, -2.5, 4.2, 3.8, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Long Snout (croc shape pointing upwards)
+  ctx.fillStyle = "#166534";
+  roundRect(ctx, -2.2, -8.5, 4.4, 6.0, 1.0); ctx.fill();
+
   // Nose holes
   ctx.fillStyle = "#111827";
-  ctx.beginPath(); ctx.arc(-1.0, 7.2, 0.5, 0, Math.PI * 2); ctx.arc(1.0, 7.2, 0.5, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-0.8, -8.0, 0.4, 0, Math.PI * 2); ctx.arc(0.8, -8.0, 0.4, 0, Math.PI * 2); ctx.fill();
+
   // Scared yellow eyes
   const px = ux * 1.1; const py = uy * 1.1;
   ctx.fillStyle = "#facc15";
-  ctx.beginPath(); ctx.arc(-2.4, -0.6, 2.0, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(2.4, -0.6, 2.0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-2.0, -2.8, 1.8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(2.0, -2.8, 1.8, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = "#111827";
-  ctx.beginPath(); ctx.ellipse(-2.4 + px, -0.6 + py, 0.5, 1.4, 0, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.ellipse(2.8 + px, -0.6 + py, 0.5, 1.4, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(-2.0 + px * 0.5, -2.8 + py * 0.5, 0.5, 1.2, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(2.0 + px * 0.5, -2.8 + py * 0.5, 0.5, 1.2, 0, 0, Math.PI * 2); ctx.fill();
 }
 
 // 🦎 43. Salamander (black body, yellow spots)
