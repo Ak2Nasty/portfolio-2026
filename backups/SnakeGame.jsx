@@ -161,11 +161,13 @@ function drawFood(ctx, food, snakeHead, timestamp) {
     case 17: drawSnailFood(ctx, ux, uy, timestamp); break;
     case 18: drawEarthwormFood(ctx, ux, uy, timestamp); break;
     case 19: drawCricketFood(ctx, ux, uy, timestamp); break;
+    case 20:
+    case 21: drawGoldenEggFood(ctx, timestamp); break;
     default: drawEggFood(ctx, timestamp); break;
   }
 
-  // Draw sweat droplet if the prey is panicked (ignore for the egg)
-  if (isPanicked && type !== 2) {
+  // Draw sweat droplet if the prey is panicked (ignore for normal and golden eggs)
+  if (isPanicked && type !== 2 && type !== 20 && type !== 21) {
     ctx.fillStyle = "#38bdf8"; // Light sky blue
     ctx.beginPath();
     const sx = 5.0;
@@ -420,6 +422,43 @@ function drawEggFood(ctx, timestamp) {
 
   // Gloss highlight glint
   ctx.fillStyle = "rgba(255, 255, 255, 0.65)";
+  ctx.beginPath();
+  ctx.arc(-2.4, -3.8, 1.2, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// 👑 22. Luminous 3D Golden Egg (Mini-boss, gives +3 points)
+function drawGoldenEggFood(ctx, timestamp) {
+  // Rich golden shadow glow
+  ctx.shadowColor = "rgba(250, 204, 21, 0.45)";
+  ctx.shadowBlur = 8;
+
+  // Egg Body (mathematically smooth egg curve, scaled up by 1.2x)
+  ctx.beginPath();
+  ctx.moveTo(0, -8.16);
+  ctx.bezierCurveTo(5.28, -8.16, 6.72, 1.44, 6.72, 5.28);
+  ctx.bezierCurveTo(6.72, 9.36, 4.08, 10.8, 0, 10.8);
+  ctx.bezierCurveTo(-4.08, 10.8, -6.72, 9.36, -6.72, 5.28);
+  ctx.bezierCurveTo(-6.72, 1.44, -5.28, -8.16, 0, -8.16);
+  ctx.closePath();
+
+  // 3D Shading Gradient (light from top-left, rich gold metallic shading)
+  const grad = ctx.createRadialGradient(-2.2, -2.6, 1.4, 0, 1.8, 10.2);
+  grad.addColorStop(0, "#fef08a");      // bright gold highlight
+  grad.addColorStop(0.35, "#fbbf24");   // amber-400 core
+  grad.addColorStop(1.0, "#92400e");    // amber-800 deep metallic shadow
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Crisp gold shell outline
+  ctx.strokeStyle = "rgba(250, 204, 21, 0.6)";
+  ctx.lineWidth = 0.75;
+  ctx.stroke();
+
+  ctx.shadowBlur = 0;
+
+  // Gloss highlight glint
+  ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
   ctx.beginPath();
   ctx.arc(-2.4, -3.8, 1.2, 0, Math.PI * 2);
   ctx.fill();
