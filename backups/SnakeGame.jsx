@@ -1,6 +1,124 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLenis } from "lenis/react";
+import { Volume2, VolumeX } from "lucide-react";
+
+// ─── Sound Synthesizer (HTML5 Web Audio API) ──────────────────────────────────
+class SoundFX {
+  static ctx = null;
+  static isMuted = false;
+
+  static init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    } catch (e) {
+      console.warn("Web Audio API not supported", e);
+    }
+  }
+
+  static playStart() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+    if (this.ctx.state === "suspended") this.ctx.resume();
+
+    const now = this.ctx.currentTime;
+    
+    // Play a friendly C5 -> G5 double beep
+    const notes = [523.25, 783.99];
+    notes.forEach((freq, index) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.type = "sine";
+      const noteTime = now + index * 0.08;
+      osc.frequency.setValueAtTime(freq, noteTime);
+      
+      gain.gain.setValueAtTime(0.04, noteTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, noteTime + 0.12);
+
+      osc.start(noteTime);
+      osc.stop(noteTime + 0.12);
+    });
+  }
+
+  static playEat() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+    if (this.ctx.state === "suspended") this.ctx.resume();
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.type = "square";
+    const now = this.ctx.currentTime;
+    osc.frequency.setValueAtTime(220, now);
+    osc.frequency.exponentialRampToValueAtTime(880, now + 0.08);
+
+    gain.gain.setValueAtTime(0.05, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+    osc.start(now);
+    osc.stop(now + 0.08);
+  }
+
+  static playGold() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+    if (this.ctx.state === "suspended") this.ctx.resume();
+
+    const now = this.ctx.currentTime;
+    
+    // Play a sparkling 4-note rapid arpeggio (C5 -> E5 -> G5 -> C6)
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach((freq, index) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.type = "triangle";
+      const noteTime = now + index * 0.05;
+      osc.frequency.setValueAtTime(freq, noteTime);
+      
+      gain.gain.setValueAtTime(0.06, noteTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, noteTime + 0.15);
+
+      osc.start(noteTime);
+      osc.stop(noteTime + 0.15);
+    });
+  }
+
+  static playDie() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+    if (this.ctx.state === "suspended") this.ctx.resume();
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.type = "sawtooth";
+    const now = this.ctx.currentTime;
+    osc.frequency.setValueAtTime(200, now);
+    osc.frequency.linearRampToValueAtTime(30, now + 0.4);
+
+    gain.gain.setValueAtTime(0.12, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+    osc.start(now);
+    osc.stop(now + 0.4);
+  }
+}
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 const CELL        = 24;
@@ -1758,6 +1876,12 @@ export function SnakeGame({ isOpen, onClose }) {
   const [score,        setScore]        = useState(0);
   const [highScore,    setHighScore]    = useState(parseInt(localStorage.getItem("snakeHighScore") || "0"));
   const [displayState, setDisplayState] = useState("IDLE");
+  const [isMuted,      setIsMuted]      = useState(() => localStorage.getItem("snakeMuted") === "true");
+
+  useEffect(() => {
+    SoundFX.isMuted = isMuted;
+    localStorage.setItem("snakeMuted", isMuted ? "true" : "false");
+  }, [isMuted]);
 
   const startGame = useCallback(() => {
     const s     = g.current;
@@ -1769,6 +1893,7 @@ export function SnakeGame({ isOpen, onClose }) {
     s.score     = 0;
     s.food      = randomFood(s);
     s.state     = "PLAYING";
+    SoundFX.playStart();
     s.lastMove  = 0;
     s.speed     = BASE_SPEED;
     s.particles = [];
@@ -1833,6 +1958,7 @@ export function SnakeGame({ isOpen, onClose }) {
       if (wallHit || selfHit) {
         s.state     = "DEAD";
         s.deathTime = timestamp;
+        SoundFX.playDie();
         s.impactX   = Math.min(Math.max(head.x, 0), COLS - 1) * CELL + CELL / 2;
         s.impactY   = Math.min(Math.max(head.y, 0), ROWS - 1) * CELL + CELL / 2;
         if (s.score > s.highScore) {
@@ -1844,7 +1970,13 @@ export function SnakeGame({ isOpen, onClose }) {
       } else {
         s.snake.unshift(head);
         if (head.x === s.food.x && head.y === s.food.y) {
-          const isMiniBoss = s.food.type === 20 || s.food.type === 21;
+          const isMiniBoss = s.food.type === 20 || s.food.type === 21 || s.food.type === 22;
+          
+          if (isMiniBoss) {
+            SoundFX.playGold();
+          } else {
+            SoundFX.playEat();
+          }
           
           // Special gold crumbs for mini boss
           if (isMiniBoss) {
@@ -2398,6 +2530,17 @@ export function SnakeGame({ isOpen, onClose }) {
                 <span className="font-['Outfit'] text-[11px] text-zinc-400 tracking-[0.15em] uppercase font-medium">
                   BEST <span className="text-[#4ade80] font-black ml-1 text-[13px]">{highScore}</span>
                 </span>
+                <button
+                  onClick={() => setIsMuted(prev => !prev)}
+                  className="text-zinc-500 hover:text-white hover:scale-110 transition-all p-1 cursor-pointer flex items-center justify-center mr-1"
+                  aria-label={isMuted ? "Unmute" : "Mute"}
+                >
+                  {isMuted ? (
+                    <VolumeX className="w-4 h-4" strokeWidth={2} />
+                  ) : (
+                    <Volume2 className="w-4 h-4" strokeWidth={2} />
+                  )}
+                </button>
                 <button
                   onClick={onClose}
                   className="text-zinc-500 hover:text-white hover:scale-110 transition-all text-[24px] leading-none ml-1 cursor-pointer"
