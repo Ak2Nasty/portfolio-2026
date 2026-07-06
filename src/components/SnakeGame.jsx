@@ -175,6 +175,10 @@ function spawnParticles(particles, fx, fy) {
 }
 
 function randomFood(s) {
+  // Infinite loop safety check (board is full)
+  if (s.snake.length >= COLS * ROWS) {
+    return { x: -1, y: -1, type: 0 };
+  }
   let pos;
   do {
     pos = {
@@ -2048,7 +2052,19 @@ export function SnakeGame({ isOpen, onClose }) {
             text: sfxText,
           });
 
-          s.food      = randomFood(s);
+          if (s.snake.length >= COLS * ROWS) {
+            s.state = "DEAD";
+            s.deathTime = timestamp;
+            s.food = { x: -1, y: -1, type: 0 };
+            if (s.score > s.highScore) {
+              s.highScore = s.score;
+              localStorage.setItem("snakeHighScore", s.score);
+              setHighScore(s.score);
+            }
+            setDisplayState("DEAD");
+          } else {
+            s.food = randomFood(s);
+          }
           s.speed     = Math.max(MIN_SPEED, BASE_SPEED - Math.floor(s.score / 5) * 10);
           s.chompTime = timestamp;
           s.eatWave   = { startTime: timestamp, snakeLen: s.snake.length };
