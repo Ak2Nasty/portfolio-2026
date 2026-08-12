@@ -35,7 +35,7 @@ export function Layout42() {
   
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start 70%", "center center"]
+    offset: ["start 40%", "center center"]
   });
 
   const firstLineWidth = useTransform(scrollYProgress, [0, 0.5], ["0%", "100%"]);
