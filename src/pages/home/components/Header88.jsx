@@ -74,7 +74,7 @@ export function Header88() {
               }
             }}
           >
-            AKSHATHDAYAN
+            <span className="block md:inline mb-1 md:mb-0">AKSHATH</span><span className="block md:inline">DAYAN</span>
           </motion.span>
           <motion.span 
             className="block bg-clip-text"
@@ -106,7 +106,7 @@ export function Header88() {
       </div>
 
       {/* Bottom Information Grid */}
-      <div className="px-6 md:px-12 lg:px-16 w-full max-w-[120rem] mx-auto pb-14 md:pb-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 md:gap-8 relative z-10">
+      <div className="px-6 md:px-12 lg:px-16 w-full max-w-[120rem] mx-auto pb-8 md:pb-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-10 md:gap-8 relative z-10">
         
         {/* Left Side: Positioning & Location */}
         <div className="flex flex-col gap-6 md:gap-10 max-w-[45%] min-w-[300px]">
