@@ -90,7 +90,7 @@ export function Layout42() {
           
           <motion.div variants={itemVariants} className="flex flex-col justify-start md:pt-[2rem] lg:pt-[2.25rem] gap-6">
             <p className="font-['Outfit'] text-[17px] md:text-[20px] leading-[1.75] font-light text-[#c2c2c2] max-w-[600px]">
-              An integrated marketing strategist blending rigorous analytics with high-converting creative execution. I specialize in <strong className="font-medium text-[#f4f4f4]">digital campaigns, global events, and cross-channel brand development</strong>.
+              An integrated marketing strategist blending rigorous analytics with high-converting creative execution. I specialize in <strong className="font-medium text-[#f4f4f4]">digital campaigns, global events, cross-channel brand development, and strategic consulting</strong>.
             </p>
             <p className="font-['Outfit'] text-[17px] md:text-[20px] leading-[1.75] font-light text-[#c2c2c2] max-w-[600px]">
               My approach is <strong className="font-medium text-[#f4f4f4]">systems and research-driven</strong>. I bring a distinct technical edge—bridging the gap between creative vision and technical reality to turn complex data into <strong className="font-medium text-[#f4f4f4]">flawless execution</strong>.
