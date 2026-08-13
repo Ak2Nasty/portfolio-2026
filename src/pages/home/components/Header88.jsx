@@ -8,57 +8,27 @@ const MapleLeaf = ({ className }) => (
   </svg>
 );
 
-const CYCLE_PHRASES = [
-  "RUNNING CAMPAIGNS",
-  "BUILDING BRANDS",
-  "OPERATING GLOBAL EVENTS",
-  "DECODING ANALYTICS",
-  "CRAFTING CONTENT"
-];
-const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ•/—";
-
-// Isolated so the animation ticks don't re-render the whole hero
-function ScrambleCycler({ reduced }) {
-  const [display, setDisplay] = useState(CYCLE_PHRASES[0]);
-
-  useEffect(() => {
-    let idx = 0;
-    let timer;
-
-    const scrambleTo = (text) => {
-      let progress = 0;
-      const total = text.length + 8;
-      const step = () => {
-        progress++;
-        const resolved = Math.floor((progress / total) * text.length);
-        let out = "";
-        for (let i = 0; i < text.length; i++) {
-          out += i < resolved || text[i] === " "
-            ? text[i]
-            : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
-        }
-        setDisplay(out);
-        timer = progress < total ? setTimeout(step, 35) : setTimeout(next, 3200);
-      };
-      step();
-    };
-
-    const next = () => {
-      idx = (idx + 1) % CYCLE_PHRASES.length;
-      if (reduced) {
-        setDisplay(CYCLE_PHRASES[idx]);
-        timer = setTimeout(next, 4000);
-      } else {
-        scrambleTo(CYCLE_PHRASES[idx]);
-      }
-    };
-
-    timer = setTimeout(next, 3200);
-    return () => clearTimeout(timer);
-  }, [reduced]);
-
-  return <span>{display}</span>;
-}
+// Medal with a tiny filled star in its center (lucide Award + star polygon)
+const HonoursBadge = ({ className }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle cx="12" cy="8" r="6" />
+    <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" />
+    <polygon
+      points="12 5.4 12.68 7.07 14.47 7.2 13.09 8.36 13.53 10.1 12 9.15 10.47 10.1 10.91 8.36 9.53 7.2 11.32 7.07"
+      fill="currentColor"
+      stroke="none"
+    />
+  </svg>
+);
 
 export function Header88() {
   const [isReducedMotion, setIsReducedMotion] = useState(false);
@@ -197,16 +167,13 @@ export function Header88() {
 
       <div className="md:hidden flex-1 flex flex-col justify-center w-full relative z-10 pb-6">
 
-        {/* Cycling status line, pinned under the navbar */}
-        <motion.div variants={itemVariants} className="absolute top-0 left-0 w-full px-5 flex items-center justify-between font-['Outfit'] text-[8.5px] tracking-[0.18em] text-gray-500 uppercase">
-          <span>CURRENTLY</span>
-          <ScrambleCycler reduced={isReducedMotion} />
-        </motion.div>
-
         {/* Spec-sheet header row */}
         <motion.div variants={itemVariants} className="px-5 flex items-end justify-between font-['Outfit'] font-semibold text-[8.5px] tracking-[0.22em] text-gray-400 uppercase">
           <span>N° 001 — PORTFOLIO</span>
-          <span>B.MGMT HONS • UBC ’25</span>
+          <span className="flex items-center gap-1.5">
+            <HonoursBadge className="w-3 h-3 text-[#d4af37] drop-shadow-[0_0_5px_rgba(212,175,55,0.6)]" />
+            <span>B.MGMT HONOURS • UBC ’25</span>
+          </span>
         </motion.div>
         <motion.div variants={itemVariants} className="mx-5 mt-3 border-t border-white/[0.08]" />
 

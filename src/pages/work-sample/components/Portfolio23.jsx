@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { SecureFileViewer } from "./SecureFileViewer";
 import { FileText, Image as ImageIcon, Lock, Terminal } from "lucide-react";
 import { useLocation, Link } from "react-router-dom";
+import { ScrambleLabel } from "../../../components/ScrambleLabel";
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
@@ -262,7 +263,7 @@ export function Portfolio23() {
             </span>
           </Link>
           <span className="font-['Outfit'] font-semibold text-[10px] md:text-[11px] tracking-[0.25em] text-[#a3a3a3] uppercase mb-4 block">
-            PORTFOLIO / ARCHIVE
+            <ScrambleLabel text="PORTFOLIO / ARCHIVE" />
           </span>
           <h1 className="font-monument text-[40px] md:text-[60px] lg:text-[72px] font-bold leading-[1.05] text-[#f4f4f4] tracking-[0.02em] uppercase mb-6">
             WORK SAMPLES
