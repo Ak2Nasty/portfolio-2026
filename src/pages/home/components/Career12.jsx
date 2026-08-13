@@ -1,27 +1,29 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { ScrambleLabel } from "../../../components/ScrambleLabel";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.1
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 1, ease: [0.16, 1, 0.3, 1] }
+  }
+};
 
 export function Career12() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { duration: 1, ease: [0.16, 1, 0.3, 1] }
-    }
-  };
 
   const experiences = [
     {
@@ -168,7 +170,7 @@ export function Career12() {
           <motion.div variants={itemVariants} className="w-full lg:w-[35%] flex flex-col gap-6 md:gap-8 justify-start lg:sticky lg:top-[15vh] h-fit">
             <div className="flex flex-col gap-3 md:gap-4">
               <span className="font-['Outfit'] font-semibold text-[10px] md:text-[11px] tracking-[0.25em] text-[#a3a3a3] uppercase">
-                EXPERIENCE / 03
+                <ScrambleLabel text="EXPERIENCE / 03" />
               </span>
               <h3 className="font-monument text-[34px] md:text-[46px] lg:text-[54px] font-bold leading-[1.05] text-[#f4f4f4] tracking-[0.03em] uppercase">
                 EXECUTION ARCHIVE
@@ -197,7 +199,7 @@ export function Career12() {
             {experiences.map((exp, index) => {
               const topOffset = `calc(15vh + ${index * 20}px)`;
               return (
-              <motion.div 
+              <motion.div
                 key={index}
                 variants={itemVariants}
                 style={{ top: topOffset, zIndex: index }}

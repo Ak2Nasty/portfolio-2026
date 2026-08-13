@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { ScrambleLabel } from "../../../components/ScrambleLabel";
 
 const educationData = [
   {
@@ -203,7 +204,7 @@ export function EducationTimeline() {
         {/* Header */}
         <div className="flex flex-col gap-3 mb-16">
           <span className="font-['Outfit'] font-semibold text-[10px] tracking-[0.25em] text-[#a3a3a3] uppercase">
-            EDUCATION / 02
+            <ScrambleLabel text="EDUCATION / 02" />
           </span>
           <h2 className="font-monument text-[28px] sm:text-[36px] md:text-[42px] font-bold leading-[1.08] text-[#f4f4f4] tracking-[0.03em] uppercase">
             LEARNING CURVE

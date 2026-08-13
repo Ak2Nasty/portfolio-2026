@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, useInView, useScroll, useTransform, useMotionValueEvent, useSpring } from "framer-motion";
 import { useRef } from "react";
+import { ScrambleLabel } from "../../../components/ScrambleLabel";
 
 /* ─────────────────────────────────────────────
    ICON SOURCE MAP
@@ -418,7 +419,7 @@ export function SkillsSection() {
           className="mb-20 xl:mb-28"
         >
           <motion.span variants={fadeUp} className="block font-['Outfit'] font-semibold text-[10px] md:text-[11px] tracking-[0.25em] text-[#a3a3a3] uppercase mb-5">
-            SKILLS / 04
+            <ScrambleLabel text="SKILLS / 04" />
           </motion.span>
           <motion.h2 variants={fadeUp} className="font-monument text-[28px] sm:text-[36px] md:text-[42px] xl:text-[50px] font-bold leading-[1.08] text-[#f4f4f4] tracking-[0.03em] uppercase max-w-[760px] mb-6">
             CORE CAPABILITIES

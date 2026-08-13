@@ -1,5 +1,65 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { ScrambleLabel } from "../../../components/ScrambleLabel";
+
+// About copy as runs of { t, strong } so the mobile word-reveal can split into words
+const aboutParas = [
+  [
+    { t: "An integrated marketing strategist blending rigorous analytics with high-converting creative execution. I specialize in " },
+    { t: "digital campaigns, global events, cross-channel brand development, and strategic consulting.", strong: true },
+  ],
+  [
+    { t: "My approach is " },
+    { t: "systems and research-driven.", strong: true },
+    { t: " I bring a distinct technical edge—bridging the gap between creative vision and technical reality to turn complex data into " },
+    { t: "flawless execution.", strong: true },
+  ],
+];
+
+function RevealWord({ progress, start, end, strong, children }) {
+  const opacity = useTransform(progress, [start, end], [0.16, 1]);
+  return (
+    <motion.span style={{ opacity }} className={strong ? "font-medium text-[#f4f4f4]" : undefined}>
+      {children}{" "}
+    </motion.span>
+  );
+}
+
+// Mobile: words light up from dark gray to full color as the reader scrolls through
+function ScrollyParagraphs({ paras }) {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 82%", "end 60%"]
+  });
+
+  const totalWords = paras.reduce(
+    (n, runs) => n + runs.reduce((m, r) => m + r.t.split(/\s+/).filter(Boolean).length, 0),
+    0
+  );
+
+  let wordIndex = 0;
+  return (
+    <div ref={ref} className="flex flex-col gap-6">
+      {paras.map((runs, pi) => (
+        <p key={pi} className="font-['Outfit'] text-[17px] leading-[1.75] font-light text-[#c2c2c2] max-w-[600px]">
+          {runs.map((run, ri) =>
+            run.t.split(/\s+/).filter(Boolean).map((word, wi) => {
+              const idx = wordIndex++;
+              const start = idx / totalWords;
+              const end = Math.min(1, (idx + 2) / totalWords);
+              return (
+                <RevealWord key={`${ri}-${wi}`} progress={scrollYProgress} start={start} end={end} strong={run.strong}>
+                  {word}
+                </RevealWord>
+              );
+            })
+          )}
+        </p>
+      ))}
+    </div>
+  );
+}
 
 export function Layout42() {
   const [hasDownloaded, setHasDownloaded] = useState(false);
@@ -54,7 +114,7 @@ export function Layout42() {
           {/* Left: Headline & Label */}
           <motion.div variants={itemVariants} className="flex flex-col">
             <div className="font-['Outfit'] font-semibold text-[10px] md:text-[11px] tracking-[0.25em] text-[#a3a3a3] uppercase mb-6 md:mb-[2.5rem] leading-none">
-              ABOUT / 01
+              <ScrambleLabel text="ABOUT / 01" />
             </div>
             <h3 className="font-monument text-[34px] md:text-[46px] lg:text-[54px] font-bold leading-[1.05] text-[#f4f4f4] tracking-[0.03em] max-w-[650px] uppercase">
               MARKETING<br />
@@ -89,10 +149,15 @@ export function Layout42() {
           </motion.div>
           
           <motion.div variants={itemVariants} className="flex flex-col justify-start md:pt-[2rem] lg:pt-[2.25rem] gap-6">
-            <p className="font-['Outfit'] text-[17px] md:text-[20px] leading-[1.75] font-light text-[#c2c2c2] max-w-[600px]">
+            {/* Mobile: scroll-driven word reveal */}
+            <div className="md:hidden">
+              <ScrollyParagraphs paras={aboutParas} />
+            </div>
+            {/* Desktop: original static paragraphs */}
+            <p className="hidden md:block font-['Outfit'] text-[17px] md:text-[20px] leading-[1.75] font-light text-[#c2c2c2] max-w-[600px]">
               An integrated marketing strategist blending rigorous analytics with high-converting creative execution. I specialize in <strong className="font-medium text-[#f4f4f4]">digital campaigns, global events, cross-channel brand development, and strategic consulting</strong>.
             </p>
-            <p className="font-['Outfit'] text-[17px] md:text-[20px] leading-[1.75] font-light text-[#c2c2c2] max-w-[600px]">
+            <p className="hidden md:block font-['Outfit'] text-[17px] md:text-[20px] leading-[1.75] font-light text-[#c2c2c2] max-w-[600px]">
               My approach is <strong className="font-medium text-[#f4f4f4]">systems and research-driven</strong>. I bring a distinct technical edge—bridging the gap between creative vision and technical reality to turn complex data into <strong className="font-medium text-[#f4f4f4]">flawless execution</strong>.
             </p>
           </motion.div>

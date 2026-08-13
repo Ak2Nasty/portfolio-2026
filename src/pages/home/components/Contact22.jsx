@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { Mail, Phone, ArrowUpRight, Check, Loader2, AlertCircle } from "lucide-react";
 import emailjs from "@emailjs/browser";
+import { ScrambleLabel } from "../../../components/ScrambleLabel";
 
 const LinkedinIcon = ({ className, strokeWidth = 1.5 }) => (
   <svg
@@ -386,6 +387,7 @@ function FloatingTextarea({ label, id, value, onChange, error, onFocus, onBlur, 
 
 export function Contact22() {
   const sectionRef = useRef(null);
+  const prefersReducedMotion = useReducedMotion();
   const formRef = useRef(null);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [errors, setErrors] = useState({});
@@ -502,6 +504,20 @@ export function Contact22() {
       ref={sectionRef}
       className="w-full bg-[#0C0C0B] relative z-20 text-white py-24 xl:py-36 overflow-hidden border-t border-white/[0.05]"
     >
+      {/* Ghost outline ticker bookend (mobile only) — fully visible band in the section's
+          top padding, drifting the opposite direction to the hero's PORTFOLIO ticker */}
+      <div aria-hidden="true" className="md:hidden absolute top-3 left-0 w-full overflow-hidden pointer-events-none select-none z-0 py-[0.1em]">
+        <motion.div
+          className="font-monument whitespace-nowrap leading-none text-[19vw] w-max"
+          style={{ WebkitTextStroke: "1px rgba(244,244,244,0.10)", color: "transparent" }}
+          animate={prefersReducedMotion ? {} : { x: ["-50%", "0%"] }}
+          transition={{ duration: 70, ease: "linear", repeat: Infinity }}
+        >
+          <span>GET IN TOUCH — LET’S TALK — </span>
+          <span>GET IN TOUCH — LET’S TALK — </span>
+        </motion.div>
+      </div>
+
       <div className="max-w-[120rem] mx-auto px-6 md:px-12 lg:px-16 relative z-10">
         
         {/* ── HEADER ── */}
@@ -518,7 +534,7 @@ export function Contact22() {
               variants={fadeUp}
               className="font-['Outfit'] font-semibold text-[10px] md:text-[11px] tracking-[0.25em] text-[#a3a3a3] uppercase"
             >
-              CONTACT / 05
+              <ScrambleLabel text="CONTACT / 05" />
             </motion.span>
             
             <motion.div

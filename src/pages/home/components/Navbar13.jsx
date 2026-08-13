@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Home, User, GraduationCap, Briefcase, Folder, Cpu, Send } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useLenis } from "lenis/react";
 
 const getGreeting = (pathname) => {
   if (pathname === "/work-sample") return "Welcome to the archive. 🏛️";
@@ -30,6 +31,7 @@ export function Navbar13() {
   const timerExpired = React.useRef(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const lenis = useLenis();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -61,7 +63,12 @@ export function Navbar13() {
     }
     const element = document.getElementById(item.id);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      // Route through Lenis so programmatic scrolls don't fight the smooth-scroll engine
+      if (lenis) {
+        lenis.scrollTo(element, { duration: 1.2 });
+      } else {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
     }
   };
 

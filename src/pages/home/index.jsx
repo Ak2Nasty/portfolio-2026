@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { useLenis } from "lenis/react";
 import { Navbar13 } from "./components/Navbar13";
 import { Header88 } from "./components/Header88";
 import { Layout42 } from "./components/Layout42";
@@ -11,6 +12,7 @@ import { FloatingNav } from "./components/FloatingNav";
 
 export default function Page() {
   const location = useLocation();
+  const lenis = useLenis();
 
   useEffect(() => {
     if (location.hash) {
@@ -19,13 +21,21 @@ export default function Page() {
       if (element) {
         // slight delay to ensure components are mounted
         setTimeout(() => {
-          element.scrollIntoView({ behavior: "instant", block: "start" });
+          if (lenis) {
+            lenis.scrollTo(element, { immediate: true });
+          } else {
+            element.scrollIntoView({ behavior: "instant", block: "start" });
+          }
         }, 10);
       }
     } else {
-      window.scrollTo({ top: 0, behavior: "instant" });
+      if (lenis) {
+        lenis.scrollTo(0, { immediate: true });
+      } else {
+        window.scrollTo({ top: 0, behavior: "instant" });
+      }
     }
-  }, [location]);
+  }, [location, lenis]);
 
   return (
     <div>

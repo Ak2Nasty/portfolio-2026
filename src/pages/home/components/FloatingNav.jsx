@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Home, User, GraduationCap, Briefcase, Cpu, Send, Folder } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useLenis } from "lenis/react";
 
 export function FloatingNav() {
   const [isVisible, setIsVisible] = useState(false);
@@ -9,6 +10,7 @@ export function FloatingNav() {
   const [activeSection, setActiveSection] = useState("home");
   const location = useLocation();
   const navigate = useNavigate();
+  const lenis = useLenis();
   const navItems = [
     { id: "home", label: "Home", icon: Home },
     { id: "about", label: "About", icon: User },
@@ -77,7 +79,12 @@ export function FloatingNav() {
     }
     const element = document.getElementById(item.id);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      // Route through Lenis so programmatic scrolls don't fight the smooth-scroll engine
+      if (lenis) {
+        lenis.scrollTo(element, { duration: 1.2 });
+      } else {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
     }
   };
 
