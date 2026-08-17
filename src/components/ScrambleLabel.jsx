@@ -1,34 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useInView, useReducedMotion } from "framer-motion";
 
-export function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(
-    () => typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches
-  );
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const onChange = (e) => setIsMobile(e.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
-
-  return isMobile;
-}
-
 const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/•—";
 
-// Mobile: label glitch-decodes once when it scrolls into view. Desktop: static text.
+// Label glitch-decodes once when it scrolls into view, at every viewport size.
 export function ScrambleLabel({ text, className }) {
   const ref = useRef(null);
-  const isMobile = useIsMobile();
   const reduced = useReducedMotion();
   const inView = useInView(ref, { once: true, margin: "-10% 0px -10% 0px" });
   const [display, setDisplay] = useState(text);
   const startedRef = useRef(false);
 
   useEffect(() => {
-    if (!isMobile || reduced || !inView || startedRef.current) return;
+    if (reduced || !inView || startedRef.current) return;
     startedRef.current = true;
 
     let progress = 0;
@@ -50,7 +34,7 @@ export function ScrambleLabel({ text, className }) {
 
     step();
     return () => clearTimeout(timer);
-  }, [inView, isMobile, reduced, text]);
+  }, [inView, reduced, text]);
 
   return <span ref={ref} className={className}>{display}</span>;
 }

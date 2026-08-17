@@ -504,11 +504,12 @@ export function Contact22() {
       ref={sectionRef}
       className="w-full bg-[#0C0C0B] relative z-20 text-white py-24 xl:py-36 overflow-hidden border-t border-white/[0.05]"
     >
-      {/* Ghost outline ticker bookend (mobile only) — fully visible band in the section's
-          top padding, drifting the opposite direction to the hero's PORTFOLIO ticker */}
-      <div aria-hidden="true" className="md:hidden absolute top-3 left-0 w-full overflow-hidden pointer-events-none select-none z-0 py-[0.1em]">
+      {/* Ghost outline ticker bookend — sits in the section's top padding, drifting the
+          opposite direction to the hero's PORTFOLIO ticker. Sized per breakpoint so the
+          band always clears the CONTACT / 05 label below it. */}
+      <div aria-hidden="true" className="absolute top-3 left-0 w-full overflow-hidden pointer-events-none select-none z-0 py-[0.1em]">
         <motion.div
-          className="font-monument whitespace-nowrap leading-none text-[19vw] w-max"
+          className="font-monument whitespace-nowrap leading-none text-[19vw] md:text-[64px] xl:text-[104px] w-max"
           style={{ WebkitTextStroke: "1px rgba(244,244,244,0.10)", color: "transparent" }}
           animate={prefersReducedMotion ? {} : { x: ["-50%", "0%"] }}
           transition={{ duration: 70, ease: "linear", repeat: Infinity }}

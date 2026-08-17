@@ -30,9 +30,22 @@ const HonoursBadge = ({ className }) => (
   </svg>
 );
 
+// Monument Extended Ultrabold advance widths, measured at font-size 100px.
+// Used to size each line so it runs exactly edge-to-edge.
+const W_AKSHATHDAYAN = 1061.2;
+const W_SURESH = 533.6;
+const FIT = 1.004; // hair of slack so a re-render never overflows
+
 export function Header88() {
   const [isReducedMotion, setIsReducedMotion] = useState(false);
   const heroRef = useRef(null);
+  const deskNameRef = useRef(null);
+  const deskBottomRef = useRef(null);
+  const [deskWidth, setDeskWidth] = useState(0);
+  const [deskBottomH, setDeskBottomH] = useState(0);
+  const [viewportH, setViewportH] = useState(
+    () => (typeof window !== "undefined" ? window.innerHeight : 900)
+  );
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -94,6 +107,50 @@ export function Header88() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReducedMotion]);
 
+  // Desktop: measure the name column so each line can be sized to fill it exactly,
+  // and the bottom block so the name can give way when a laptop screen is short
+  useEffect(() => {
+    const nameEl = deskNameRef.current;
+    const bottomEl = deskBottomRef.current;
+    if (!nameEl) return;
+
+    const measure = () => {
+      setDeskWidth(nameEl.getBoundingClientRect().width);
+      if (bottomEl) setDeskBottomH(bottomEl.getBoundingClientRect().height);
+      setViewportH(window.innerHeight);
+    };
+    measure();
+
+    const ro = new ResizeObserver(measure);
+    ro.observe(nameEl);
+    if (bottomEl) ro.observe(bottomEl);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
+
+  // Desktop: name lines counter-shift with the cursor (the mouse analogue of the phone tilt)
+  const pointerX = useMotionValue(0);
+  const pointerY = useMotionValue(0);
+  const deskLine1 = useSpring(useTransform(pointerX, [-1, 1], [-16, 16]), tiltSpring);
+  const deskLine2 = useSpring(useTransform(pointerX, [-1, 1], [13, -13]), tiltSpring);
+  const deskLift = useSpring(useTransform(pointerY, [-1, 1], [-7, 7]), tiltSpring);
+
+  useEffect(() => {
+    if (isReducedMotion) return;
+    if (!window.matchMedia("(min-width: 768px)").matches) return;
+
+    const onMove = (e) => {
+      pointerX.set((e.clientX / window.innerWidth) * 2 - 1);
+      pointerY.set((e.clientY / window.innerHeight) * 2 - 1);
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => window.removeEventListener("mousemove", onMove);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isReducedMotion]);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -140,6 +197,22 @@ export function Header88() {
     WebkitTextStroke: "1.5px #f4f4f4",
     color: "transparent"
   };
+
+  // The longer line sets the size (full-bleed); the surname matches it, so it
+  // fills half the column and the ghost ticker runs on through the rest.
+  const rawSize = deskWidth ? (deskWidth * 100) / (W_AKSHATHDAYAN * FIT) : 0;
+
+  // Eased back if the viewport is too short to seat both lines comfortably.
+  // Everything above/below the name that has to fit alongside it:
+  // top padding + spec row + both rules and their margins + bottom margin + marquee + breathing room.
+  const RESERVED = 128 + 18 + 17 + 37 + 28 + 42 + 82;
+  const naturalNameH = rawSize * 2.1; // two lines at line-height 0.98 + per-line padding
+  const availNameH = viewportH - RESERVED - deskBottomH;
+  const fitScale =
+    naturalNameH > 0 ? Math.min(1, Math.max(0.72, availNameH / naturalNameH)) : 1;
+
+  const deskSize1 = rawSize * fitScale;
+  const deskSize2 = deskSize1;
 
   return (
     <motion.section
@@ -251,117 +324,104 @@ export function Header88() {
         </div>
       </div>
 
-      {/* ================= DESKTOP HERO (unchanged) ================= */}
-      {/* Main Content Area */}
-      <div className="hidden md:flex flex-1 flex-col justify-center px-6 md:px-12 lg:px-16 w-full max-w-[120rem] mx-auto relative z-10">
+      {/* ================= DESKTOP HERO (poster layout) ================= */}
 
-        {/* Role Label */}
-        <motion.div variants={itemVariants} className="font-['Outfit'] text-[9px] md:text-[11px] tracking-[0.2em] text-gray-300 uppercase mb-4 md:mb-6">
-          DIGITAL MARKETING • EVENT OPERATIONS • BRAND STRATEGY
+      <div className="hidden md:flex flex-1 flex-col justify-center w-full max-w-[120rem] mx-auto px-6 md:px-12 lg:px-16 relative z-10">
+
+        {/* Spec-sheet header row */}
+        <motion.div variants={itemVariants} className="flex items-end justify-between font-['Outfit'] font-semibold text-[10px] lg:text-[11px] tracking-[0.25em] text-gray-400 uppercase">
+          <span>N° 001 — PORTFOLIO</span>
+          <span className="flex items-center gap-2">
+            <HonoursBadge className="w-3.5 h-3.5 text-[#d4af37] drop-shadow-[0_0_6px_rgba(212,175,55,0.6)]" />
+            <span>B.MGMT HONOURS • UBC ’25</span>
+          </span>
+        </motion.div>
+        <motion.div variants={itemVariants} className="mt-4 border-t border-white/[0.08]" />
+
+        {/* Full-bleed two-line name */}
+        <motion.div ref={deskNameRef} style={{ y: nameY, opacity: nameOpacity }} className="mt-7 lg:mt-9">
+          <motion.h1 style={{ y: deskLift }} className="font-monument m-0 p-0 leading-[0.98] tracking-normal cursor-default">
+            <motion.span style={{ x: deskLine1 }} className="block overflow-hidden pb-[0.05em]">
+              <motion.span custom={0} variants={lineReveal} initial="hidden" animate="visible" className="block will-change-transform">
+                <motion.span
+                  className="block"
+                  style={{ fontSize: deskSize1, ...shimmerStyle }}
+                  animate={shimmerAnimate}
+                  transition={shimmerTransition}
+                >
+                  AKSHATHDAYAN
+                </motion.span>
+              </motion.span>
+            </motion.span>
+            <motion.span style={{ x: deskLine2 }} className="block overflow-hidden pb-[0.09em]">
+              <motion.span custom={1} variants={lineReveal} initial="hidden" animate="visible" className="block will-change-transform">
+                <span className="flex items-baseline" style={{ fontSize: deskSize2 }}>
+                  <motion.span
+                    className="shrink-0"
+                    style={shimmerStyle}
+                    animate={shimmerAnimate}
+                    transition={shimmerTransition}
+                  >
+                    SURESH
+                  </motion.span>
+
+                  {/* Ghost ticker runs on from the surname, filling the counter-space.
+                      Same size and baseline, so it reads as the line continuing. */}
+                  {/* pt gives the ° room to render; baseline alignment keeps it on SURESH's line */}
+                  <span aria-hidden="true" className="flex-1 overflow-hidden ml-[0.14em] pt-[0.15em] select-none">
+                    <motion.span
+                      className="block w-max whitespace-nowrap leading-none"
+                      style={{ WebkitTextStroke: "0.012em rgba(244,244,244,0.16)", color: "transparent" }}
+                      animate={isReducedMotion ? {} : { x: ["0%", "-50%"] }}
+                      transition={{ duration: 42, ease: "linear", repeat: Infinity }}
+                    >
+                      <span>PORTFOLIO — N° 001 — </span>
+                      <span>PORTFOLIO — N° 001 — </span>
+                    </motion.span>
+                  </span>
+                </span>
+              </motion.span>
+            </motion.span>
+          </motion.h1>
         </motion.div>
 
-        {/* Massive Name */}
-        <motion.h1
-          variants={itemVariants}
-          className="font-monument text-[10vw] md:text-[8vw] leading-[1.05] m-0 p-0 tracking-normal cursor-default z-10"
-        >
-          <motion.span
-            className="block mb-1 md:mb-2 bg-clip-text"
-            style={{
-              backgroundImage: "linear-gradient(90deg, #f4f4f4 0%, #ffffff 30%, #555555 50%, #ffffff 70%, #f4f4f4 100%)",
-              backgroundSize: "200% auto"
-            }}
-            initial={{ backgroundPosition: "200% center", color: "#f4f4f4" }}
-            whileHover={{
-              color: "rgba(244, 244, 244, 0)",
-              backgroundPosition: "-200% center",
-              transition: {
-                backgroundPosition: { duration: 3, ease: "linear", repeat: Infinity },
-                color: { duration: 0.4 }
-              }
-            }}
-          >
-            <span className="block md:inline mb-1 md:mb-0">AKSHATH</span><span className="block md:inline">DAYAN</span>
-          </motion.span>
-          <motion.span
-            className="block bg-clip-text"
-            style={{
-              backgroundImage: "linear-gradient(90deg, #f4f4f4 0%, #ffffff 30%, #555555 50%, #ffffff 70%, #f4f4f4 100%)",
-              backgroundSize: "200% auto"
-            }}
-            initial={{ backgroundPosition: "200% center", color: "#f4f4f4" }}
-            whileHover={{
-              color: "rgba(244, 244, 244, 0)",
-              backgroundPosition: "-200% center",
-              transition: {
-                backgroundPosition: { duration: 3, ease: "linear", repeat: Infinity },
-                color: { duration: 0.4 }
-              }
-            }}
-          >
-            SURESH
-          </motion.span>
-        </motion.h1>
+        <motion.div variants={itemVariants} className="mt-7 lg:mt-9 border-t border-white/[0.08]" />
 
-        {/* Education Metadata */}
-        <motion.div variants={itemVariants} className="mt-5 md:mt-6">
-          <p className="font-['Outfit'] font-semibold text-[9.5px] md:text-[11px] tracking-[0.25em] text-[#f4f4f4] opacity-80 uppercase">
-            B.MGMT HONOURS • UBC ’25
-          </p>
-        </motion.div>
+        {/* Bottom information row */}
+        <div ref={deskBottomRef} className="mt-6 lg:mt-7 flex flex-row justify-between items-end gap-10">
+          <div className="flex flex-col gap-4 lg:gap-5 max-w-[54%]">
+            <motion.div variants={itemVariants} className="font-['Outfit'] text-[10px] lg:text-[11px] tracking-[0.25em] text-gray-300 uppercase">
+              DIGITAL MARKETING • EVENT OPERATIONS • BRAND STRATEGY
+            </motion.div>
+            <motion.p variants={itemVariants} className="font-['Outfit'] text-[10px] lg:text-[12px] leading-[1.8] text-gray-300 uppercase tracking-widest max-w-[620px]">
+              BUSINESS MANAGEMENT GRADUATE WITH EXPERIENCE ACROSS DIGITAL MARKETING, GLOBAL EVENTS, DIGITAL CAMPAIGNS, MARKETING ANALYTICS, AND BRAND STRATEGY.
+            </motion.p>
+            <motion.div variants={itemVariants} className="font-['Outfit'] text-[10px] lg:text-[11px] tracking-[0.2em] text-gray-200 uppercase flex items-center gap-2">
+              BASED IN TORONTO, CANADA
+              <MapleLeaf className="w-4 h-4 text-[#ef4444] drop-shadow-[0_0_6px_rgba(239,68,68,0.7)]" />
+            </motion.div>
+          </div>
 
-      </div>
-
-      {/* Bottom Information Grid */}
-      <div className="hidden px-6 md:px-12 lg:px-16 w-full max-w-[120rem] mx-auto pb-8 md:pb-10 md:flex flex-col md:flex-row justify-between items-start md:items-end gap-10 md:gap-8 relative z-10">
-
-        {/* Left Side: Positioning & Location */}
-        <div className="flex flex-col gap-6 md:gap-10 max-w-[45%] min-w-[300px]">
-          <motion.p variants={itemVariants} className="font-['Outfit'] text-[10px] md:text-[12px] leading-[1.8] text-gray-300 uppercase tracking-widest">
-            BUSINESS MANAGEMENT GRADUATE WITH EXPERIENCE ACROSS DIGITAL MARKETING, GLOBAL EVENTS, DIGITAL CAMPAIGNS, MARKETING ANALYTICS, AND BRAND STRATEGY.
-          </motion.p>
-          <motion.div variants={itemVariants} className="font-['Outfit'] text-[9px] md:text-[11px] tracking-[0.2em] text-gray-200 uppercase flex items-center gap-2">
-            BASED IN TORONTO, CANADA
-            <MapleLeaf className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#ef4444] drop-shadow-[0_0_6px_rgba(239,68,68,0.7)]" />
-          </motion.div>
-        </div>
-
-        {/* Right Side: Availability Badge & Scroll Cue */}
-        <div className="flex flex-col items-start md:items-end gap-6 md:gap-10">
-          {/* Badge */}
-          <motion.div variants={itemVariants} className="flex items-center gap-2 md:gap-3 border border-[#166534] rounded-full px-3 py-1 md:px-4 md:py-1.5 bg-transparent shadow-[0_0_15px_rgba(34,197,94,0.2)] hover:shadow-[0_0_25px_rgba(34,197,94,0.35)] transition-shadow duration-500 cursor-default">
-            <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-[#22c55e] shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
-            <span className="font-['Outfit'] text-[9px] md:text-[10px] uppercase tracking-widest text-[#22c55e] pt-[1px] md:pt-[2px]">AVAILABLE FOR WORK</span>
-          </motion.div>
-          {/* Scroll Cue */}
-          <motion.div variants={itemVariants} className="font-['Outfit'] text-[9px] md:text-[11px] tracking-[0.2em] text-gray-300 uppercase flex items-center gap-2 cursor-default drop-shadow-[0_0_8px_rgba(209,213,219,0.5)]">
-            SCROLL TO ENTER PORTFOLIO
-            <div className="flex flex-col -space-y-1.5 md:-space-y-2 pt-0.5">
-              {/* Top Arrow */}
-              <motion.div
-                animate={isReducedMotion ? {} : { opacity: [0.1, 1, 0.1], y: [0, 2, 0] }}
-                transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", delay: 0 }}
-              >
-                <ChevronDown className="w-3.5 h-3.5 md:w-4 md:h-4" strokeWidth={2.5} />
-              </motion.div>
-
-              {/* Middle Arrow */}
-              <motion.div
-                animate={isReducedMotion ? {} : { opacity: [0.1, 1, 0.1], y: [0, 2, 0] }}
-                transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", delay: 0.2 }}
-              >
-                <ChevronDown className="w-3.5 h-3.5 md:w-4 md:h-4" strokeWidth={2.5} />
-              </motion.div>
-
-              {/* Bottom Arrow */}
-              <motion.div
-                animate={isReducedMotion ? {} : { opacity: [0.1, 1, 0.1], y: [0, 2, 0] }}
-                transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", delay: 0.4 }}
-              >
-                <ChevronDown className="w-3.5 h-3.5 md:w-4 md:h-4" strokeWidth={2.5} />
-              </motion.div>
-            </div>
-          </motion.div>
+          <div className="flex flex-col items-end gap-6 lg:gap-8 shrink-0">
+            <motion.div variants={itemVariants} className="flex items-center gap-3 border border-[#166534] rounded-full px-4 py-1.5 bg-transparent shadow-[0_0_15px_rgba(34,197,94,0.2)] hover:shadow-[0_0_25px_rgba(34,197,94,0.35)] transition-shadow duration-500 cursor-default">
+              <span className="w-2 h-2 rounded-full bg-[#22c55e] shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
+              <span className="font-['Outfit'] text-[10px] uppercase tracking-widest text-[#22c55e] pt-[2px]">AVAILABLE FOR WORK</span>
+            </motion.div>
+            <motion.div variants={itemVariants} className="font-['Outfit'] text-[10px] lg:text-[11px] tracking-[0.2em] text-gray-300 uppercase flex items-center gap-2 cursor-default drop-shadow-[0_0_8px_rgba(209,213,219,0.5)]">
+              SCROLL TO ENTER PORTFOLIO
+              <div className="flex flex-col -space-y-2 pt-0.5">
+                {[0, 0.2, 0.4].map((delay) => (
+                  <motion.div
+                    key={delay}
+                    animate={isReducedMotion ? {} : { opacity: [0.1, 1, 0.1], y: [0, 2, 0] }}
+                    transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", delay }}
+                  >
+                    <ChevronDown className="w-4 h-4" strokeWidth={2.5} />
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
         </div>
       </div>
 

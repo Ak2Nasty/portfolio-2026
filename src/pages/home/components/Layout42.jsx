@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ScrambleLabel } from "../../../components/ScrambleLabel";
 
-// About copy as runs of { t, strong } so the mobile word-reveal can split into words
+// About copy as runs of { t, strong } so the word-reveal can split it into words
 const aboutParas = [
   [
     { t: "An integrated marketing strategist blending rigorous analytics with high-converting creative execution. I specialize in " },
@@ -25,7 +25,7 @@ function RevealWord({ progress, start, end, strong, children }) {
   );
 }
 
-// Mobile: words light up from dark gray to full color as the reader scrolls through
+// Words light up from dark gray to full colour as the reader scrolls through
 function ScrollyParagraphs({ paras }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -42,7 +42,7 @@ function ScrollyParagraphs({ paras }) {
   return (
     <div ref={ref} className="flex flex-col gap-6">
       {paras.map((runs, pi) => (
-        <p key={pi} className="font-['Outfit'] text-[17px] leading-[1.75] font-light text-[#c2c2c2] max-w-[600px]">
+        <p key={pi} className="font-['Outfit'] text-[17px] md:text-[20px] leading-[1.75] font-light text-[#c2c2c2] max-w-[600px]">
           {runs.map((run, ri) =>
             run.t.split(/\s+/).filter(Boolean).map((word, wi) => {
               const idx = wordIndex++;
@@ -149,17 +149,8 @@ export function Layout42() {
           </motion.div>
           
           <motion.div variants={itemVariants} className="flex flex-col justify-start md:pt-[2rem] lg:pt-[2.25rem] gap-6">
-            {/* Mobile: scroll-driven word reveal */}
-            <div className="md:hidden">
-              <ScrollyParagraphs paras={aboutParas} />
-            </div>
-            {/* Desktop: original static paragraphs */}
-            <p className="hidden md:block font-['Outfit'] text-[17px] md:text-[20px] leading-[1.75] font-light text-[#c2c2c2] max-w-[600px]">
-              An integrated marketing strategist blending rigorous analytics with high-converting creative execution. I specialize in <strong className="font-medium text-[#f4f4f4]">digital campaigns, global events, cross-channel brand development, and strategic consulting</strong>.
-            </p>
-            <p className="hidden md:block font-['Outfit'] text-[17px] md:text-[20px] leading-[1.75] font-light text-[#c2c2c2] max-w-[600px]">
-              My approach is <strong className="font-medium text-[#f4f4f4]">systems and research-driven</strong>. I bring a distinct technical edge—bridging the gap between creative vision and technical reality to turn complex data into <strong className="font-medium text-[#f4f4f4]">flawless execution</strong>.
-            </p>
+            {/* Scroll-driven word reveal, all viewports */}
+            <ScrollyParagraphs paras={aboutParas} />
           </motion.div>
         </motion.div>
       </div>
