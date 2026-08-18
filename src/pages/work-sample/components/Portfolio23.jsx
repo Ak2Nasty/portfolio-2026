@@ -51,7 +51,7 @@ function countFiles(files) {
   }));
 }
 
-const WORK_SECTIONS = [
+export const WORK_SECTIONS = [
   {
     id: "portfolio-meta",
     company: "Akshathdayan",

@@ -10,6 +10,12 @@
   --scrollbar-alpha: 0.03;
 }
 
+/* Keeps the scrollbar's 12px reserved even when overflow is hidden, so locking
+   the page behind an overlay doesn't shift every fixed element sideways. */
+html {
+  scrollbar-gutter: stable;
+}
+
 body {
   margin: 0;
   display: block;

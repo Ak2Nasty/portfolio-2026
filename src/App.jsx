@@ -6,6 +6,7 @@ import WorkSample from "./pages/work-sample";
 import NotFound from "./pages/NotFound";
 import { Loader } from "./components/Loader";
 import { EasterEggs } from "./components/EasterEggs";
+import { CommandPalette } from "./components/CommandPalette";
 
 function App() {
   useEffect(() => {
@@ -56,6 +57,8 @@ function App() {
       <EasterEggs />
       <Router>
         <Loader />
+        {/* inside the router: it navigates between routes */}
+        <CommandPalette />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/work-sample" element={<WorkSample />} />
