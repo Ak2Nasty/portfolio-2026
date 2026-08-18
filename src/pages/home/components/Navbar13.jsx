@@ -82,9 +82,14 @@ export function Navbar13() {
   // the archive lines.
   const [greeting] = useState(() => {
     const fromArchive = previousPath === "/work-sample";
+    const isArrival = location.pathname === "/" && !fromArchive;
     return {
       text: getGreeting(location.pathname, fromArchive),
-      withClock: location.pathname === "/" && !fromArchive,
+      withClock: isArrival,
+      // The time-of-day line is the one people actually arrive on, and it carries
+      // the clock, so it holds longer. The archive and return lines are quick
+      // acknowledgements from someone already moving through the site.
+      holdMs: isArrival ? 4500 : 4000,
     };
   });
 
@@ -93,16 +98,15 @@ export function Navbar13() {
   }, [location.pathname]);
 
   // Counted from when the navbar is actually on screen. Started at mount it ran
-  // out behind the loader, leaving barely a second of it readable. The hero's
-  // entrance settles around 3.1s in, so this holds it a couple of beats past that.
+  // out behind the loader, leaving barely a second of it readable.
   useEffect(() => {
     if (!introReady) return;
     const timer = setTimeout(() => {
       timerExpired.current = true;
       setShowGreeting(false);
-    }, 5000);
+    }, greeting.holdMs);
     return () => clearTimeout(timer);
-  }, [introReady]);
+  }, [introReady, greeting.holdMs]);
 
   const navItems = [
     { label: "HOME", id: "home", icon: Home },
