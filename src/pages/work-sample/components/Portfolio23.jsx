@@ -1,32 +1,54 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SecureFileViewer } from "./SecureFileViewer";
-import { FileText, Image as ImageIcon, Lock, Terminal } from "lucide-react";
+import { Image as ImageIcon, Terminal } from "lucide-react";
 import { useLocation, Link } from "react-router-dom";
 import { ScrambleLabel } from "../../../components/ScrambleLabel";
-import { Document, Page, pdfjs } from 'react-pdf';
-import 'react-pdf/dist/Page/AnnotationLayer.css';
-import 'react-pdf/dist/Page/AnnotationLayer.css';
-import 'react-pdf/dist/Page/TextLayer.css';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+/* Card thumbnails come from pre-rendered WebPs (see scripts/generate-pdf-thumbs.mjs).
+   Rendering them with react-pdf meant downloading every source PDF — ~19MB+ — just
+   to paint a few hundred pixels. react-pdf now only loads inside SecureFileViewer,
+   when a document is actually opened. Mirrors the script's naming. */
+const thumbFor = (url) =>
+  "/work-samples/thumbs/" +
+  url
+    .replace(/^\/work-samples\//, "")
+    .replace(/\.pdf$/i, "")
+    .replace(/[^a-z0-9]+/gi, "-")
+    .toLowerCase() + ".webp";
 
 const ImageThumbnail = ({ src, alt }) => {
   const [loaded, setLoaded] = useState(false);
   return (
     <>
       {!loaded && <div className="absolute inset-0 bg-[#222]/80 animate-pulse z-0 flex items-center justify-center"><ImageIcon className="w-6 h-6 text-[#333]" /></div>}
-      <img 
-        src={src} 
-        alt={alt} 
+      <img
+        src={src}
+        alt={alt}
         onLoad={() => setLoaded(true)}
         loading="lazy"
         decoding="async"
-        className={`w-full h-full object-cover transition-opacity duration-700 relative z-0 ${loaded ? 'opacity-80 group-hover:opacity-100' : 'opacity-0'}`} 
+        className={`w-full h-full object-cover transition-opacity duration-700 relative z-0 ${loaded ? 'opacity-80 group-hover:opacity-100' : 'opacity-0'}`}
       />
     </>
   );
 };
+
+const TYPE_LABEL = { pdf: "DOCUMENT", meta: "SYSTEM", gallery: "GALLERY", image: "IMAGE" };
+const TYPE_PLURAL = { DOCUMENT: "DOCUMENTS", SYSTEM: "SYSTEMS", GALLERY: "GALLERIES", IMAGE: "IMAGES" };
+const labelFor = (type) => TYPE_LABEL[type] || "IMAGE";
+
+function countFiles(files) {
+  const counts = {};
+  files.forEach((f) => {
+    const label = labelFor(f.type);
+    counts[label] = (counts[label] || 0) + 1;
+  });
+  return Object.entries(counts).map(([label, n]) => ({
+    label: n > 1 ? TYPE_PLURAL[label] : label,
+    n,
+  }));
+}
 
 const WORK_SECTIONS = [
   {
@@ -91,10 +113,10 @@ const WORK_SECTIONS = [
           "/work-samples/marketing-club/net-at-nite.png"
         ] 
       },
-      { 
-        id: "mc-3", 
-        title: "Marketing Mondays", 
-        type: "gallery", 
+      {
+        id: "mc-3",
+        title: "Marketing Mondays",
+        type: "gallery",
         urls: [
           "/work-samples/marketing-club/mm-1.jpg",
           "/work-samples/marketing-club/mm-2.jpg",
@@ -134,9 +156,9 @@ const WORK_SECTIONS = [
     context: "A centralized archive of brand identity assets, persuasive copywriting, and visual social media collateral developed for community-focused education initiatives.",
     files: [
       { 
-        id: "cb-1", 
-        title: "Social Media Posts", 
-        type: "gallery", 
+        id: "cb-1",
+        title: "Social Media Posts",
+        type: "gallery",
         urls: [
           "/work-samples/cubs/Posts/1.jpg",
           "/work-samples/cubs/Posts/2.jpg",
@@ -281,16 +303,16 @@ export function Portfolio23() {
               {idx > 0 && (
                 <div className="absolute -top-10 md:-top-16 left-0 right-0 h-[1px] bg-white/[0.05]" />
               )}
-              <motion.div 
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-10%" }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="flex flex-col lg:flex-row gap-12 lg:gap-24"
-              >
-                
+              <div className="flex flex-col lg:flex-row gap-12 lg:gap-24">
+
                 {/* Left: Company Details */}
-                <div className="lg:w-1/3 flex flex-col gap-6">
+                <motion.div
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-10%" }}
+                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  className="lg:w-1/3 flex flex-col gap-6"
+                >
                   <div className="flex flex-col">
                     <div className="flex items-center gap-3 mb-4">
                       <div className="w-8 h-[1px] bg-white/20" />
@@ -307,17 +329,39 @@ export function Portfolio23() {
                     <p className="font-['Outfit'] text-[10px] md:text-[11px] font-semibold tracking-[0.2em] text-[#8a8a8a] uppercase">
                       {section.metadata}
                     </p>
+
+                    {/* what this section holds, at a glance */}
+                    <div className="flex flex-wrap items-center gap-2 mt-3.5">
+                      {countFiles(section.files).map(({ label, n }) => (
+                        <span
+                          key={label}
+                          className="font-['Outfit'] text-[9px] font-semibold tracking-[0.18em] uppercase text-[#9a9a9a] border border-white/[0.08] bg-white/[0.02] backdrop-blur-sm rounded-full px-2.5 py-1"
+                        >
+                          {String(n).padStart(2, "0")} {label}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                   <p className="font-['Outfit'] text-[15px] leading-[1.7] font-light text-[#c2c2c2]">
                     {section.context}
                   </p>
-                </div>
+                </motion.div>
 
-                {/* Right: Files Grid */}
-                <div className="lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                {/* Right: Files Grid — cards assemble in sequence */}
+                <motion.div
+                  className="lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-8%" }}
+                  variants={{ visible: { transition: { staggerChildren: 0.07, delayChildren: 0.1 } } }}
+                >
                   {section.files.map((file) => (
-                    <div 
+                    <motion.div
                       key={file.id}
+                      variants={{
+                        hidden: { opacity: 0, y: 26 },
+                        visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
+                      }}
                       onClick={() => {
                         if (file.type === "meta") {
                           triggerMetaGlitch();
@@ -325,7 +369,7 @@ export function Portfolio23() {
                           setSelectedFile(file);
                         }
                       }}
-                      className="group relative bg-[#121211]/40 backdrop-blur-md border border-[#222] hover:border-[#444] rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex flex-col aspect-[4/3]"
+                      className="group relative bg-[#121211]/40 backdrop-blur-md border border-[#222] hover:border-[#444] rounded-xl overflow-hidden cursor-pointer transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex flex-col aspect-[4/3]"
                     >
                       {/* Thumbnail Area */}
                       <div className="flex-1 bg-[#1a1a1a] flex items-center justify-center relative overflow-hidden">
@@ -337,26 +381,18 @@ export function Portfolio23() {
 
                         {file.type === "meta" ? (
                           <Terminal className="w-12 h-12 text-green-500/50 group-hover:text-green-400 transition-colors z-10" />
-                        ) : file.thumbnail || file.type === 'image' || file.type === 'gallery' ? (
-                          <ImageThumbnail src={file.thumbnail || (file.type === 'gallery' ? file.urls[0] : file.url)} alt={file.title} />
-                        ) : file.type === 'pdf' ? (
-                          <div className="w-full h-full absolute inset-0 opacity-80 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden flex items-start justify-center pointer-events-none z-0">
-                            <Document 
-                              file={file.url} 
-                              loading={<div className="absolute inset-0 bg-[#222]/80 animate-pulse flex items-center justify-center"><FileText className="w-8 h-8 text-[#444]" /></div>}
-                              className="w-full"
-                            >
-                              <Page 
-                                pageNumber={1} 
-                                width={600} 
-                                className="w-full [&>canvas]:!w-full [&>canvas]:!h-auto [&>canvas]:!object-cover"
-                                renderTextLayer={false} 
-                                renderAnnotationLayer={false} 
-                              />
-                            </Document>
-                          </div>
                         ) : (
-                          <ImageIcon className="w-12 h-12 text-[#444] group-hover:text-white/80 transition-colors duration-300 relative z-10" />
+                          <ImageThumbnail
+                            src={
+                              file.thumbnail ||
+                              (file.type === 'gallery'
+                                ? file.urls[0]
+                                : file.type === 'pdf'
+                                  ? thumbFor(file.url)
+                                  : file.url)
+                            }
+                            alt={file.title}
+                          />
                         )}
                       </div>
                       <div className="p-4 bg-[#0a0a0a] border-t border-[#222]">
@@ -364,13 +400,13 @@ export function Portfolio23() {
                           {file.title}
                         </h4>
                         <span className="font-['Outfit'] text-[9px] text-[#8a8a8a] uppercase tracking-widest mt-1 block">
-                          {file.type === 'pdf' ? 'DOCUMENT' : file.type === 'meta' ? 'SYSTEM' : file.type === 'gallery' ? 'GALLERY' : 'IMAGE'}
+                          {labelFor(file.type)}
                         </span>
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
-                </div>
-              </motion.div>
+                </motion.div>
+              </div>
             </div>
           ))}
         </div>
