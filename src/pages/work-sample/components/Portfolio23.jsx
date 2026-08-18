@@ -4,6 +4,7 @@ import { SecureFileViewer } from "./SecureFileViewer";
 import { Image as ImageIcon, Terminal } from "lucide-react";
 import { useLocation, Link } from "react-router-dom";
 import { ScrambleLabel } from "../../../components/ScrambleLabel";
+import { ArchiveTicker } from "./ArchiveTicker";
 
 /* Card thumbnails come from pre-rendered WebPs (see scripts/generate-pdf-thumbs.mjs).
    Rendering them with react-pdf meant downloading every source PDF — ~19MB+ — just
@@ -217,6 +218,20 @@ const WORK_SECTIONS = [
   }
 ];
 
+/* Short forms for the header ticker — legal names read badly at poster size. */
+const TICKER_ALIAS = {
+  "marketing-club": "MARKETING CLUB",
+  nespresso: "NESPRESSO",
+  cubs: "CUBS",
+  essemm: "ESSEMM",
+};
+
+// The ticker is the archive's index, so it reads straight off the sections.
+// The meta card is this site itself, not a client, so it sits out.
+const ARCHIVE_INDEX = WORK_SECTIONS
+  .filter((s) => s.id !== "portfolio-meta")
+  .map((s) => TICKER_ALIAS[s.id] || s.company.toUpperCase());
+
 export function Portfolio23() {
   const [selectedFile, setSelectedFile] = useState(null);
   const location = useLocation();
@@ -273,9 +288,10 @@ export function Portfolio23() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-16 md:mb-24 xl:mb-32 max-w-4xl"
+          className="mb-10 md:mb-14 xl:mb-16"
         >
-          <Link 
+          <div className="max-w-4xl">
+          <Link
             to="/#experience" 
             className="group flex items-center gap-2 text-[#a3a3a3] hover:text-[#f4f4f4] transition-colors w-fit mb-8 md:mb-12"
           >
@@ -293,6 +309,10 @@ export function Portfolio23() {
           <p className="font-['Outfit'] text-[14px] md:text-[16px] leading-[1.8] font-medium tracking-[0.1em] text-[#8a8a8a] max-w-2xl uppercase">
             A CURATED ARCHIVE OF PROJECTS, PRESENTATIONS, CAMPAIGNS, AND DELIVERABLES BEHIND THE EXECUTION.
           </p>
+          </div>
+
+          {/* Ghost index — the tape the archive runs on */}
+          <ArchiveTicker items={ARCHIVE_INDEX} />
         </motion.div>
 
         {/* Sections */}

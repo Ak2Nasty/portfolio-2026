@@ -2,6 +2,32 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 
+/* The loader covers the page for its first few seconds, so anything underneath
+   that animates on mount plays out unseen. Entrance animations wait for this
+   signal instead. It stays set afterwards, so returning to a page by route
+   change animates straight away rather than waiting for a loader that's done. */
+const INTRO_EVENT = "intro-ready";
+let introReady = false;
+
+function markIntroReady() {
+  if (introReady) return;
+  introReady = true;
+  window.dispatchEvent(new CustomEvent(INTRO_EVENT));
+}
+
+export function useIntroReady() {
+  const [ready, setReady] = useState(introReady);
+
+  useEffect(() => {
+    if (ready) return;
+    const onReady = () => setReady(true);
+    window.addEventListener(INTRO_EVENT, onReady);
+    return () => window.removeEventListener(INTRO_EVENT, onReady);
+  }, [ready]);
+
+  return ready;
+}
+
 export function Loader() {
   const location = useLocation();
   const validRoutes = ["/", "/work-sample"];
@@ -10,7 +36,11 @@ export function Loader() {
   const [loadingText, setLoadingText] = useState("INITIALIZING KERNEL...");
 
   useEffect(() => {
-    if (is404) return; // Don't run loader logic on 404 page
+    // 404 shows no loader, so nothing is ever covered up
+    if (is404) {
+      markIntroReady();
+      return;
+    }
 
     // Prevent scrolling while loading
     document.body.style.overflow = "hidden";
@@ -19,6 +49,9 @@ export function Loader() {
     const timer = setTimeout(() => {
       setIsLoading(false);
       document.body.style.overflow = "auto";
+      // Released as the panel starts lifting, not after it has gone: the page
+      // animates in behind it, so there's no dead black beat in between.
+      markIntroReady();
     }, 2000);
 
     const texts = [
@@ -47,14 +80,16 @@ export function Loader() {
   }, [is404]);
 
   return (
-    <AnimatePresence>
+    <AnimatePresence onExitComplete={markIntroReady}>
       {isLoading && (
         <motion.div
           key="loader"
           initial={{ y: 0 }}
-          exit={{ 
+          exit={{
             y: "-100vh",
-            transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 } 
+            // no hold before lifting, and a shorter lift, so the hero's own
+            // entrance is still visibly in progress when the panel clears
+            transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
           }}
           className="fixed inset-0 z-[999999] bg-[#0C0C0B] flex items-center justify-center pointer-events-auto"
         >

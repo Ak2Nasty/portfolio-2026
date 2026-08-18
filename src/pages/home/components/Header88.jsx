@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import { useIntroReady } from "../../../components/Loader";
 
 const MapleLeaf = ({ className }) => (
   <svg viewBox="0 0 24 24" fill="currentColor" className={className} xmlns="http://www.w3.org/2000/svg">
@@ -151,13 +152,19 @@ export function Header88() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReducedMotion]);
 
+  // Held at "hidden" until the loader is off-screen, otherwise the whole
+  // entrance plays behind it and the hero is simply there when it lifts.
+  const intro = useIntroReady() ? "visible" : "hidden";
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
         staggerChildren: 0.15,
-        delayChildren: 0.2
+        // starts with the panel's lift rather than after it, so nothing is
+        // uncovered blank as the loader slides away
+        delayChildren: 0
       }
     }
   };
@@ -219,7 +226,7 @@ export function Header88() {
       ref={heroRef}
       id="home"
       initial="hidden"
-      animate="visible"
+      animate={intro}
       variants={containerVariants}
       className="relative w-full min-h-[100svh] bg-[#0C0C0B] text-[#f4f4f4] flex flex-col overflow-hidden selection:bg-gray-800 selection:text-white pt-24 md:pt-32"
     >
@@ -254,7 +261,7 @@ export function Header88() {
         <motion.div style={{ y: nameY, opacity: nameOpacity }} className="mt-7 px-4">
           <motion.h1 style={{ y: tiltLift }} className="font-monument m-0 p-0 leading-[0.98] tracking-normal cursor-default">
             <motion.span style={{ x: tiltLine1 }} className="block overflow-hidden pb-[0.06em]">
-              <motion.span custom={0} variants={lineReveal} initial="hidden" animate="visible" className="block will-change-transform">
+              <motion.span custom={0} variants={lineReveal} initial="hidden" animate={intro} className="block will-change-transform">
                 <motion.span
                   className="block text-[12.8vw]"
                   style={shimmerStyle}
@@ -266,14 +273,14 @@ export function Header88() {
               </motion.span>
             </motion.span>
             <motion.span style={{ x: tiltLine2 }} className="block overflow-hidden pb-[0.06em]">
-              <motion.span custom={1} variants={lineReveal} initial="hidden" animate="visible" className="block will-change-transform">
+              <motion.span custom={1} variants={lineReveal} initial="hidden" animate={intro} className="block will-change-transform">
                 <span className="block text-[17.8vw]" style={outlineStyle}>
                   DAYAN
                 </span>
               </motion.span>
             </motion.span>
             <motion.span style={{ x: tiltLine3 }} className="block overflow-hidden pb-[0.1em]">
-              <motion.span custom={2} variants={lineReveal} initial="hidden" animate="visible" className="block will-change-transform">
+              <motion.span custom={2} variants={lineReveal} initial="hidden" animate={intro} className="block will-change-transform">
                 <motion.span
                   className="block text-[15vw]"
                   style={shimmerStyle}
@@ -342,7 +349,7 @@ export function Header88() {
         <motion.div ref={deskNameRef} style={{ y: nameY, opacity: nameOpacity }} className="mt-7 lg:mt-9">
           <motion.h1 style={{ y: deskLift }} className="font-monument m-0 p-0 leading-[0.98] tracking-normal cursor-default">
             <motion.span style={{ x: deskLine1 }} className="block overflow-hidden pb-[0.05em]">
-              <motion.span custom={0} variants={lineReveal} initial="hidden" animate="visible" className="block will-change-transform">
+              <motion.span custom={0} variants={lineReveal} initial="hidden" animate={intro} className="block will-change-transform">
                 <motion.span
                   className="block"
                   style={{ fontSize: deskSize1, ...shimmerStyle }}
@@ -354,7 +361,7 @@ export function Header88() {
               </motion.span>
             </motion.span>
             <motion.span style={{ x: deskLine2 }} className="block overflow-hidden pb-[0.09em]">
-              <motion.span custom={1} variants={lineReveal} initial="hidden" animate="visible" className="block will-change-transform">
+              <motion.span custom={1} variants={lineReveal} initial="hidden" animate={intro} className="block will-change-transform">
                 <span className="flex items-baseline" style={{ fontSize: deskSize2 }}>
                   <motion.span
                     className="shrink-0"

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Phone, Check, ChevronUp } from "lucide-react";
+import { SnakePixel } from "../../../components/SnakePixel";
 
 const LinkedinIcon = ({ className, strokeWidth = 1.5 }) => (
   <svg
@@ -220,6 +221,9 @@ export function WorkSamplesFooter() {
           <p className="font-['Outfit'] text-[9px] md:text-[10px] tracking-[0.2em] text-[#a3a3a3]/40 uppercase mt-2">
             © {new Date().getFullYear()} AKSHATHDAYAN SURESH. ALL RIGHTS RESERVED.
           </p>
+
+          {/* Hidden game trigger */}
+          <SnakePixel />
         </div>
 
       </div>

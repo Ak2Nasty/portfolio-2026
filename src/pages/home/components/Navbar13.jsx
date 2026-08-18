@@ -3,10 +3,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Home, User, GraduationCap, Briefcase, Folder, Cpu, Send } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useLenis } from "lenis/react";
+import { useIntroReady } from "../../../components/Loader";
 
-const getGreeting = (pathname) => {
+/* The navbar remounts on every route change, so the route the visitor came
+   from has to live outside the component to survive it. */
+let previousPath = null;
+
+const getGreeting = (pathname, fromArchive) => {
   if (pathname === "/work-sample") return "Welcome to the archive. 🏛️";
-  
+  // Coming back off the work samples, the time of day is the least interesting
+  // thing to say — they've just been through the whole archive.
+  if (fromArchive) return "See anything you liked? 👀";
+
   const date = new Date();
   const month = date.getMonth(); // 0-indexed (0 = Jan)
   const day = date.getDate();
@@ -24,7 +32,43 @@ const getGreeting = (pathname) => {
   return "Burning the midnight oil? 🌙";
 };
 
+/* The visitor's own wall clock, ticking alongside the greeting.
+   No timeZone is passed, so Intl uses the device's zone and locale — the same
+   source getGreeting() reads for "good evening", so the words and the clock can
+   never disagree, and it costs no network request. */
+function LocalClock() {
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    // re-aimed at each second boundary, otherwise a fixed 1000ms interval
+    // slowly drifts and the display visibly skips a second
+    let timer;
+    const tick = () => {
+      setNow(new Date());
+      timer = setTimeout(tick, 1000 - (Date.now() % 1000));
+    };
+    timer = setTimeout(tick, 1000 - (Date.now() % 1000));
+    return () => clearTimeout(timer);
+  }, []);
+
+  const formatter = React.useMemo(
+    () =>
+      new Intl.DateTimeFormat(undefined, {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }),
+    []
+  );
+
+  return (
+    // tabular figures, so the pill doesn't twitch as the digits change
+    <span className="tabular-nums shrink-0">{formatter.format(now)}</span>
+  );
+}
+
 export function Navbar13() {
+  const introReady = useIntroReady();
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [showGreeting, setShowGreeting] = useState(true);
   const [isHoveringNav, setIsHoveringNav] = useState(false);
@@ -33,13 +77,32 @@ export function Navbar13() {
   const navigate = useNavigate();
   const lenis = useLenis();
 
+  // Resolved once at mount, before the effect below overwrites previousPath.
+  // The clock only pairs with the home greeting — it has nothing to say next to
+  // the archive lines.
+  const [greeting] = useState(() => {
+    const fromArchive = previousPath === "/work-sample";
+    return {
+      text: getGreeting(location.pathname, fromArchive),
+      withClock: location.pathname === "/" && !fromArchive,
+    };
+  });
+
   useEffect(() => {
+    previousPath = location.pathname;
+  }, [location.pathname]);
+
+  // Counted from when the navbar is actually on screen. Started at mount it ran
+  // out behind the loader, leaving barely a second of it readable. The hero's
+  // entrance settles around 3.1s in, so this holds it a beat past that.
+  useEffect(() => {
+    if (!introReady) return;
     const timer = setTimeout(() => {
       timerExpired.current = true;
       setShowGreeting(false);
     }, 4000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [introReady]);
 
   const navItems = [
     { label: "HOME", id: "home", icon: Home },
@@ -75,7 +138,8 @@ export function Navbar13() {
   return (
     <motion.nav 
       initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
+      // waits for the loader, otherwise it drops in behind it and is simply there
+      animate={introReady ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
       transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
       className="absolute top-0 left-0 right-0 z-[999] w-full px-4 md:px-6 lg:px-12 pt-6 lg:pt-8 flex justify-center"
     >
@@ -109,9 +173,15 @@ export function Navbar13() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="w-full font-['Outfit'] font-bold text-[8.5px] sm:text-[10px] md:text-[11px] tracking-[0.15em] sm:tracking-[0.2em] text-[#050505] uppercase whitespace-nowrap overflow-hidden text-ellipsis text-center"
+                className="w-full font-['Outfit'] font-bold text-[8.5px] sm:text-[10px] md:text-[11px] tracking-[0.15em] sm:tracking-[0.2em] text-[#050505] uppercase whitespace-nowrap overflow-hidden text-center flex items-center justify-center gap-2 sm:gap-3"
               >
-                {getGreeting(location.pathname)}
+                <span className="truncate">{greeting.text}</span>
+                {greeting.withClock && (
+                  <>
+                    <span aria-hidden="true" className="opacity-25 shrink-0">|</span>
+                    <LocalClock />
+                  </>
+                )}
               </motion.p>
             ) : (
               <motion.ul
