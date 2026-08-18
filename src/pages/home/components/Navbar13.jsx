@@ -94,13 +94,13 @@ export function Navbar13() {
 
   // Counted from when the navbar is actually on screen. Started at mount it ran
   // out behind the loader, leaving barely a second of it readable. The hero's
-  // entrance settles around 3.1s in, so this holds it a beat past that.
+  // entrance settles around 3.1s in, so this holds it a couple of beats past that.
   useEffect(() => {
     if (!introReady) return;
     const timer = setTimeout(() => {
       timerExpired.current = true;
       setShowGreeting(false);
-    }, 4000);
+    }, 5000);
     return () => clearTimeout(timer);
   }, [introReady]);
 

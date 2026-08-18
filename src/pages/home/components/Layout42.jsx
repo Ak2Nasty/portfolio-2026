@@ -119,11 +119,15 @@ export function Layout42() {
             <h3 className="font-monument text-[34px] md:text-[46px] lg:text-[54px] font-bold leading-[1.05] text-[#f4f4f4] tracking-[0.03em] max-w-[650px] uppercase">
               MARKETING<br />
               BUILT THROUGH<br />
+              {/* The sweep bar blends with difference: |backdrop - source|. At
+                  #E8E8E9 it knocks the #f4f4f4 text back to exactly #0C0C0B, the
+                  section background, rather than the pure black a #f4f4f4 bar
+                  produced. Retune this if the text or background colour changes. */}
               <span className="relative inline-block pb-1 pr-2">
                 REAL-WORLD
                 <motion.div
                   style={{ width: firstLineWidth }}
-                  className="absolute left-[-4px] top-0 bottom-1 bg-[#f4f4f4] mix-blend-difference z-10 origin-left"
+                  className="absolute left-[-4px] top-0 bottom-1 bg-[#E8E8E9] mix-blend-difference z-10 origin-left"
                 />
               </span>
               <br />
@@ -131,7 +135,7 @@ export function Layout42() {
                 EXECUTION
                 <motion.div
                   style={{ width: secondLineWidth }}
-                  className="absolute left-[-4px] top-0 bottom-1 bg-[#f4f4f4] mix-blend-difference z-10 origin-left"
+                  className="absolute left-[-4px] top-0 bottom-1 bg-[#E8E8E9] mix-blend-difference z-10 origin-left"
                 />
               </span>
             </h3>
