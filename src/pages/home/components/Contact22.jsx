@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useScroll, useTransform, useReducedMotion } fr
 import { Mail, Phone, ArrowUpRight, Check, Loader2, AlertCircle } from "lucide-react";
 import emailjs from "@emailjs/browser";
 import { ScrambleLabel } from "../../../components/ScrambleLabel";
+import { SnakePixel } from "../../../components/SnakePixel";
 
 const LinkedinIcon = ({ className, strokeWidth = 1.5 }) => (
   <svg
@@ -792,6 +793,9 @@ export function Contact22() {
           >
             © {new Date().getFullYear()} AKSHATHDAYAN SURESH. ALL RIGHTS RESERVED.
           </motion.p>
+
+          {/* Hidden game trigger */}
+          <SnakePixel />
         </motion.div>
 
       </div>

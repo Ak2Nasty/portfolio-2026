@@ -237,6 +237,13 @@ function ConsoleEasterEgg() {
 export function EasterEggs() {
   const [gameOpen, setGameOpen] = useState(false);
 
+  // Lets the footer trigger open the game without prop drilling
+  useEffect(() => {
+    const open = () => setGameOpen(true);
+    window.addEventListener("open-snake-game", open);
+    return () => window.removeEventListener("open-snake-game", open);
+  }, []);
+
   return (
     <>
       <ConsoleEasterEgg />
