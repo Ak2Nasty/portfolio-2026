@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
+import { ThemeLock } from "./ThemeLock";
 
 /* The loader covers the page for its first few seconds, so anything underneath
    that animates on mount plays out unseen. Entrance animations wait for this
@@ -133,6 +134,18 @@ export function Loader() {
                 {loadingText}
               </span>
             </motion.div>
+          </motion.div>
+
+          {/* Anchored to the bottom rather than added to the centred column:
+              in the column its height shifted WELCOME and the bar off the true
+              centre of the page. */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.55 }}
+            className="absolute bottom-12 md:bottom-16 left-1/2 -translate-x-1/2"
+          >
+            <ThemeLock />
           </motion.div>
         </motion.div>
       )}
