@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { SecureFileViewer } from "./SecureFileViewer";
 import { Image as ImageIcon, Terminal } from "lucide-react";
 import { useLocation, Link } from "react-router-dom";
+import { useLenis } from "lenis/react";
 import { ScrambleLabel } from "../../../components/ScrambleLabel";
 import { ArchiveTicker } from "./ArchiveTicker";
 
@@ -235,6 +236,7 @@ const ARCHIVE_INDEX = WORK_SECTIONS
 export function Portfolio23() {
   const [selectedFile, setSelectedFile] = useState(null);
   const location = useLocation();
+  const lenis = useLenis();
   const [isGlitching, setIsGlitching] = useState(false);
 
   const triggerMetaGlitch = () => {
@@ -260,19 +262,25 @@ export function Portfolio23() {
     };
   }, [isGlitching]);
 
+  /* Routed through Lenis, like the navbar. A native scrollTo sets the browser's
+     position, but Lenis keeps its own and restores it on the next frame — so a
+     plain window.scrollTo can be undone and leave you wherever the previous page
+     was scrolled to. */
   useEffect(() => {
     if (location.hash) {
       const id = location.hash.replace("#", "");
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth" });
-        }
+        if (!element) return;
+        if (lenis) lenis.scrollTo(element, { duration: 1.2 });
+        else element.scrollIntoView({ behavior: "smooth" });
       }, 500);
-    } else {
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      return () => clearTimeout(timer);
     }
-  }, [location.pathname, location.hash]);
+
+    if (lenis) lenis.scrollTo(0, { immediate: true });
+    else window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, [location.pathname, location.hash, lenis]);
 
   return (
     <>
