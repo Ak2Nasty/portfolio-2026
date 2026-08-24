@@ -53,8 +53,11 @@ export function Career12() {
     },
     {
       company: "Foot Locker",
-      logo: "/footlocker-seeklogo.png",
-      logoClass: "grayscale invert contrast-200",
+      // The referee mark is already white-on-black, and the container blends
+      // with screen, so the black drops out on its own. Inverting it (as the old
+      // wordmark PNG needed) would flip the artwork's frame to a white box.
+      logo: "/footlocker-referee.svg",
+      logoClass: "filter-none",
       role: "Sales Associate",
       summary: [
         "Maintained consistent high-volume transactions in a <strong class=\"font-medium text-[#f4f4f4]\">fast-paced retail environment</strong>.",
