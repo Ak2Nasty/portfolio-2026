@@ -69,28 +69,35 @@ function dimmed(hex) {
   return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${DIM_ALPHA})`;
 }
 
-/* Breakpoints shared by the dot fill, dot border, and card logo border: ramp
-   up to the brand colour as the line reaches this school, then — mirroring
-   the desktop borders — ease back down to a dim tint as the line moves on to
-   the next one. The last school has nowhere to hand off to, so it stays lit. */
+/* Spotlight: shared by the dot fill, dot border, and card logo border. A school
+   takes its brand colour as the line reaches it, then hands that colour back as
+   the line moves on to the next one, so only the school you're currently at is
+   ever coloured.
+
+   Desktop can leave passed nodes dimmed because all four sit side by side and
+   read as a progress bar. Stacked down a phone the same thing just accumulates
+   into a column of competing colours, so here they return to neutral instead.
+
+   The fade-out runs over exactly the window the next school fades in, making it
+   a crossfade rather than a snap. */
 function useNodeColorStops(mobileProgress, threshold, nextThreshold, from, to) {
   const start = Math.max(0, threshold - 0.18);
   const end = Math.min(1, threshold + 0.06);
-  const hasNext = typeof nextThreshold === "number";
-  const dimStart = hasNext ? Math.max(end, nextThreshold - 0.18) : null;
-  const dimEnd = hasNext ? Math.min(1, nextThreshold + 0.06) : null;
-  const useDim = hasNext && dimStart > end;
+  // Guarded so the input stays strictly increasing, which useTransform requires
+  const handsOff = typeof nextThreshold === "number" && nextThreshold - 0.18 > end;
+  const fallStart = handsOff ? nextThreshold - 0.18 : 0;
+  const fallEnd = handsOff ? Math.min(1, nextThreshold + 0.06) : 0;
 
   return useTransform(
     mobileProgress,
-    useDim ? [start, end, dimStart, dimEnd] : [start, end],
-    useDim ? [from, to, to, dimmed(to)] : [from, to]
+    handsOff ? [start, end, fallStart, fallEnd] : [start, end],
+    handsOff ? [from, to, to, from] : [from, to]
   );
 }
 
-// ─── Circle that fills with its school's colour as the scroll line reaches it,
-//     then dims once the line moves on — no glow of its own; the progress
-//     line beside it already carries that ───
+// ─── Circle that takes its school's colour as the line arrives and gives it
+//     back as the line leaves — no glow of its own; the progress line beside it
+//     already carries that ───
 function FillDot({ mobileProgress, threshold, nextThreshold, brandColor }) {
   const bg = useNodeColorStops(mobileProgress, threshold, nextThreshold, "#111111", brandColor);
   const border = useNodeColorStops(mobileProgress, threshold, nextThreshold, "#333333", brandColor);
@@ -114,9 +121,10 @@ function FillDot({ mobileProgress, threshold, nextThreshold, brandColor }) {
 function MobileCard({ edu, mobileProgress, threshold, nextThreshold }) {
   const start   = Math.max(0, threshold - 0.18);
   const end     = Math.min(1, threshold + 0.06);
+  // The card's own reveal stays one-way — it fades in and stays visible; only
+  // the colour hands off.
   const opacity = useTransform(mobileProgress, [start, end], [0.15, 1]);
   const y       = useTransform(mobileProgress, [start, end], [8, 0]);
-  // Border only, background stays put — same treatment as the desktop logo box.
   const borderColor = useNodeColorStops(mobileProgress, threshold, nextThreshold, "#2a2a2a", edu.brandColor);
 
   return (
@@ -337,6 +345,7 @@ export function EducationTimeline() {
           <div ref={rowsRef} className="relative z-10 flex flex-col gap-14">
             {educationData.map((edu, index) => {
               const threshold = index / (educationData.length - 1);
+              // The last school has nobody to hand its colour to, so it keeps it
               const nextThreshold =
                 index + 1 < educationData.length ? (index + 1) / (educationData.length - 1) : undefined;
               return (
