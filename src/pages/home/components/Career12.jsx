@@ -223,7 +223,19 @@ export function Career12() {
                     <ul className="flex flex-col gap-2 mt-4 mb-2">
                       {exp.summary.map((point, i) => (
                         <li key={i} className="flex items-start gap-3">
-                          <span className={`${exp.isHighlight ? 'text-[#16a34a] opacity-80' : 'text-[#16a34a]'} mt-[4px] text-[10px]`}>▹</span>
+                          {/* Registration-mark tick rather than a glyph bullet: it sits
+                              on the same technical-drawing register as the spec rows and
+                              hairlines elsewhere, and frees green up to mean only
+                              "available for work". Drawn rather than typed so the weight
+                              stays consistent across platforms. */}
+                          <span
+                            aria-hidden="true"
+                            className={`shrink-0 mt-[7px] md:mt-[9px] ${exp.isHighlight ? 'opacity-70' : ''}`}
+                          >
+                            <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
+                              <path d="M4.5 0v9M0 4.5h9" stroke="#7a7a7a" strokeWidth="1" />
+                            </svg>
+                          </span>
                           <span 
                             className={`font-['Outfit'] text-[13px] sm:text-[14px] md:text-[16px] leading-[1.6] font-light ${exp.isHighlight ? 'text-[#c4c4c4]' : 'text-[#b3b3b3]'} max-w-[600px]`}
                             dangerouslySetInnerHTML={{ __html: point }} 
