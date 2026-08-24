@@ -9,9 +9,10 @@ const educationData = [
     program: "International Baccalaureate Diploma",
     year: "2018–2020",
     logoImage: "/stonehill-logo-transparent.png",
-    logoScale: "w-[85%] h-[85%]",
+    logoScale: "w-[92%] h-[92%]",
     logoFilter: "grayscale brightness-0 invert",
     logoText: "SH",
+    brandColor: "#9C1824",
   },
   {
     id: 1,
@@ -19,19 +20,25 @@ const educationData = [
     program: "Global Leadership & Entrepreneurship",
     year: "2019",
     logoImage: "/ync-logo-transparent.png",
-    logoScale: "w-[50%] h-[50%]",
+    logoScale: "w-[46%] h-[46%]",
     logoFilter: "grayscale brightness-0 invert",
     logoText: "YNC",
+    brandColor: "#FC9C24",
   },
   {
     id: 2,
     institution: "PURDUE UNIVERSITY & SIMPLILEARN",
     program: "Professional Certificate in Digital Marketing",
     year: "2023–2024",
-    logoImage: "/purdue-logo-transparent.png",
-    logoScale: "w-[85%] h-[85%]",
-    logoFilter: "grayscale invert brightness-125",
+    // Outline-only copy of the Motion P. The original is a gold-filled P with a
+    // black outline, and `grayscale invert` turned that gold into a muddy #4c4c4c
+    // fill inside the letter. This one keeps just the black stroke, so it
+    // inverts to a clean white outline like the other logos.
+    logoImage: "/purdue-logo-outline.png",
+    logoScale: "w-[64%] h-[64%]",
+    logoFilter: "brightness-0 invert",
     logoText: "PU",
+    brandColor: "#CFB991",
   },
   {
     id: 3,
@@ -39,9 +46,10 @@ const educationData = [
     program: "Bachelor of Management Honours",
     year: "2020–2025",
     logoImage: "/ubc-logo-transparent.png",
-    logoScale: "w-[80%] h-[80%]",
+    logoScale: "w-[78%] h-[78%]",
     logoFilter: "grayscale brightness-0 invert",
     logoText: "UBC",
+    brandColor: "#00A7E1",
   },
 ];
 
@@ -120,17 +128,44 @@ function MobileCard({ edu, mobileProgress, threshold }) {
   );
 }
 
+// Brand colour at reduced alpha, so a passed node keeps a hint of its colour
+// against the section background instead of staying fully saturated.
+const DIM_ALPHA = 0.45;
+function dimmed(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${DIM_ALPHA})`;
+}
+
 // ─── Desktop node — isolated component so hooks are at the top level ───
-function DesktopNode({ edu, index, total, scrollYProgress }) {
+function DesktopNode({ edu, index, total, scrollYProgress, logoRef, crossAt, nextCrossAt }) {
   const threshold  = index / (total - 1);
   const inputStart = Math.max(0, threshold - 0.05);
   const inputEnd   = Math.max(0.001, threshold);
   const opacity    = useTransform(scrollYProgress, [inputStart, inputEnd], [0.3, 1]);
   const scale      = useTransform(scrollYProgress, [inputStart, inputEnd], [0.98, 1]);
 
+  /* The border takes its institution's colour as the seek head reaches it, then
+     fades back to a dim tint as the head travels on to the next school — so
+     only the node the seek is currently at reads as fully lit, rather than
+     every passed node staying vibrant. The last one has nowhere to hand off to,
+     so it stays lit to the end. Border only — no glow around the box. */
+  const lit = Math.max(0.0001, crossAt);
+  const hasNext = typeof nextCrossAt === "number" && nextCrossAt > lit;
+  const borderColor = useTransform(
+    scrollYProgress,
+    hasNext ? [lit - 0.0001, lit, nextCrossAt] : [lit - 0.0001, lit],
+    hasNext
+      ? ["#2a2a2a", edu.brandColor, dimmed(edu.brandColor)]
+      : ["#2a2a2a", edu.brandColor]
+  );
+
   return (
     <motion.div className="flex flex-col items-center w-64 relative" style={{ scale }}>
-      <div className="w-16 h-16 xl:w-20 xl:h-20 bg-[#0C0C0B] border border-[#2a2a2a] rounded flex items-center justify-center mb-8 relative z-10 overflow-hidden">
+      <motion.div
+        ref={logoRef}
+        style={{ borderColor }}
+        className="w-16 h-16 xl:w-20 xl:h-20 bg-[#0C0C0B] border rounded flex items-center justify-center mb-8 relative z-10 overflow-hidden"
+      >
         <motion.div style={{ opacity }} className="w-full h-full flex items-center justify-center">
           {edu.logoImage ? (
             <img src={edu.logoImage} alt={edu.institution}
@@ -141,7 +176,7 @@ function DesktopNode({ edu, index, total, scrollYProgress }) {
             </span>
           )}
         </motion.div>
-      </div>
+      </motion.div>
       <motion.div style={{ opacity }} className="text-center mt-6 flex flex-col gap-2">
         <h3 className="text-xs xl:text-sm font-bold font-['Outfit'] tracking-wide text-[#e0e0e0] uppercase leading-relaxed">
           {edu.institution}
@@ -191,6 +226,43 @@ export function EducationTimeline() {
   });
 
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
+  /* ── Desktop seek line ─────────────────────────────────────────────────────
+     The line and its glow are plain white. The colour coding lives on the logo
+     box borders instead: each one takes its institution's colour as the seek
+     head reaches it.
+
+     The crossing points have to land on the logo centres, which are inset from
+     the track's ends (each node is a w-64 box under justify-between). Measured
+     rather than hardcoded so they stay locked to the logos at any window width. */
+  const trackRef = useRef(null);
+  const logoRefs = useRef([]);
+  // Fallbacks are the geometry at a typical desktop width, so the first paint
+  // before measurement is already close rather than visibly wrong.
+  const [stops, setStops] = useState([0.107, 0.369, 0.631, 0.893]);
+
+  useEffect(() => {
+    const measure = () => {
+      const track = trackRef.current;
+      if (!track) return;
+      const tr = track.getBoundingClientRect();
+      if (!tr.width) return;
+      const next = logoRefs.current.map((el) => {
+        if (!el) return null;
+        const r = el.getBoundingClientRect();
+        return (r.left + r.width / 2 - tr.left) / tr.width;
+      });
+      if (next.every((v) => typeof v === "number")) setStops(next);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (trackRef.current) ro.observe(trackRef.current);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
 
   // Line left offset: centre of the 14px dot = 6px
   const LINE_LEFT = DOT_PX / 2 - 1; // 6px (puts the 2px line centred under the dot)
@@ -261,7 +333,14 @@ export function EducationTimeline() {
       <div ref={desktopRef} className="max-lg:hidden w-full relative" style={{ height: "250vh" }}>
         <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden px-6 md:px-16 xl:px-24">
 
-          <div className="absolute top-24 xl:top-32 left-16 xl:left-24 flex flex-col gap-4 max-w-2xl z-10">
+          {/* In flow rather than `absolute top-24`: pinned to the top while the
+              timeline below was centred by this flex container, the two were
+              positioned by different mechanisms, so on a short viewport the
+              centred timeline rose into the fixed header and they overlapped.
+              Both are laid out by `justify-center` now, so the gap between them
+              compresses instead. The container's own px matches the `left-16
+              xl:left-24` this replaces, so the x position is unchanged. */}
+          <div className="relative flex flex-col gap-4 max-w-2xl z-10">
             <span className="font-['Outfit'] font-semibold text-[11px] tracking-[0.25em] text-[#a3a3a3] uppercase">
               EDUCATION / 02
             </span>
@@ -273,10 +352,10 @@ export function EducationTimeline() {
             </p>
           </div>
 
-          <div className="relative w-full max-w-[120rem] mx-auto mt-32 xl:mt-48 h-64 flex items-center">
+          <div ref={trackRef} className="relative w-full max-w-[120rem] mx-auto mt-16 xl:mt-24 h-64 flex items-center">
             <div className="absolute left-0 right-0 top-[32px] xl:top-[40px] h-[1px] bg-[#222] z-0 -translate-y-1/2" />
             <motion.div
-              className="absolute left-0 top-[32px] xl:top-[40px] h-[2px] bg-[#16a34a] z-10 origin-left shadow-[0_0_15px_#16a34a] -translate-y-1/2"
+              className="absolute left-0 top-[32px] xl:top-[40px] h-[2px] bg-white z-10 origin-left shadow-[0_0_15px_#fff] -translate-y-1/2"
               style={{ width: progressWidth }}
             />
             <div className="relative z-20 w-full flex justify-between items-start">
@@ -287,6 +366,9 @@ export function EducationTimeline() {
                   index={index}
                   total={educationData.length}
                   scrollYProgress={scrollYProgress}
+                  crossAt={stops[index]}
+                  nextCrossAt={stops[index + 1]}
+                  logoRef={(el) => { logoRefs.current[index] = el; }}
                 />
               ))}
             </div>
