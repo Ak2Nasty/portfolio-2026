@@ -1,5 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useMotionTemplate,
+  useMotionValueEvent,
+  useAnimationControls,
+} from "framer-motion";
 import { ScrambleLabel } from "../../../components/ScrambleLabel";
 
 const educationData = [
@@ -49,16 +56,17 @@ const educationData = [
     logoScale: "w-[78%] h-[78%]",
     logoFilter: "grayscale brightness-0 invert",
     logoText: "UBC",
-    brandColor: "#00A7E1",
+    brandColor: "#0055B7",
   },
 ];
 
-// Dot size = 14px (w-3.5 h-3.5). Logo box = h-14 (56px).
-// To center dot vertically on logo box: mt = (56 - 14) / 2 = 21px
-// Dot center from row-top = 21 + 7 = 28px  →  line uses top-[28px] / bottom-[28px]
-const DOT_PX = 14;   // w-3.5 h-3.5
+/* Dot is a ring (see FillDot) so it needs enough diameter for the sweep to be
+   legible on a phone — at 14px there was barely any ring to look at.
+   The centre offset is (LOGO-DOT)/2 + DOT/2, which reduces to LOGO/2 = 28px
+   whatever the dot size, so the line's top offset is unaffected by this. */
+const DOT_PX = 20;
 const LOGO_PX = 56;  // h-14
-const DOT_MT = (LOGO_PX - DOT_PX) / 2;  // 21
+const DOT_MT = (LOGO_PX - DOT_PX) / 2;  // 18
 const DOT_CENTER_FROM_TOP = DOT_MT + DOT_PX / 2; // 28
 
 // Brand colour at reduced alpha, so a passed node keeps a hint of its colour
@@ -69,18 +77,26 @@ function dimmed(hex) {
   return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${DIM_ALPHA})`;
 }
 
-/* Spotlight: shared by the dot fill, dot border, and card logo border. A school
-   takes its brand colour as the line reaches it, then hands that colour back as
-   the line moves on to the next one, so only the school you're currently at is
-   ever coloured.
+/* Three states, shared by the dot fill, dot border, and card logo border:
 
-   Desktop can leave passed nodes dimmed because all four sit side by side and
-   read as a progress bar. Stacked down a phone the same thing just accumulates
-   into a column of competing colours, so here they return to neutral instead.
+     not yet reached  →  dim grey
+     currently at     →  the school's brand colour
+     already passed   →  white
 
-   The fade-out runs over exactly the window the next school fades in, making it
-   a crossfade rather than a snap. */
-function useNodeColorStops(mobileProgress, threshold, nextThreshold, from, to) {
+   Passed schools land on white rather than back on grey, so they read as
+   completed — the same white as the progress line, so the line and the schools
+   behind it form one continuous "done" spine. Only the school the line is
+   currently at carries colour.
+
+   Desktop can leave passed nodes dimmed in their brand colour because all four
+   sit side by side and read as a progress bar. Stacked down a phone that just
+   accumulates into a column of competing colours.
+
+   The handoff runs over exactly the window the next school lights up in, so it
+   crossfades rather than snapping. */
+const DONE = "#f4f4f4";
+
+function useNodeColorStops(mobileProgress, threshold, nextThreshold, from, to, done = DONE) {
   const start = Math.max(0, threshold - 0.18);
   const end = Math.min(1, threshold + 0.06);
   // Guarded so the input stays strictly increasing, which useTransform requires
@@ -91,29 +107,86 @@ function useNodeColorStops(mobileProgress, threshold, nextThreshold, from, to) {
   return useTransform(
     mobileProgress,
     handsOff ? [start, end, fallStart, fallEnd] : [start, end],
-    handsOff ? [from, to, to, from] : [from, to]
+    handsOff ? [from, to, to, done] : [from, to]
   );
 }
 
-// ─── Circle that takes its school's colour as the line arrives and gives it
-//     back as the line leaves — no glow of its own; the progress line beside it
-//     already carries that ───
+/* ─── Node as a ring that fills round as the line arrives ──────────────────
+   A conic gradient sweeps the school's brand colour clockwise from 0° to 360°
+   over the same window the school lights up in, so the ring visibly closes —
+   the completion metaphor everyone already knows from a progress dial. Once
+   the line moves on the closed ring turns white, matching the line behind it.
+
+   The centre is knocked out with the section background rather than a real
+   border, because a border would sit outside the gradient instead of shaping
+   it. DOT_PX stays 14 so the line-alignment constants above still hold. */
+const RING_PX = 5; // leaves a 10px knocked-out centre
+// The unswept remainder. Lifted well clear of the #0C0C0B background so the
+// boundary between filled and unfilled is actually readable while scrolling —
+// at #2a2a2a the ring and the background were near-indistinguishable.
+const RING_TRACK = "#3d3d3d";
+
 function FillDot({ mobileProgress, threshold, nextThreshold, brandColor }) {
-  const bg = useNodeColorStops(mobileProgress, threshold, nextThreshold, "#111111", brandColor);
-  const border = useNodeColorStops(mobileProgress, threshold, nextThreshold, "#333333", brandColor);
+  const start = Math.max(0, threshold - 0.18);
+  const end = Math.min(1, threshold + 0.06);
+  const handsOff = typeof nextThreshold === "number" && nextThreshold - 0.18 > end;
+  const fallStart = handsOff ? nextThreshold - 0.18 : 0;
+  const fallEnd = handsOff ? Math.min(1, nextThreshold + 0.06) : 0;
+
+  // Clamps past `end`, so the ring holds closed rather than sweeping again
+  const sweep = useTransform(mobileProgress, [start, end], [0, 360]);
+  // The last school has nobody to hand off to, so it keeps its own colour
+  const ringColor = useTransform(
+    mobileProgress,
+    handsOff ? [fallStart, fallEnd] : [0, 1],
+    handsOff ? [brandColor, DONE] : [brandColor, brandColor]
+  );
+  const background = useMotionTemplate`conic-gradient(${ringColor} 0deg ${sweep}deg, ${RING_TRACK} ${sweep}deg 360deg)`;
+
+  const glowColor = useNodeColorStops(
+    mobileProgress, threshold, nextThreshold,
+    "rgba(0,0,0,0)", brandColor, "rgba(244,244,244,0.55)"
+  );
+  const boxShadow = useMotionTemplate`0 0 12px ${glowColor}`;
+
+  /* A single soft bump the moment the ring closes, so completing reads as a
+     small event rather than just a state you scroll past. Fires once per
+     crossing and re-arms below the threshold, with a margin either side so
+     jitter right on the boundary can't retrigger it. */
+  const pulse = useAnimationControls();
+  const armed = useRef(true);
+
+  useMotionValueEvent(mobileProgress, "change", (v) => {
+    if (v >= end && armed.current) {
+      armed.current = false;
+      pulse.start({
+        scale: [1, 1.2, 1],
+        transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] },
+      });
+    } else if (v < end - 0.03 && !armed.current) {
+      armed.current = true;
+    }
+  });
 
   return (
     <motion.div
-      className="rounded-full flex-shrink-0"
+      className="rounded-full flex-shrink-0 relative"
+      initial={{ scale: 1 }}
+      animate={pulse}
       style={{
         width:  DOT_PX,
         height: DOT_PX,
         marginTop: DOT_MT,
-        backgroundColor: bg,
-        border: "2px solid",
-        borderColor: border,
+        background,
+        boxShadow,
       }}
-    />
+    >
+      <span
+        aria-hidden="true"
+        className="absolute rounded-full"
+        style={{ inset: RING_PX, background: "#0C0C0B" }}
+      />
+    </motion.div>
   );
 }
 
