@@ -61,15 +61,39 @@ const LOGO_PX = 56;  // h-14
 const DOT_MT = (LOGO_PX - DOT_PX) / 2;  // 21
 const DOT_CENTER_FROM_TOP = DOT_MT + DOT_PX / 2; // 28
 
-// ─── Circle that fills green as the scroll line reaches it ───
-function FillDot({ mobileProgress, threshold }) {
-  const start = Math.max(0, threshold - 0.18);
-  const end   = Math.min(1, threshold + 0.06);
+// Brand colour at reduced alpha, so a passed node keeps a hint of its colour
+// against the section background instead of staying fully saturated.
+const DIM_ALPHA = 0.45;
+function dimmed(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${DIM_ALPHA})`;
+}
 
-  const bg     = useTransform(mobileProgress, [start, end], ["#111111", "#16a34a"]);
-  const border = useTransform(mobileProgress, [start, end], ["#333333", "#16a34a"]);
-  const shadow = useTransform(mobileProgress, [start, end],
-    ["0 0 0px transparent", "0 0 10px #16a34a"]);
+/* Breakpoints shared by the dot fill, dot border, and card logo border: ramp
+   up to the brand colour as the line reaches this school, then — mirroring
+   the desktop borders — ease back down to a dim tint as the line moves on to
+   the next one. The last school has nowhere to hand off to, so it stays lit. */
+function useNodeColorStops(mobileProgress, threshold, nextThreshold, from, to) {
+  const start = Math.max(0, threshold - 0.18);
+  const end = Math.min(1, threshold + 0.06);
+  const hasNext = typeof nextThreshold === "number";
+  const dimStart = hasNext ? Math.max(end, nextThreshold - 0.18) : null;
+  const dimEnd = hasNext ? Math.min(1, nextThreshold + 0.06) : null;
+  const useDim = hasNext && dimStart > end;
+
+  return useTransform(
+    mobileProgress,
+    useDim ? [start, end, dimStart, dimEnd] : [start, end],
+    useDim ? [from, to, to, dimmed(to)] : [from, to]
+  );
+}
+
+// ─── Circle that fills with its school's colour as the scroll line reaches it,
+//     then dims once the line moves on — no glow of its own; the progress
+//     line beside it already carries that ───
+function FillDot({ mobileProgress, threshold, nextThreshold, brandColor }) {
+  const bg = useNodeColorStops(mobileProgress, threshold, nextThreshold, "#111111", brandColor);
+  const border = useNodeColorStops(mobileProgress, threshold, nextThreshold, "#333333", brandColor);
 
   return (
     <motion.div
@@ -81,18 +105,19 @@ function FillDot({ mobileProgress, threshold }) {
         backgroundColor: bg,
         border: "2px solid",
         borderColor: border,
-        boxShadow: shadow,
       }}
     />
   );
 }
 
 // ─── Card content: logo + text, fades in as line reaches it ───
-function MobileCard({ edu, mobileProgress, threshold }) {
+function MobileCard({ edu, mobileProgress, threshold, nextThreshold }) {
   const start   = Math.max(0, threshold - 0.18);
   const end     = Math.min(1, threshold + 0.06);
   const opacity = useTransform(mobileProgress, [start, end], [0.15, 1]);
   const y       = useTransform(mobileProgress, [start, end], [8, 0]);
+  // Border only, background stays put — same treatment as the desktop logo box.
+  const borderColor = useNodeColorStops(mobileProgress, threshold, nextThreshold, "#2a2a2a", edu.brandColor);
 
   return (
     <motion.div
@@ -100,7 +125,7 @@ function MobileCard({ edu, mobileProgress, threshold }) {
       style={{ opacity, y }}
     >
       {/* Logo box */}
-      <div className="flex-shrink-0 w-14 h-14 bg-[#0a0a0a] border border-[#2a2a2a] rounded flex items-center justify-center overflow-hidden">
+      <motion.div style={{ borderColor }} className="flex-shrink-0 w-14 h-14 bg-[#0a0a0a] border rounded flex items-center justify-center overflow-hidden">
         {edu.logoImage ? (
           <img
             src={edu.logoImage}
@@ -112,7 +137,7 @@ function MobileCard({ edu, mobileProgress, threshold }) {
             {edu.logoText}
           </span>
         )}
-      </div>
+      </motion.div>
 
       {/* Text */}
       <div className="flex flex-col gap-1 pt-1">
@@ -126,14 +151,6 @@ function MobileCard({ edu, mobileProgress, threshold }) {
       </div>
     </motion.div>
   );
-}
-
-// Brand colour at reduced alpha, so a passed node keeps a hint of its colour
-// against the section background instead of staying fully saturated.
-const DIM_ALPHA = 0.45;
-function dimmed(hex) {
-  const n = parseInt(hex.slice(1), 16);
-  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${DIM_ALPHA})`;
 }
 
 // ─── Desktop node — isolated component so hooks are at the top level ───
@@ -301,10 +318,12 @@ export function EducationTimeline() {
             />
           )}
 
-          {/* Animated green fill — same position/height, scaleY grows from top */}
+          {/* Animated fill — same position/height, scaleY grows from top. White
+              rather than green now: the colour coding moved onto the dots and
+              logo borders, matching the desktop seek line. */}
           {trackHeight > 0 && (
             <motion.div
-              className="absolute w-[2px] bg-[#16a34a] origin-top z-0 shadow-[0_0_10px_#16a34a]"
+              className="absolute w-[2px] bg-white origin-top z-0 shadow-[0_0_10px_#fff]"
               style={{
                 left: LINE_LEFT,
                 top: DOT_CENTER_FROM_TOP,
@@ -318,10 +337,22 @@ export function EducationTimeline() {
           <div ref={rowsRef} className="relative z-10 flex flex-col gap-14">
             {educationData.map((edu, index) => {
               const threshold = index / (educationData.length - 1);
+              const nextThreshold =
+                index + 1 < educationData.length ? (index + 1) / (educationData.length - 1) : undefined;
               return (
                 <div key={edu.id} className="flex flex-row items-start" style={{ gap: 24 }}>
-                  <FillDot mobileProgress={mobileProgress} threshold={threshold} />
-                  <MobileCard edu={edu} mobileProgress={mobileProgress} threshold={threshold} />
+                  <FillDot
+                    mobileProgress={mobileProgress}
+                    threshold={threshold}
+                    nextThreshold={nextThreshold}
+                    brandColor={edu.brandColor}
+                  />
+                  <MobileCard
+                    edu={edu}
+                    mobileProgress={mobileProgress}
+                    threshold={threshold}
+                    nextThreshold={nextThreshold}
+                  />
                 </div>
               );
             })}
