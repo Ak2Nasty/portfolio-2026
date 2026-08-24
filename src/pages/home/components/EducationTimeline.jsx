@@ -164,7 +164,7 @@ function DesktopNode({ edu, index, total, scrollYProgress, logoRef, crossAt, nex
       <motion.div
         ref={logoRef}
         style={{ borderColor }}
-        className="w-16 h-16 xl:w-20 xl:h-20 bg-[#0C0C0B] border rounded flex items-center justify-center mb-8 relative z-10 overflow-hidden"
+        className="w-16 h-16 xl:w-20 xl:h-20 bg-[#0C0C0B] border rounded flex items-center justify-center mb-8 [@media(max-height:640px)]:mb-4 relative z-10 overflow-hidden"
       >
         <motion.div style={{ opacity }} className="w-full h-full flex items-center justify-center">
           {edu.logoImage ? (
@@ -177,7 +177,7 @@ function DesktopNode({ edu, index, total, scrollYProgress, logoRef, crossAt, nex
           )}
         </motion.div>
       </motion.div>
-      <motion.div style={{ opacity }} className="text-center mt-6 flex flex-col gap-2">
+      <motion.div style={{ opacity }} className="text-center mt-6 [@media(max-height:640px)]:mt-3 flex flex-col gap-2 [@media(max-height:640px)]:gap-1">
         <h3 className="text-xs xl:text-sm font-bold font-['Outfit'] tracking-wide text-[#e0e0e0] uppercase leading-relaxed">
           {edu.institution}
         </h3>
@@ -352,7 +352,11 @@ export function EducationTimeline() {
             </p>
           </div>
 
-          <div ref={trackRef} className="relative w-full max-w-[120rem] mx-auto mt-16 xl:mt-24 h-64 flex items-center">
+          {/* The vertical rhythm is fixed, so on a short viewport the stack
+              (header + gap + 256px block) overran the sticky container and its
+              overflow-hidden clipped the node labels. Below 640px tall the gap
+              and the block tighten so the whole thing still fits. */}
+          <div ref={trackRef} className="relative w-full max-w-[120rem] mx-auto mt-16 xl:mt-24 [@media(max-height:640px)]:!mt-8 h-64 [@media(max-height:640px)]:h-52 flex items-center">
             <div className="absolute left-0 right-0 top-[32px] xl:top-[40px] h-[1px] bg-[#222] z-0 -translate-y-1/2" />
             <motion.div
               className="absolute left-0 top-[32px] xl:top-[40px] h-[2px] bg-white z-10 origin-left shadow-[0_0_15px_#fff] -translate-y-1/2"
