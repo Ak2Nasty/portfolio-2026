@@ -7,6 +7,7 @@ import NotFound from "./pages/NotFound";
 import { Loader } from "./components/Loader";
 import { EasterEggs } from "./components/EasterEggs";
 import { CommandPalette } from "./components/CommandPalette";
+import { CardLab } from "./pages/card-lab/CardLab";
 
 function App() {
   useEffect(() => {
@@ -62,6 +63,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/work-sample" element={<WorkSample />} />
+          {/* Card blueprint — a dev tool, not part of the site. import.meta.env.DEV
+              is replaced with a literal false at build time, so this route and the
+              CardLab import tree-shake out of the production bundle entirely. */}
+          {import.meta.env.DEV && <Route path="/card-lab" element={<CardLab />} />}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>

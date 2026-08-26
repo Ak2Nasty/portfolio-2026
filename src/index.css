@@ -78,6 +78,250 @@ body.is-glitching header {
   display: none !important;
 }
 
+/* ── Experience cards ───────────────────────────────────────────────────────
+   One card, one face, at every width. There was a flash-card flip here — a
+   closed logo face that turned to reveal the content — on hover for desktop and
+   tap for touch. It read as a gimmick against the rest of the site and is gone;
+   with it went the 3D stage (perspective / preserve-3d / backface-visibility)
+   and everything that had to work around it.
+
+   .exp-card is the sticky positioner only. .exp-back carries the visible card:
+   background, border, padding, and the overflow that crops the logo watermark
+   bleeding off its corner. The name is a leftover from the two-faced version —
+   kept because it is referenced across this file and the markup, and renaming
+   buys nothing. */
+.exp-card {
+  position: sticky;
+  height: auto;
+  overflow: visible;
+}
+
+/* Blueprint only (/card-lab): the card outside the sticky stack. Everything
+   else about it is identical to a live card. */
+.exp-card--standalone { position: relative; top: auto; }
+
+/* ── Index tabs ─────────────────────────────────────────────────────────────
+   Each card carries a tab on its top edge: the company's brand colour with the
+   logo knocked out in black. The section is an archive, so the pile reads as a
+   set of filed pages.
+
+   The stacking is the whole reason for the horizontal stagger. Cards sit only
+   --stack-step apart, so tabs placed at the same x would bury each other; each
+   tab is offset by its index instead, and the pile shows every tab at once.
+
+   It lives on .exp-card, NOT .exp-back — .exp-back is overflow:hidden to crop
+   the logo watermark, which would slice a protruding tab clean off.
+
+   Width is derived so the whole row always fits the card: the percentage
+   resolves against .exp-card, so it shrinks on narrow screens rather than
+   running off the edge, and caps at 70px where there is room to spare. */
+.exp-tab {
+  --tab-gap: 5px;
+  --tab-w: min(
+    70px,
+    calc((100% - 52px - (var(--tab-count, 10) - 1) * var(--tab-gap)) / var(--tab-count, 10))
+  );
+  position: absolute;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tab-w);
+  height: 32px;
+  /* 4px of it tucks under the card's top edge so the tab reads as attached
+     rather than floating above it */
+  top: -28px;
+  left: calc(26px + var(--i, 0) * (var(--tab-w) + var(--tab-gap)));
+  /* Neutral at rest — only the card you are on takes its colour. Ten saturated
+     chips read as a rainbow strip against a dark, minimal page, and the colour
+     said nothing while it was on every tab at once. Lighting only the front tab
+     makes it mean "you are here", which is the rule this section already runs
+     on: --live lights one card at a time on mobile, :hover lights one on
+     desktop. The tabs just obey it too. */
+  background: #141414;
+  border: 1px solid #262626;
+  border-bottom: 0;
+  border-radius: 7px 7px 0 0;
+  padding: 0;
+  cursor: pointer;
+  appearance: none;
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 320ms ease, border-color 320ms ease;
+}
+.exp-card.is-front .exp-tab {
+  background: var(--bc);
+  border-color: var(--bc);
+}
+.exp-card.is-front .exp-tab img { filter: brightness(0); opacity: 0.85; }
+/* Lifts out of the pile like a tab being pulled */
+.exp-tab:hover { transform: translateY(-3px); filter: brightness(1.08); }
+
+/* The closing card has no logo and no brand colour, so --bc falls back to white
+   — a solid tab would make the placeholder the loudest chip in the row, which is
+   backwards. It reads as an unwritten index label instead: dashed outline,
+   nothing filled in, carrying the same crosshair that marks every bullet on
+   every card. Two motifs already in the vocabulary, doing double duty. */
+.exp-tab--ghost {
+  background: transparent;
+  border: 1.5px dashed rgba(244, 244, 244, 0.5);
+  border-bottom: 0;
+  box-shadow: none;
+}
+.exp-tab--ghost svg { stroke: rgba(244, 244, 244, 0.55); transition: stroke 320ms ease; }
+/* brightness() does nothing to a transparent tab, so the affordance is the
+   outline firming up instead */
+.exp-tab--ghost:hover { filter: none; border-color: rgba(244, 244, 244, 0.9); }
+.exp-tab--ghost:hover svg { stroke: #f4f4f4; }
+/* Its --bc falls back to white, so filling it would make the placeholder the
+   brightest thing on the page. It brightens its outline instead. */
+.exp-card.is-front .exp-tab--ghost {
+  background: transparent;
+  border-color: rgba(244, 244, 244, 0.9);
+}
+.exp-card.is-front .exp-tab--ghost svg { stroke: #f4f4f4; }
+.exp-tab:focus-visible {
+  outline: 2px solid #f4f4f4;
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .exp-tab { transition: none; }
+}
+.exp-tab img {
+  width: 76%;
+  height: 58%;
+  object-fit: contain;
+  /* Whitened while the tab is dark, blackened once it lights up. brightness(0)
+     flattens any artwork to a solid while preserving its alpha, so one rule
+     covers every logo regardless of what colour the source file is. */
+  filter: brightness(0) invert(1);
+  opacity: 0.5;
+  transition: filter 320ms ease, opacity 320ms ease;
+}
+
+.exp-back {
+  position: relative;
+  border-radius: 1rem;
+  background: #0a0a0a;
+  border: 1px solid #2a2a2a;
+  overflow: hidden;
+  transition: border-color 450ms ease, box-shadow 450ms ease;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: space-between;
+  padding: 20px;
+  /* Uniform per width band. Sticky cards sit a few px apart, so a card taller
+     than the one covering it shows a sliver below. */
+  min-height: 455px;
+}
+@media (min-width: 640px) { .exp-back { padding: 32px; } }
+@media (min-width: 1024px) { .exp-back { padding: 40px; } }
+
+/* The "Your Company Here" card reads lighter than the rest, but that tint has to
+   sit on an OPAQUE base. At 3% white the face is 97% transparent, so the card
+   stacked behind it showed straight through and broke the end of the stack. The
+   committed original masked this with backdrop-blur-2xl; a card only a few px
+   behind still ghosts through a blur, so that was never the right tool. Two
+   stacked backgrounds give the identical colour with nothing showing through. */
+.exp-card.is-highlight .exp-back {
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.03)),
+    #0a0a0a;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(255, 255, 255, 0.03);
+}
+/* Lifts on hover like the original did. Higher specificity than the generic
+   brand-glow hover, so this card keeps its own neutral treatment. */
+@media (hover: hover) and (pointer: fine) {
+  .exp-card.is-highlight:hover .exp-back {
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05)),
+      #0a0a0a;
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 32px rgba(255, 255, 255, 0.06);
+  }
+}
+
+/* No glow and no coloured stroke. The card keeps a single neutral edge at every
+   state; all brand colour lives in the index tab. The old treatment was a 38px
+   halo at 30% alpha plus a brand-tinted border, which read as dispersed and
+   duplicated the skills section, where every chip already glows. Skills are lit;
+   the archive is filed. */
+
+@media (min-width: 768px) {
+  .exp-back {
+    /* Covers the tallest card at 1440+ (479px), so every card lands on the same
+       height there and none peeks out below the card stacked over it. */
+    min-height: 480px;
+  }
+  .exp-card {
+    /* ── Stack geometry ──
+       The fan between stacked cards is DERIVED, not fixed. The vertical budget
+       is whatever is left after the card's own height and its top offset; that
+       remainder is shared across the gaps and capped at 20px.
+
+       A hardcoded step is what put the last cards below the fold: at a 682px
+       viewport the budget allows 8px per gap, and the old flat 20px overshot by
+       80px — invisible on a tall window, broken on a laptop. Deriving it means
+       the fan tightens on short screens instead of pushing the card off. */
+    --stack-top: 15vh;
+    --card-h: 480px;
+    --stack-step: clamp(
+      3px,
+      calc((100vh - var(--card-h) - var(--stack-top) - 24px) / var(--stack-gaps, 9)),
+      20px
+    );
+  }
+}
+
+/* Cards are sticky-stacked 20px apart, so any card taller than the one covering
+   it shows a sliver below — the same bug that forced uniform heights on mobile.
+   Uniform height per band is what prevents it. The lg band is the pinch: the
+   column becomes 60% of the viewport there, so the card is NARROWER at 1024
+   (479px) than at 768 (660px), and the bullets wrap harder. Tallest card needs
+   590px at 1024 and 515px at 1152; by 1280 everything fits the 480px floor.
+   --card-h must track these, or the step is computed against the wrong height. */
+@media (min-width: 1024px) and (max-width: 1151px) {
+  .exp-back { min-height: 600px; }
+  .exp-card { --card-h: 600px; }
+}
+@media (min-width: 1152px) and (max-width: 1279px) {
+  .exp-back { min-height: 520px; }
+  .exp-card { --card-h: 520px; }
+}
+
+/* ── Experience cards on mobile ────────────────────────────────────────────
+   Touch has no hover, so the brand colour is driven by scroll position
+   instead. Career12 writes --live (0 to 1) onto each card as it scrolls:
+   the card fades into its colour as it slides up into place and fades back
+   to neutral as the next card slides over it, so only the card you're
+   actually reading is lit. Desktop keeps :hover and never sets --live. */
+@media (max-width: 767px) {
+  .exp-card {
+    --live: 0;
+    /* Breathing room above the stack. The shallower 9px step is what buys the
+       headroom — at the original 20px the tenth card started 180px down and its
+       lower half fell past the fold once browser chrome took its cut. */
+    --stack-top: 13vh;
+    --stack-step: 9px;
+  }
+  /* The card edge stays neutral here too — --live now only drives type and the
+     tick, never the border. Short easing on top of the scroll-linked value:
+     long enough to smooth frame-to-frame jitter into a glide, short enough that
+     the colour still tracks the scroll rather than lagging behind it. */
+  .exp-card .exp-name,
+  .exp-card .exp-metric {
+    color: color-mix(in srgb, var(--bc) calc(var(--live) * 100%), #f4f4f4);
+    transition: color 260ms linear;
+  }
+  .exp-card .exp-tick {
+    color: color-mix(in srgb, var(--bc) calc(var(--live) * 100%), #7a7a7a);
+    /* Same 180° spin the desktop gets on hover, driven by scroll instead */
+    transform: rotate(calc(var(--live) * 180deg));
+    transition: color 260ms linear, transform 260ms linear;
+  }
+}
+
 /* Override default browser autofill styles (prevents yellow background on copy-paste or saved credentials) */
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
