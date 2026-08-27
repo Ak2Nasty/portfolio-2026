@@ -1,0 +1,789 @@
+/* ─── /chanel-wfj — page-scoped styles ──────────────────────────────────────
+   ISOLATION CONTRACT
+   Every selector begins with .cwfj (or .cwfj-, for the fixed progress rule that
+   sits outside the page's stacking context). No bare element selectors, no
+   :root overrides, nothing touching html, body or a shared component class.
+
+   Vite bundles this into the site stylesheet, so these rules are PRESENT on
+   every route — but none can MATCH anything outside this page, because .cwfj
+   exists nowhere else in the application.
+
+   TYPOGRAPHY
+   This page does not use Monument Extended. Monument is the portfolio's voice —
+   a wide geometric slab that reads as engineering, which is right for an
+   execution archive and wrong for fine jewellery. Setting this page in Monument
+   made it look like a photographic negative of the homepage.
+
+   The display face is Jost — a free geometric grotesque in the Futura lineage —
+   set in caps, heavy, at wide tracking. That is the luxury-house wordmark
+   register. The actual CHANEL wordmark uses a proprietary custom face which is
+   NOT used here and could not be; what is shared is the typographic convention,
+   which is a style rather than an asset.
+
+   Loaded by index.jsx while the route is mounted, NOT @imported here — an
+   @import would download the face on every route including the homepage.
+
+   COLOUR
+   Cream ground, warm near-black bands, and gold. Gold appears only as hairlines,
+   rules, marks and small caps — never as a gradient, never as a fill behind
+   type, never metallic. The marble is drawn: two low-contrast veins from
+   repeating gradients, not a photograph and not a texture file.
+
+   Status colour is separate and reserved: green for genuinely positive states,
+   amber for a real open dependency, and never as the sole carrier of meaning.
+
+   The page alternates cream and near-black bands. That contrast is the register
+   the reference material is built on, and it is why .cw-invert exists. */
+
+.cwfj {
+  /* Cream, not white. A pure-white ground reads as a browser default; a warm
+     cream reads as paper stock, and it is what lets gold sit on the page without
+     looking like a highlight. */
+  --cw-bg: #faf7f1;
+  --cw-bg-alt: #f4efe5;
+  --cw-surface: #f7f3ea;
+  --cw-surface-2: #efe9dc;
+  --cw-line: #e2d9c8;
+  --cw-line-strong: #c9bda5;
+
+  /* Measured against #faf7f1:
+       --cw-ink    #14110c  17.9:1
+       --cw-ink-2  #3a3428  10.2:1
+       --cw-muted  #6b6252   5.2:1  <- the FLOOR for text of any size
+     --cw-faint is 2.9:1 and is non-text ONLY: hairlines, ticks, bullet glyphs,
+     where the 3:1 graphical threshold applies. Never set type in --cw-faint. */
+  --cw-ink: #100e09;
+  --cw-ink-2: #2c281e;
+  --cw-muted: #544c3c;
+  --cw-faint: #8d8270;
+
+  /* Gold. One tone, used as hairlines, rules, marks and small caps — never as a
+     gradient, never as a fill behind type, never metallic. --cw-gold-deep is the
+     only one legible as body-sized text (4.8:1); --cw-gold is for rules and
+     large display, --cw-gold-soft for washes. Reaching for the bright one as
+     text is what makes gold look cheap. */
+  --cw-gold-deep: #7d6427;
+  --cw-gold: #a9873c;
+  --cw-gold-soft: rgba(169, 135, 60, 0.28);
+  --cw-gold-wash: rgba(169, 135, 60, 0.07);
+
+  --cw-accent: #7d6427;
+  --cw-rule: #a9873c;
+  --cw-tint: #e6dcc6;
+  --cw-accent-line: rgba(169, 135, 60, 0.34);
+  --cw-accent-wash: rgba(169, 135, 60, 0.06);
+  --cw-accent-glow: rgba(125, 100, 39, 0.05);
+
+  /* Status. Never the sole carrier of meaning — every state also has a drawn
+     shape and a written word. Tuned to clear AA on cream. */
+  --cw-go: #196b38;
+  --cw-attention: #8a5a0b;
+
+  background-color: var(--cw-bg);
+  color: var(--cw-ink);
+}
+
+/* ── Inverted sections ──────────────────────────────────────────────────────
+   The whole palette is tokens, so a black section is a token swap and nothing
+   else — no component knows or cares which ground it is sitting on.
+
+   Greys are re-derived rather than mirrored: #666663 reads correctly on white
+   and muddily on black, so the dark scale is chosen for its own ground. Status
+   colours lighten for the same reason. */
+.cwfj .cw-invert {
+  /* Near-black with a warm cast, so a dark band reads as lacquer against the
+     cream rather than as a hole cut in the page. */
+  --cw-bg: #100e0a;
+  --cw-bg-alt: #191610;
+  --cw-surface: #17140e;
+  --cw-surface-2: #1e1a13;
+  --cw-line: #302a1f;
+  --cw-line-strong: #4a4133;
+
+  --cw-ink: #f7f3ea;
+  --cw-ink-2: #e3dccd;
+  --cw-muted: #b3a992;
+  --cw-faint: #6a6153;
+
+  /* Gold inverts: the bright tone is the legible one on black, the deep one
+     disappears into it. */
+  --cw-gold-deep: #d9b978;
+  --cw-gold: #c9a961;
+  --cw-gold-soft: rgba(201, 169, 97, 0.34);
+  --cw-gold-wash: rgba(201, 169, 97, 0.09);
+
+  --cw-accent: #c9a961;
+  --cw-rule: #8a7a58;
+  --cw-tint: #2a2419;
+  --cw-accent-line: rgba(201, 169, 97, 0.36);
+  --cw-accent-wash: rgba(201, 169, 97, 0.07);
+  --cw-accent-glow: rgba(201, 169, 97, 0.05);
+
+  --cw-go: #5cbf82;
+  --cw-attention: #e0a94f;
+
+  background-color: var(--cw-bg);
+  color: var(--cw-ink);
+}
+
+/* ── Display face ───────────────────────────────────────────────────────────
+   Couture Bold, self-hosted from public/fonts.
+
+   GLYPH COVERAGE, verified by parsing the file's cmap: this face maps 68
+   glyphs — A-Z, a-z, 0-9, space, and # $ © ® ™. It carries NO punctuation:
+   no period, comma, hyphen, apostrophe, ampersand, slash, colon or dash.
+
+   That is fine and deliberate. Punctuation falls through to Jost, which is next
+   in the stack, already loaded for this route, and the nearest geometric match
+   to Couture — same Futura-descended skeleton, same circular bowls — so a full
+   stop or a hyphen sits in a heading without announcing itself as a different
+   typeface. Jost 700 is requested specifically so the fallback weight matches
+   Couture Bold rather than dropping to a lighter cut mid-line.
+
+   font-display: swap so the hero paints immediately in the fallback rather than
+   holding the first render hostage to a font request. */
+@font-face {
+  font-family: 'Couture';
+  src: url('/fonts/Couture.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.cwfj .cw-display {
+  font-family: 'Couture', 'Jost', 'Futura', 'Century Gothic', 'Avenir Next', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.055em;
+  line-height: 1.16;
+}
+/* Mastheads — the short standalone statements. */
+.cwfj .cw-display--mast {
+  letter-spacing: 0.11em;
+  line-height: 1.2;
+}
+/* Small caps runs — org names, the outbound CTA. */
+.cwfj .cw-display--label {
+  letter-spacing: 0.1em;
+}
+/* Figures. Caps tracking on a numeral just pushes digits apart. Couture has
+   digits, so the recap metrics stay in it. */
+.cwfj .cw-display--figure {
+  letter-spacing: 0.005em;
+  line-height: 0.98;
+}
+/* A heading line that legitimately needs punctuation opts out of Couture
+   entirely rather than mixing two faces mid-sentence. */
+.cwfj .cw-display--alt {
+  font-family: 'Jost', 'Futura', 'Century Gothic', sans-serif;
+  font-weight: 600;
+}
+
+/* ── Watch and jewellery motifs ─────────────────────────────────────────────
+   Three drawn devices, repeated across the page so it reads as one object
+   rather than a set of sections. All are CSS or inline SVG — no image request,
+   no texture file, nothing traced from anyone's product.
+
+   1. MINUTE TRACK — the graduated scale around a dial edge, flattened into a
+      horizontal rule. Used as the divider above every section label, so each
+      section opens on the same calibrated mark. */
+.cwfj .cw-minute-track {
+  height: 9px;
+  width: 100%;
+  max-width: 120px;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--cw-line-strong) 0 1px,
+    transparent 1px 7px
+  );
+  /* Fades out rightward so it reads as a scale continuing past the edge rather
+     than a fence that stops. */
+  -webkit-mask-image: linear-gradient(to right, #000 0%, #000 55%, transparent 100%);
+  mask-image: linear-gradient(to right, #000 0%, #000 55%, transparent 100%);
+}
+
+/* 2. GUILLOCHÉ GROUND — the same engine-turning as the dial, as a section
+      ground. Concentric rather than radiating at this scale, because radiating
+      lines across a full-width band read as a starburst. */
+.cwfj .cw-lattice,
+.cwfj .cw-guilloche-ground {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image:
+    repeating-linear-gradient(64deg,  transparent 0 78px, var(--cw-accent-glow) 78px 79px, transparent 79px 190px),
+    repeating-linear-gradient(-52deg, transparent 0 124px, var(--cw-accent-glow) 124px 125px, transparent 125px 300px),
+    radial-gradient(60% 40% at 78% 18%, var(--cw-accent-glow) 0%, transparent 62%);
+}
+
+/* 3. FACET — a brilliant-cut table seen from above: a small square rotated 45°
+      with its corners drawn in. Replaces the crosshair bullet on this page,
+      because a registration mark is the portfolio's engineering vocabulary and
+      a cut stone is this page's. */
+.cwfj .cw-facet {
+  width: 9px;
+  height: 9px;
+  flex-shrink: 0;
+  transform: rotate(45deg);
+  border: 1px solid var(--cw-accent);
+  position: relative;
+}
+.cwfj .cw-facet::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 1px solid var(--cw-accent);
+  opacity: 0.45;
+}
+
+/* Knurling — the milled grip of a crown, as a fine vertical comb. Used on the
+   edge of the retail document cards so they read as machined objects. */
+.cwfj .cw-knurl {
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--cw-line-strong) 0 1px,
+    transparent 1px 4px
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cwfj .cw-facet { transition: none; }
+}
+
+/* ── Status chips ───────────────────────────────────────────────────────── */
+.cwfj .cw-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1;
+  padding: 5px 9px;
+  border: 1px solid var(--cw-line-strong);
+  border-radius: 2px;
+  color: var(--cw-muted);
+  background: transparent;
+}
+/* An SVG, not a text character — see icons.jsx. Sized explicitly and nudged up
+   half a pixel so its optical centre lands on the label's x-height. */
+.cwfj .cw-status__glyph {
+  width: 9px;
+  height: 9px;
+  flex-shrink: 0;
+  display: block;
+  margin-top: -0.5px;
+  color: currentColor;
+}
+.cwfj .cw-status--go        { color: var(--cw-go);        border-color: currentColor; }
+.cwfj .cw-status--warm      { color: var(--cw-accent);    border-color: var(--cw-accent-line); }
+.cwfj .cw-status--attention { color: var(--cw-attention); border-color: currentColor; }
+.cwfj .cw-status--neutral   { color: var(--cw-muted);     border-color: var(--cw-line-strong); }
+
+/* ── Readiness grid ─────────────────────────────────────────────────────────
+   Six-column grid matching TIMELINE. A workstream's bar is placed with
+   grid-column, so the markup carries no pixel maths and reflows at any width. */
+.cwfj .cw-track {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  align-items: center;
+  position: relative;
+  min-height: 34px;
+}
+/* Column rules behind the bars. One repeating gradient rather than six
+   elements: it cannot fall out of step with the grid above it. */
+.cwfj .cw-track::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--cw-line) 0 1px,
+    transparent 1px calc(100% / 6)
+  );
+  pointer-events: none;
+}
+/* .cw-bar is the resting rule; .cw-bar__fill is the scroll-linked portion that
+   travels along it, so geometry stays in CSS and only a transform animates. */
+.cwfj .cw-bar {
+  position: relative;
+  height: 2px;
+  background: var(--cw-line-strong);
+  transition: background-color 380ms ease;
+}
+.cwfj .cw-bar__fill {
+  position: absolute;
+  inset: 0;
+  background: var(--cw-accent);
+  transform-origin: 0% 50%;
+}
+.cwfj .cw-node {
+  position: absolute;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  margin-top: -3.5px;
+  border-radius: 50%;
+  background: var(--cw-bg);
+  border: 1.5px solid var(--cw-line-strong);
+  transition: border-color 380ms ease, background-color 380ms ease;
+  z-index: 1;
+}
+.cwfj .cw-node--start { left: -3.5px; }
+.cwfj .cw-node--end   { right: -3.5px; }
+.cwfj .cw-row:hover .cw-node,
+.cwfj .cw-row[aria-expanded='true'] .cw-node { border-color: var(--cw-accent); }
+.cwfj .cw-row[aria-expanded='true'] .cw-node--end { background: var(--cw-accent); }
+
+/* ── Rows ───────────────────────────────────────────────────────────────── */
+.cwfj .cw-row {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--cw-line);
+  padding: 18px 0;
+  cursor: pointer;
+  appearance: none;
+  color: inherit;
+  transition: background-color 300ms ease;
+}
+.cwfj .cw-row:hover { background: var(--cw-bg-alt); }
+.cwfj .cw-row[aria-expanded='true'] { background: var(--cw-accent-wash); }
+
+/* Focus is always visible and never removed. */
+.cwfj :focus-visible {
+  outline: 2px solid var(--cw-accent);
+  outline-offset: 2px;
+  border-radius: 1px;
+}
+
+/* ── Disclosure panel ───────────────────────────────────────────────────────
+   grid-template-rows 0fr -> 1fr animates a panel of unknown height without
+   measuring it in JS and without a max-height guess that clips. */
+.cwfj .cw-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cwfj .cw-panel--open { grid-template-rows: 1fr; }
+.cwfj .cw-panel > div { overflow: hidden; }
+
+/* ── Dial ───────────────────────────────────────────────────────────────────
+   Colour lives here rather than on the SVG elements: var() is unreliable inside
+   an SVG presentation attribute, so the marks carry classes and the stylesheet
+   paints them. The dial re-themes with the page from one place. */
+.cwfj .cw-dial-outer { stroke: var(--cw-line-strong); }
+.cwfj .cw-dial-mid   { stroke: var(--cw-rule); }
+.cwfj .cw-dial-inner { stroke: var(--cw-line); }
+.cwfj .cw-tick-major { stroke: var(--cw-accent); }
+.cwfj .cw-tick-minor { stroke: var(--cw-line-strong); }
+.cwfj .cw-sweep-line { stroke: var(--cw-accent); }
+.cwfj .cw-sweep-tail { stroke: var(--cw-line-strong); }
+.cwfj .cw-sweep-dot  { fill: var(--cw-accent); }
+.cwfj .cw-hub        { fill: var(--cw-accent); }
+.cwfj .cw-hub-ring   { stroke: var(--cw-line); }
+
+/* Guilloché — the engine-turned ground of a dial. Faint enough to read as
+   surface rather than as pattern; it is the single strongest watch cue on the
+   page and it costs 120 hairlines and no image request. */
+.cwfj .cw-guilloche line {
+  stroke: var(--cw-rule);
+  opacity: 0.13;
+}
+
+/* Milestones. The resting state is an open jewel setting — a ring with a stone
+   in the middle; the active state fills and lifts, the way a set stone catches
+   light when it is turned. */
+.cwfj .cw-milestone-ring {
+  fill: var(--cw-bg);
+  stroke: var(--cw-accent);
+  transition: fill 320ms ease, stroke-width 320ms ease, r 320ms ease;
+}
+.cwfj .cw-milestone-dot {
+  fill: var(--cw-accent);
+  transition: r 320ms ease;
+}
+.cwfj .cw-milestone.is-active .cw-milestone-ring { fill: var(--cw-accent-wash); stroke-width: 2; }
+.cwfj .cw-milestone.is-active .cw-milestone-dot  { r: 2.6; }
+
+/* The hand. Two separate jobs kept apart on purpose:
+     · cwfj-hand   the one-time entrance, on load, never repeated
+     · --cw-hand   where it points, driven ONLY by the active milestone
+   The entrance runs on the group; the pointing rotation is a transition on the
+   same transform, so once the entrance has finished the hand simply eases to
+   whichever marker you are on. Nothing about either is tied to scroll. */
+.cwfj .cw-sweep {
+  transform-box: view-box;
+  transform-origin: 130px 130px;
+  transform: rotate(var(--cw-hand, 0deg));
+  transition: transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: cwfj-hand 1500ms cubic-bezier(0.16, 1, 0.3, 1) 120ms backwards;
+}
+
+@keyframes cwfj-hand {
+  from { transform: rotate(-118deg); opacity: 0; }
+  60%  { opacity: 1; }
+  to   { transform: rotate(var(--cw-hand, 0deg)); opacity: 1; }
+}
+
+/* Dial buttons. Invisible hit targets over the marks — the mark itself is the
+   visual, so the button only has to be reachable, large enough to press, and
+   obvious when focused. 44px clears the touch-target minimum even though the
+   drawn mark is 10px. */
+.cwfj .cw-dial-btn {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+}
+.cwfj .cw-dial-btn:focus-visible {
+  outline: 2px solid var(--cw-accent);
+  outline-offset: -8px;
+}
+
+/* Centre readout. Absolutely centred inside the dial's square box and clear of
+   the inner ring, so a long workstream name wraps rather than colliding with
+   the geometry. */
+.cwfj .cw-readout {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 46%;
+  text-align: center;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.cwfj .cw-readout__num {
+  font-family: 'Outfit', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  color: var(--cw-accent);
+  font-variant-numeric: tabular-nums;
+}
+.cwfj .cw-readout__name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 10.5px;
+  line-height: 1.35;
+  letter-spacing: 0.04em;
+  color: var(--cw-ink);
+  text-wrap: balance;
+}
+.cwfj .cw-readout__idle {
+  font-family: 'Outfit', sans-serif;
+  font-size: 9px;
+  line-height: 1.7;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cw-muted);
+}
+
+/* Everything below draws once on load and stops. Nothing loops — a permanently
+   moving element would pull the eye off the copy for as long as the page stayed
+   open. Continuous movement here is scroll-linked instead, so it only ever
+   happens because the reader caused it. */
+.cwfj .cw-ring {
+  stroke-dasharray: var(--cw-len);
+  stroke-dashoffset: var(--cw-len);
+  animation: cwfj-draw 1500ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: var(--cw-delay, 0ms);
+}
+.cwfj .cw-mark {
+  opacity: 0;
+  animation: cwfj-mark 620ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: var(--cw-delay, 0ms);
+}
+
+@keyframes cwfj-draw { to { stroke-dashoffset: 0; } }
+@keyframes cwfj-mark { to { opacity: 1; } }
+
+/* ── Scroll progress rule ───────────────────────────────────────────────────
+   One hairline across the top, filling as you move through the page. scaleX on
+   a 1px box is compositor-only — no layout, no paint. */
+.cwfj-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 45;
+  transform-origin: 0% 50%;
+  background: #0a0a0a;
+  pointer-events: none;
+  mix-blend-mode: difference;
+}
+
+/* ── Portfolio plaque ───────────────────────────────────────────────────────
+   The single most important control on the page: the way out into the full
+   portfolio. It used to be a text link with a rule under it, which put it at
+   exactly the same visual weight as the four other links around it — so the
+   thing the recruiter is most likely to want next was the hardest to find.
+
+   It is now a presentation plaque. Gold frame, guilloche ground, registration
+   corners that open outward on hover, and the display face at its largest size
+   anywhere on the page. The whole surface is the anchor, so the hit target is
+   the plaque rather than the words. */
+.cwfj .cw-plaque {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: clamp(28px, 5vw, 64px);
+  border: 1px solid var(--cw-accent-line);
+  overflow: hidden;
+  isolation: isolate;
+  transition: border-color 600ms ease, transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cwfj .cw-plaque:hover,
+.cwfj .cw-plaque:focus-visible {
+  border-color: var(--cw-accent);
+  transform: translateY(-3px);
+}
+
+/* Guilloche ground, held behind the content and brightening on approach. */
+.cwfj .cw-plaque__ground {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.5;
+  background-image:
+    repeating-linear-gradient(58deg,  transparent 0 62px, var(--cw-accent-glow) 62px 63px, transparent 63px 150px),
+    repeating-linear-gradient(-58deg, transparent 0 62px, var(--cw-accent-glow) 62px 63px, transparent 63px 150px),
+    radial-gradient(70% 60% at 82% 12%, var(--cw-accent-glow) 0%, transparent 66%);
+  transition: opacity 700ms ease;
+}
+.cwfj .cw-plaque:hover .cw-plaque__ground { opacity: 1; }
+
+.cwfj .cw-plaque__inner { position: relative; display: block; }
+
+/* Registration corners. Each is two hairlines drawn with borders, sitting a
+   little inside the frame and stepping outward on hover — the frame opening. */
+.cwfj .cw-plaque__corner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 0 solid var(--cw-accent);
+  transition: inset 500ms cubic-bezier(0.16, 1, 0.3, 1), opacity 500ms ease;
+  opacity: 0.6;
+}
+.cwfj .cw-plaque__corner--tl { top: 14px; left: 14px;   border-top-width: 1px; border-left-width: 1px; }
+.cwfj .cw-plaque__corner--tr { top: 14px; right: 14px;  border-top-width: 1px; border-right-width: 1px; }
+.cwfj .cw-plaque__corner--bl { bottom: 14px; left: 14px;  border-bottom-width: 1px; border-left-width: 1px; }
+.cwfj .cw-plaque__corner--br { bottom: 14px; right: 14px; border-bottom-width: 1px; border-right-width: 1px; }
+.cwfj .cw-plaque:hover .cw-plaque__corner { opacity: 1; }
+.cwfj .cw-plaque:hover .cw-plaque__corner--tl { top: 8px; left: 8px; }
+.cwfj .cw-plaque:hover .cw-plaque__corner--tr { top: 8px; right: 8px; }
+.cwfj .cw-plaque:hover .cw-plaque__corner--bl { bottom: 8px; left: 8px; }
+.cwfj .cw-plaque:hover .cw-plaque__corner--br { bottom: 8px; right: 8px; }
+
+/* The rule travels its full width on hover, then the arrow steps out. */
+.cwfj .cw-plaque__rule {
+  display: block;
+  height: 1px;
+  width: clamp(90px, 26vw, 220px);
+  background: var(--cw-line-strong);
+  position: relative;
+  overflow: hidden;
+}
+.cwfj .cw-plaque__rule::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--cw-accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cwfj .cw-plaque:hover .cw-plaque__rule::after,
+.cwfj .cw-plaque:focus-visible .cw-plaque__rule::after { transform: scaleX(1); }
+
+.cwfj .cw-plaque__arrow {
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--cw-accent-line);
+  border-radius: 50%;
+  color: var(--cw-accent);
+  transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1), background-color 500ms ease,
+              color 500ms ease, border-color 500ms ease;
+}
+.cwfj .cw-plaque:hover .cw-plaque__arrow {
+  transform: translate(5px, -5px);
+  background: var(--cw-accent);
+  color: var(--cw-bg);
+  border-color: var(--cw-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cwfj .cw-plaque,
+  .cwfj .cw-plaque__ground,
+  .cwfj .cw-plaque__corner,
+  .cwfj .cw-plaque__arrow,
+  .cwfj .cw-plaque__rule::after { transition: none; }
+  .cwfj .cw-plaque:hover { transform: none; }
+}
+
+/* ── Evidence blocks ────────────────────────────────────────────────────────
+   The credibility section, and the one that has to hit hardest. Each role is a
+   framed card on the cream ground with three columns: identity, the headline
+   number at display scale, and the verified points.
+
+   The number is the whole point of the redesign. It was previously the fourth
+   bullet in a list; now it is the largest thing in the block, because "30%" is
+   what a hiring manager retains and "led a supplier transition that reduced
+   event costs by 30%" is what they read second. */
+.cwfj .cw-evidence {
+  position: relative;
+  display: block;
+  border: 1px solid var(--cw-line);
+  padding: clamp(24px, 3.4vw, 44px);
+  overflow: hidden;
+  isolation: isolate;
+  transition: border-color 500ms ease, transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cwfj .cw-evidence:hover {
+  border-color: var(--cw-accent-line);
+  transform: translateY(-2px);
+}
+
+/* Guilloché ground, held back until approach so four of them stacked do not
+   turn the section into wallpaper. */
+.cwfj .cw-evidence__ground {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  background-image:
+    repeating-linear-gradient(58deg,  transparent 0 54px, var(--cw-accent-glow) 54px 55px, transparent 55px 130px),
+    repeating-linear-gradient(-58deg, transparent 0 54px, var(--cw-accent-glow) 54px 55px, transparent 55px 130px);
+  transition: opacity 600ms ease;
+}
+.cwfj .cw-evidence:hover .cw-evidence__ground { opacity: 1; }
+
+/* Three columns on wide screens; stacked everywhere else. The number column is
+   fixed-ish so all four cards align their figures down the page. */
+.cwfj .cw-evidence__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+@media (min-width: 768px) {
+  .cwfj .cw-evidence__inner {
+    grid-template-columns: minmax(0, 0.9fr) minmax(190px, 0.6fr);
+    gap: 36px 40px;
+  }
+  /* Points span the full width beneath identity and number at this size. */
+  .cwfj .cw-evidence__inner > ul { grid-column: 1 / -1; }
+}
+@media (min-width: 1280px) {
+  .cwfj .cw-evidence__inner {
+    grid-template-columns: minmax(0, 0.78fr) minmax(200px, 0.5fr) minmax(0, 1.25fr);
+    align-items: start;
+    gap: 48px;
+  }
+  .cwfj .cw-evidence__inner > ul { grid-column: auto; }
+}
+
+/* Index numeral — a quiet outline figure behind the org name, so the eye reads
+   the company first and the ordinal second. */
+.cwfj .cw-evidence__num {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: var(--cw-accent);
+}
+
+/* The tick that runs out to the competency label. */
+.cwfj .cw-evidence__tick {
+  display: block;
+  width: 26px;
+  height: 1px;
+  background: var(--cw-line-strong);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.cwfj .cw-evidence__tick::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--cw-accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cwfj .cw-evidence:hover .cw-evidence__tick::after { transform: scaleX(1); }
+
+/* The number column, separated by a hairline on wide screens. */
+.cwfj .cw-evidence__metric { position: relative; }
+@media (min-width: 1280px) {
+  .cwfj .cw-evidence__metric {
+    border-left: 1px solid var(--cw-line);
+    padding-left: 40px;
+  }
+}
+/* Currency and percent signs ride small and high rather than matching the
+   numeral's size, which would make "$" as loud as "2,500". */
+.cwfj .cw-evidence__affix {
+  font-size: 0.42em;
+  vertical-align: 0.85em;
+  letter-spacing: 0.02em;
+  margin: 0 0.06em;
+  color: var(--cw-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cwfj .cw-evidence,
+  .cwfj .cw-evidence__ground,
+  .cwfj .cw-evidence__tick::after { transition: none; }
+  .cwfj .cw-evidence:hover { transform: none; }
+}
+
+/* ── Tabular figures ────────────────────────────────────────────────────────
+   Wherever a number sits above another number, so digits align and the eye can
+   compare down the column. */
+.cwfj .cw-nums { font-variant-numeric: tabular-nums; }
+
+/* ── Horizontal scroll containment ──────────────────────────────────────────
+   The client table is the one element allowed to exceed a narrow viewport. It
+   scrolls inside its own container so the page body never does. */
+.cwfj .cw-scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+/* ── Reduced motion ─────────────────────────────────────────────────────────
+   The diagram resolves to its finished state rather than never appearing.
+   Scroll-linked transforms are neutralised in JS, where they are computed. */
+@media (prefers-reduced-motion: reduce) {
+  .cwfj .cw-ring,
+  .cwfj .cw-mark {
+    animation: none;
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+  .cwfj .cw-panel,
+  .cwfj .cw-bar,
+  .cwfj .cw-node,
+  .cwfj .cw-row { transition: none; }
+  /* The hand still POINTS at the active milestone — that is information, not
+     decoration — it just gets there instantly and skips the entrance. */
+  .cwfj .cw-sweep { animation: none; transition: none; }
+  .cwfj .cw-milestone-ring,
+  .cwfj .cw-milestone-dot { transition: none; }
+}
