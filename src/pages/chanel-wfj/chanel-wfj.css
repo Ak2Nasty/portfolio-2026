@@ -36,15 +36,22 @@
    the reference material is built on, and it is why .cw-invert exists. */
 
 .cwfj {
-  /* Cream, not white. A pure-white ground reads as a browser default; a warm
-     cream reads as paper stock, and it is what lets gold sit on the page without
-     looking like a highlight. */
-  --cw-bg: #faf7f1;
-  --cw-bg-alt: #f4efe5;
-  --cw-surface: #f7f3ea;
-  --cw-surface-2: #efe9dc;
-  --cw-line: #e2d9c8;
-  --cw-line-strong: #c9bda5;
+  /* Parchment, not white. The first version sat at #faf7f1 — 93% brightness,
+     only 7% off pure white — and across a full-bleed section that is genuinely
+     hard to look at. This is 81%, which reads as paper stock rather than as a
+     lit panel, and it is what lets gold sit on the page without looking like a
+     highlighter.
+
+     81% is the floor, not a starting point: one step further (75%) drops
+     --cw-gold-deep to 4.30 against the ground, under the 4.5 AA minimum for the
+     gold small-caps labels. Going darker than this REQUIRES darkening the gold
+     with it. */
+  --cw-bg: #efe8d9;
+  --cw-bg-alt: #e8e0ce;
+  --cw-surface: #ebe3d3;
+  --cw-surface-2: #e1d8c5;
+  --cw-line: #d4c9b0;
+  --cw-line-strong: #bbad8f;
 
   /* Measured against #faf7f1:
        --cw-ink    #14110c  17.9:1
@@ -62,12 +69,12 @@
      only one legible as body-sized text (4.8:1); --cw-gold is for rules and
      large display, --cw-gold-soft for washes. Reaching for the bright one as
      text is what makes gold look cheap. */
-  --cw-gold-deep: #7d6427;
+  --cw-gold-deep: #6f5822;
   --cw-gold: #a9873c;
   --cw-gold-soft: rgba(169, 135, 60, 0.28);
   --cw-gold-wash: rgba(169, 135, 60, 0.07);
 
-  --cw-accent: #7d6427;
+  --cw-accent: #6f5822;
   --cw-rule: #a9873c;
   --cw-tint: #e6dcc6;
   --cw-accent-line: rgba(169, 135, 60, 0.34);
@@ -179,6 +186,103 @@
   font-weight: 600;
 }
 
+/* ── Vignette ───────────────────────────────────────────────────────────────
+   Warm light at the top of a section falling to a warm shadow at its edges.
+
+   This does more for the glare than the tint does. A perfectly flat expanse
+   reads brighter than a modulated one at identical luminance, because there is
+   no darker value anywhere for the eye to reference against — so the ground
+   became the brightest thing on screen by default. A gentle falloff gives it
+   somewhere to sit.
+
+   Light sections only; the dark bands have the lattice instead. Never
+   interactive, and no layout cost. */
+.cwfj .cw-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(
+      118% 82% at 50% 24%,
+      rgba(255, 252, 245, 0.55) 0%,
+      rgba(255, 252, 245, 0) 52%
+    ),
+    radial-gradient(
+      130% 96% at 50% 42%,
+      rgba(0, 0, 0, 0) 58%,
+      rgba(88, 72, 42, 0.11) 100%
+    );
+}
+
+/* The hero carries the same falloff as every other light section, plus a faint
+   warm glow behind the dial. PrecisionHero has always rendered .cw-wash, but the
+   rule for it was lost in an earlier rewrite and the element sat there doing
+   nothing — this restores it. */
+.cwfj .cw-wash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(58% 52% at 72% 42%, var(--cw-accent-glow) 0%, transparent 70%),
+    radial-gradient(118% 82% at 50% 20%, rgba(255, 252, 245, 0.55) 0%, rgba(255, 252, 245, 0) 52%),
+    radial-gradient(130% 96% at 50% 45%, rgba(0, 0, 0, 0) 58%, rgba(88, 72, 42, 0.11) 100%);
+}
+
+/* ── Marble: REMOVED ────────────────────────────────────────────────────────
+   Tried twice and cut both times. Repeating gradients could only make parallel
+   bands, which read as glare streaks across a section rather than stone; the
+   SVG turbulence version was organic but still read as texture applied to a
+   page rather than as the page's own material.
+
+   The original brief ruled out marble textures for exactly this reason. The
+   clean parchment ground with the warm vignette is the treatment that works —
+   the luxury here comes from space, type and restraint, not from surface.
+
+   Do not re-add it. */
+
+/* ── Hour markers ───────────────────────────────────────────────────────────
+   The applied indices on a dial — a long mark flanked by two short ones. Used
+   beside section labels so each heading opens on a bezel index rather than a
+   plain rule. */
+.cwfj .cw-index-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+.cwfj .cw-index-mark i {
+  display: block;
+  width: 1px;
+  background: var(--cw-rule);
+}
+.cwfj .cw-index-mark i:nth-child(1),
+.cwfj .cw-index-mark i:nth-child(3) { height: 6px; opacity: 0.55; }
+.cwfj .cw-index-mark i:nth-child(2) { height: 11px; background: var(--cw-accent); }
+
+/* ── Bezel corners ──────────────────────────────────────────────────────────
+   Four short right angles set just inside a block's corners — the crop marks of
+   a presentation case. Applied to the retail document cards. */
+.cwfj .cw-bezel-corners::before,
+.cwfj .cw-bezel-corners::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 0 solid var(--cw-rule);
+  opacity: 0.6;
+  pointer-events: none;
+}
+.cwfj .cw-bezel-corners::before {
+  top: 7px; left: 7px;
+  border-top-width: 1px; border-left-width: 1px;
+}
+.cwfj .cw-bezel-corners::after {
+  bottom: 7px; right: 7px;
+  border-bottom-width: 1px; border-right-width: 1px;
+}
+
 /* ── Watch and jewellery motifs ─────────────────────────────────────────────
    Three drawn devices, repeated across the page so it reads as one object
    rather than a set of sections. All are CSS or inline SVG — no image request,
@@ -205,17 +309,10 @@
 /* 2. GUILLOCHÉ GROUND — the same engine-turning as the dial, as a section
       ground. Concentric rather than radiating at this scale, because radiating
       lines across a full-width band read as a starburst. */
-.cwfj .cw-lattice,
-.cwfj .cw-guilloche-ground {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.5;
-  background-image:
-    repeating-linear-gradient(64deg,  transparent 0 78px, var(--cw-accent-glow) 78px 79px, transparent 79px 190px),
-    repeating-linear-gradient(-52deg, transparent 0 124px, var(--cw-accent-glow) 124px 125px, transparent 125px 300px),
-    radial-gradient(60% 40% at 78% 18%, var(--cw-accent-glow) 0%, transparent 62%);
-}
+/* RETIRED: .cw-lattice and .cw-guilloche-ground.
+   Both drew crossing diagonal line systems on the dark bands. Stacked, they
+   read as a wire mesh laid over the type. The dark sections are flat now and
+   look considerably better for it. Do not re-add. */
 
 /* 3. FACET — a brilliant-cut table seen from above: a small square rotated 45°
       with its corners drawn in. Replaces the crosshair bullet on this page,
@@ -298,19 +395,22 @@
   content: '';
   position: absolute;
   inset: 0;
+  /* --cw-line was too faint to read as a scale once bars were drawn over it.
+     line-strong gives the ticks enough presence to measure against. */
   background-image: repeating-linear-gradient(
     to right,
-    var(--cw-line) 0 1px,
+    var(--cw-line-strong) 0 1px,
     transparent 1px calc(100% / 6)
   );
+  opacity: 0.55;
   pointer-events: none;
 }
 /* .cw-bar is the resting rule; .cw-bar__fill is the scroll-linked portion that
    travels along it, so geometry stays in CSS and only a transform animates. */
 .cwfj .cw-bar {
   position: relative;
-  height: 2px;
-  background: var(--cw-line-strong);
+  height: 4px;
+  background: var(--cw-tint);
   transition: background-color 380ms ease;
 }
 .cwfj .cw-bar__fill {
@@ -322,17 +422,17 @@
 .cwfj .cw-node {
   position: absolute;
   top: 50%;
-  width: 7px;
-  height: 7px;
-  margin-top: -3.5px;
+  width: 9px;
+  height: 9px;
+  margin-top: -4.5px;
   border-radius: 50%;
   background: var(--cw-bg);
-  border: 1.5px solid var(--cw-line-strong);
+  border: 1.5px solid var(--cw-rule);
   transition: border-color 380ms ease, background-color 380ms ease;
   z-index: 1;
 }
-.cwfj .cw-node--start { left: -3.5px; }
-.cwfj .cw-node--end   { right: -3.5px; }
+.cwfj .cw-node--start { left: -4.5px; }
+.cwfj .cw-node--end   { right: -4.5px; }
 .cwfj .cw-row:hover .cw-node,
 .cwfj .cw-row[aria-expanded='true'] .cw-node { border-color: var(--cw-accent); }
 .cwfj .cw-row[aria-expanded='true'] .cw-node--end { background: var(--cw-accent); }
@@ -344,7 +444,7 @@
   background: transparent;
   border: 0;
   border-top: 1px solid var(--cw-line);
-  padding: 18px 0;
+  padding: 22px 0;
   cursor: pointer;
   appearance: none;
   color: inherit;

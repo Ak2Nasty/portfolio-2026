@@ -95,8 +95,8 @@ function useApplicationMetadata() {
     /* Must match --cw-bg exactly. It was left at #ffffff after the palette
        moved to cream, which showed as a white band behind the page on
        overscroll bounce. */
-    document.body.style.backgroundColor = '#faf7f1';
-    document.documentElement.style.backgroundColor = '#faf7f1';
+    document.body.style.backgroundColor = '#efe8d9';
+    document.documentElement.style.backgroundColor = '#efe8d9';
 
     return () => {
       document.removeEventListener('visibilitychange', reassertTitle);
@@ -163,7 +163,7 @@ export default function ChanelWFJPage() {
       <ApplicationHeader />
 
       <main>
-        <PrecisionHero onSelectWorkstream={setOpenWorkstream} />
+        <PrecisionHero />
         <LaunchControl openId={openWorkstream} onToggle={setOpenWorkstream} />
         <ClientActivation />
         <RetailReadiness />

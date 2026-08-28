@@ -26,18 +26,36 @@ import { WorkstreamIcon } from './icons';
    Native <button> with aria-expanded / aria-controls — the disclosure pattern,
    free keyboard support, no key handlers to get wrong. */
 
+/* ── One grid template, used by the header AND every row ────────────────────
+   These MUST be the same string. They were previously written out separately,
+   both ending in `auto` — and `auto` resolved to 43px in the header (the word
+   "STATUS") but 100px in a row (a status chip plus the disclosure glyph). The
+   56px difference redistributed through the fr columns, so the track sat 18px
+   further right in the header and was 38px wider, and the T-8 / T-6 / T-4
+   labels could never line up with the gridlines the bars were drawn against.
+
+   The third column is now a fixed width, sized for the widest chip
+   ("Awaiting input") plus the glyph, so the header and the rows resolve
+   identically and the scale means what it says. */
+const GRID = 'md:grid-cols-[minmax(180px,0.9fr)_minmax(0,2.7fr)_152px]';
+
 function TimelineHeader() {
   return (
-    <div className="hidden md:grid grid-cols-[minmax(210px,1.15fr)_2.4fr_auto] gap-6 items-end pb-3">
+    <div className={`hidden md:grid ${GRID} gap-6 items-end pb-3 border-b border-[var(--cw-line)]`}>
       <span className="font-['Outfit'] text-[9px] tracking-[0.22em] uppercase text-[var(--cw-muted)]">
         Workstream
       </span>
+      {/* Labels sit flush to the left edge of their column, which is exactly
+          where .cw-track draws its gridline — so each label names the tick
+          beneath it rather than floating between two. */}
       <div className="grid grid-cols-6">
         {TIMELINE.map((t) => (
           <span
             key={t.id}
-            className={`font-['Outfit'] text-[9px] tracking-[0.16em] uppercase pl-2 ${
-              t.id === 'launch' ? 'text-[var(--cw-accent)]' : 'text-[var(--cw-muted)]'
+            className={`font-['Outfit'] text-[9.5px] tracking-[0.14em] uppercase ${
+              t.id === 'launch'
+                ? 'text-[var(--cw-accent)] font-semibold'
+                : 'text-[var(--cw-muted)]'
             }`}
           >
             {t.short}
@@ -103,7 +121,7 @@ function WorkstreamRow({ item, index, scroll, reduced, isOpen, onToggle }) {
         aria-controls={panelId}
         onClick={onToggle}
       >
-        <div className="grid grid-cols-1 md:grid-cols-[minmax(210px,1.15fr)_2.4fr_auto] gap-4 md:gap-6 items-center">
+        <div className={`grid grid-cols-1 ${GRID} gap-4 md:gap-6 items-center`}>
           {/* Name */}
           <div className="flex items-center gap-3.5 min-w-0">
             <span className="cw-nums font-['Outfit'] text-[10px] tracking-[0.12em] text-[var(--cw-muted)] shrink-0">

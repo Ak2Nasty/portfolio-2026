@@ -23,10 +23,14 @@ import { fadeUp } from './motion';
    token set via .cw-invert — no child component knows or cares which ground it
    is on, which is the entire payoff of tokenising the palette.
 
-   Dark sections get the lattice: a very low-contrast diagonal grid so a black
-   block reads as a surface rather than a void. Generous vertical padding on the
-   dark bands specifically, because a black section needs more air around its
-   type than a white one to avoid feeling compressed. */
+   Dark sections carry NO texture. They had a diagonal lattice and a guilloche
+   ground; stacked, the two crossing line systems read as a wire mesh over the
+   type rather than as surface. Flat near-black is stronger, and it matches the
+   restraint the rest of the page runs on.
+
+   Generous vertical padding on the dark bands specifically, because a black
+   section needs more air around its type than a light one to avoid feeling
+   compressed. */
 export function Section({ id, label, children, tone = 'light', className = '' }) {
   const dark = tone === 'dark';
   return (
@@ -37,7 +41,9 @@ export function Section({ id, label, children, tone = 'light', className = '' })
         dark ? 'cw-invert py-24 md:py-32 xl:py-44' : 'py-20 md:py-28 xl:py-36'
       } ${className}`}
     >
-      {dark ? <div aria-hidden="true" className="cw-lattice" /> : null}
+      {/* Light sections get the warm vignette. Dark sections get nothing — no
+          lattice, no guilloche, no marble. See the notes in chanel-wfj.css. */}
+      {dark ? null : <div aria-hidden="true" className="cw-vignette" />}
       <div className="max-w-[120rem] mx-auto px-6 md:px-12 lg:px-16 relative">{children}</div>
     </section>
   );
@@ -55,9 +61,14 @@ export function Section({ id, label, children, tone = 'light', className = '' })
 export function SectionLabel({ children, className = '' }) {
   return (
     <motion.div variants={fadeUp} className={`flex flex-col gap-3 ${className}`}>
-      {/* The minute track — a dial's graduated edge, flattened. Every section
-          opens on the same calibrated mark. */}
-      <span aria-hidden="true" className="cw-minute-track" />
+      {/* A bezel index and a minute track — a dial's applied marker followed by
+          its graduated edge. Every section opens on the same calibrated mark. */}
+      <span className="flex items-center gap-3">
+        <span aria-hidden="true" className="cw-index-mark">
+          <i /><i /><i />
+        </span>
+        <span aria-hidden="true" className="cw-minute-track" />
+      </span>
       <span className="block font-['Outfit'] font-semibold text-[10px] md:text-[11px] tracking-[0.25em] text-[var(--cw-muted)] uppercase">
         {children}
       </span>

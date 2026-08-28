@@ -2,12 +2,10 @@ import { useCallback, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLenis } from 'lenis/react';
 import { EASE } from './motion';
-import { WORKSTREAMS } from '../data/applicationData';
 
 /* ─── Precision dial ─────────────────────────────────────────────────────────
    Original geometry: a graduated bezel, an engine-turned ground, concentric
-   calibration rings, and six milestone marks — one per workstream in the
-   readiness view below.
+   calibration rings, and six milestone marks — one per section of the page.
 
    It is an instrument for coordinating time, which is what this page is about.
    Explicitly NOT a watch: no case, no crown, no lugs, no date window, nothing
@@ -18,9 +16,8 @@ import { WORKSTREAMS } from '../data/applicationData';
    The first version was decoration that happened to move when you scrolled,
    which is the worst of both — it drew the eye and then did nothing with it.
    Now every milestone is a real button: pointing at one swings the hand round
-   to it and names the workstream in the middle of the dial, and activating it
-   jumps to that workstream in the readiness view with its row already open.
-   The dial is the table of contents for the section beneath it.
+   to it and names the section in the middle of the dial, and activating it
+   scrolls there. The dial is the table of contents for the whole document.
 
    MOTION
    The entrance plays once, on load, and never again. Nothing here is
@@ -62,21 +59,38 @@ const GUILLOCHE = Array.from({ length: 120 }, (_, i) => {
   };
 });
 
-/* One mark per workstream, evenly spaced on the middle ring. The 60° step is
-   also the angle the hand swings to, so both read off the same number. */
-const MARKS = WORKSTREAMS.map((w, i) => {
-  const angle = (i / WORKSTREAMS.length) * TAU - Math.PI / 2;
+/* ── What the markers point at ───────────────────────────────────────────────
+   The six markers are the six SECTIONS of the page, not the six workstreams
+   inside System / 01. That was the earlier mapping and it was the wrong one:
+   the dial sits at the top of the document, so a reader takes it as a map of
+   the whole thing — and it quietly sent all six markers into the same section.
+
+   Six sections, six markers, 60° apart. The dial is now literally the table of
+   contents, and every marker lands somewhere different.
+
+   `target` must match a real element id. Verified against the DOM: hero,
+   launch-control, client-activation, retail-readiness, activation-recap,
+   evidence, closing. */
+const SECTIONS = [
+  { id: 'launch-control',    num: '01', name: 'Launch control' },
+  { id: 'client-activation', num: '02', name: 'Client activation' },
+  { id: 'retail-readiness',  num: '03', name: 'Retail readiness' },
+  { id: 'activation-recap',  num: '04', name: 'Post-activation recap' },
+  { id: 'evidence',          num: '05', name: 'Evidence' },
+  { id: 'closing',           num: '06', name: 'Precision' },
+];
+
+const MARKS = SECTIONS.map((s, i) => {
+  const angle = (i / SECTIONS.length) * TAU - Math.PI / 2;
   return {
-    id: w.id,
-    num: w.num,
-    name: w.name,
-    deg: i * (360 / WORKSTREAMS.length),
+    ...s,
+    deg: i * (360 / SECTIONS.length),
     x: CX + Math.cos(angle) * 88,
     y: CY + Math.sin(angle) * 88,
   };
 });
 
-export function PrecisionHero({ onSelectWorkstream }) {
+export function PrecisionHero() {
   const lenis = useLenis();
   /* Which milestone the pointer or keyboard is on. null = at rest, hand parked
      at the launch point. */
@@ -92,12 +106,17 @@ export function PrecisionHero({ onSelectWorkstream }) {
     else target.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [lenis]);
 
+  /* Each marker scrolls to its own section. Lenis owns scrolling site-wide, so
+     this routes through it; window.scrollTo would fight the smooth-scroll
+     engine and stutter. */
   const goTo = useCallback(
-    (id) => {
-      if (onSelectWorkstream) onSelectWorkstream(id);
-      scrollToSystem();
+    (sectionId) => {
+      const target = document.getElementById(sectionId);
+      if (!target) return;
+      if (lenis) lenis.scrollTo(target, { duration: 1.2 });
+      else target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     },
-    [onSelectWorkstream, scrollToSystem]
+    [lenis]
   );
 
   return (
@@ -275,7 +294,7 @@ export function PrecisionHero({ onSelectWorkstream }) {
                   onFocus={() => setActive(i)}
                   onBlur={() => setActive(null)}
                   onClick={() => goTo(m.id)}
-                  aria-label={`Workstream ${m.num}, ${m.name}. Opens it in the readiness view.`}
+                  aria-label={`Go to section ${m.num}, ${m.name}`}
                 />
               ))}
 
@@ -295,7 +314,7 @@ export function PrecisionHero({ onSelectWorkstream }) {
             </div>
 
             <p className="mt-7 text-center font-['Outfit'] text-[9.5px] tracking-[0.22em] uppercase text-[var(--cw-muted)]">
-              Select a marker to open its workstream
+              Select a marker to jump to its section
             </p>
           </motion.div>
         </div>

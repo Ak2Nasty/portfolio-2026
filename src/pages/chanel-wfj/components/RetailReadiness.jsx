@@ -21,7 +21,7 @@ function DocumentCard({ doc }) {
   return (
     <motion.article
       variants={fadeUp}
-      className="group relative flex flex-col bg-[var(--cw-surface)] border border-[var(--cw-line)] hover:border-[var(--cw-line-strong)] transition-colors duration-500 h-full"
+      className="cw-bezel-corners group relative flex flex-col bg-[var(--cw-surface)] border border-[var(--cw-line)] hover:border-[var(--cw-line-strong)] transition-colors duration-500 h-full"
     >
       {/* Header band — the document's identity strip */}
       <header className="flex items-start justify-between gap-4 px-6 py-5 border-b border-[var(--cw-line)]">
