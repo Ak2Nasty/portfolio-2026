@@ -143,14 +143,22 @@ export function PrecisionHero() {
               variants={{ hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } } }}
               className="flex flex-col gap-2 mb-8 md:mb-10"
             >
+              {/* CHANEL is named textually, which an application study may do.
+                  The wording carries the DIRECTION of the relationship, which is
+                  the part that matters: "in application to" says this was
+                  addressed to them. "For" or "prepared for" would have implied
+                  a brief, and the footer disclaimer states the opposite. */}
               <span className="font-['Outfit'] font-semibold text-[12px] md:text-[13px] tracking-[0.17em] text-[var(--cw-muted)] uppercase">
                 Application Study / 001
               </span>
               <span className="font-['Outfit'] text-[12px] md:text-[13px] tracking-[0.17em] text-[var(--cw-muted)] uppercase">
                 Marketing &amp; Retail Coordination
               </span>
-              <span className="font-['Outfit'] text-[12px] md:text-[13px] tracking-[0.17em] text-[var(--cw-accent)] uppercase">
+              <span className="font-['Outfit'] font-semibold text-[12px] md:text-[13px] tracking-[0.17em] text-[var(--cw-accent)] uppercase">
                 Watches &amp; Fine Jewellery
+              </span>
+              <span className="font-['Outfit'] text-[12px] md:text-[13px] tracking-[0.17em] text-[var(--cw-muted)] uppercase mt-1">
+                In application to CHANEL Canada
               </span>
             </motion.div>
 
