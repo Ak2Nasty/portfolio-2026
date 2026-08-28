@@ -736,14 +736,26 @@
     padding-left: 40px;
   }
 }
-/* Currency and percent signs ride small and high rather than matching the
-   numeral's size, which would make "$" as loud as "2,500". */
+/* Currency and percent signs.
+   MUST NOT be set in Couture. Couture's cmap includes $ and its glyph for it is
+   a decorative interlocking-C monogram, so a currency prefix rendered in the
+   display face came out looking like a luxury house's trademark sitting in
+   front of the number. That is both wrong and legally unacceptable on a page
+   that goes out of its way to claim no affiliation.
+
+   Forced to Outfit, which has an ordinary dollar sign. It also fixes the
+   collision: the Couture glyph was far wider than its advance width and lapped
+   over the first numeral. Raised with position rather than vertical-align so it
+   still occupies its own horizontal space and cannot overlap the figure. */
 .cwfj .cw-evidence__affix {
-  font-size: 0.42em;
-  vertical-align: 0.85em;
-  letter-spacing: 0.02em;
-  margin: 0 0.06em;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.3em;
+  font-weight: 500;
+  letter-spacing: 0.03em;
   color: var(--cw-accent);
+  position: relative;
+  top: -1.5em;
+  margin: 0 0.12em;
 }
 
 @media (prefers-reduced-motion: reduce) {
