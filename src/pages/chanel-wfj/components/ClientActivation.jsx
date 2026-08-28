@@ -54,12 +54,25 @@ function FunnelBar({ item, index, previous }) {
   );
 }
 
-/* Cell tone. Never colour alone — the word in the cell is always the primary
-   signal, and these only adjust emphasis. */
+/* Cell tone.
+
+   Three states, three colours, and weight carried alongside every one of them:
+   a reader who cannot separate the hues still gets the emphasis, and the word
+   in the cell always says it outright. Colour is the third signal here, never
+   the only one.
+
+     go        resolved and positive   Confirmed, Complete, Yes, Allocated
+     attention needs action            Awaiting, On hold, Scheduled
+     negative  closed out negative     Declined, Released, No
+
+   Declined and No were previously grey — the same treatment as "no data" — so
+   the two rows a coordinator most needs to spot were the two that vanished. */
 const toneFor = (value) => {
-  if (['Confirmed', 'Complete', 'Yes', 'Allocated', 'Sent'].includes(value)) return 'text-[var(--cw-ink-2)]';
-  if (['Awaiting', 'On hold', 'Scheduled'].includes(value)) return 'text-[var(--cw-attention)]';
-  return 'text-[var(--cw-muted)]';
+  if (['Confirmed', 'Complete', 'Yes', 'Allocated'].includes(value)) return 'cw-cell-go';
+  if (['Awaiting', 'On hold', 'Scheduled'].includes(value)) return 'cw-cell-attention';
+  if (['Declined', 'Released', 'No'].includes(value)) return 'cw-cell-negative';
+  if (value === 'Sent') return 'cw-cell-plain';
+  return 'cw-cell-quiet';
 };
 
 const COLUMNS = [
@@ -79,7 +92,7 @@ export function ClientActivation() {
       <motion.div {...revealProps} className="mb-14 md:mb-20">
         <SectionLabel className="mb-5">System / 02</SectionLabel>
         <SectionHeading id="client-activation-heading" className="mb-6">
-          From invitation to follow-through.
+          From invitation to follow-through
         </SectionHeading>
         <SectionIntro>
           One record per client, from targeting to the conversation after. Anonymised throughout.

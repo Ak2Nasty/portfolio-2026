@@ -83,8 +83,12 @@
 
   /* Status. Never the sole carrier of meaning — every state also has a drawn
      shape and a written word. Tuned to clear AA on cream. */
-  --cw-go: #196b38;
-  --cw-attention: #8a5a0b;
+  --cw-go: #14713a;
+  --cw-attention: #7d4e05;
+  --cw-negative: #98302f;
+  --cw-go-tint: rgba(20, 113, 58, 0.10);
+  --cw-attention-tint: rgba(125, 78, 5, 0.10);
+  --cw-negative-tint: rgba(152, 48, 47, 0.09);
 
   background-color: var(--cw-bg);
   color: var(--cw-ink);
@@ -126,8 +130,12 @@
   --cw-accent-wash: rgba(201, 169, 97, 0.07);
   --cw-accent-glow: rgba(201, 169, 97, 0.05);
 
-  --cw-go: #5cbf82;
-  --cw-attention: #e0a94f;
+  --cw-go: #6ad494;
+  --cw-attention: #edb45c;
+  --cw-negative: #ef8f8d;
+  --cw-go-tint: rgba(106, 212, 148, 0.13);
+  --cw-attention-tint: rgba(237, 180, 92, 0.13);
+  --cw-negative-tint: rgba(239, 143, 141, 0.12);
 
   background-color: var(--cw-bg);
   color: var(--cw-ink);
@@ -175,9 +183,22 @@
 }
 /* Figures. Caps tracking on a numeral just pushes digits apart. Couture has
    digits, so the recap metrics stay in it. */
+/* Figures are NOT set in Couture.
+
+   Couture is a display face and its digits show it: the 1 has no foot, the 4
+   closes oddly and the 8 is top-heavy, so "100%" and "48H" came out looking
+   mis-drawn rather than designed. A number at 74px is read as a shape, and
+   that shape has to be right.
+
+   Jost has proper geometric figures — circular 0, straight-sided 1, even
+   colour across the set — and it is already loaded for this route. Medium
+   weight and tabular so the four recap metrics align down their column. */
 .cwfj .cw-display--figure {
-  letter-spacing: 0.005em;
-  line-height: 0.98;
+  font-family: 'Jost', 'Futura', 'Century Gothic', 'Avenir Next', sans-serif;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.005em;
+  line-height: 0.95;
 }
 /* A heading line that legitimately needs punctuation opts out of Couture
    entirely rather than mixing two faces mid-sentence. */
@@ -363,6 +384,7 @@
   border-radius: 2px;
   color: var(--cw-muted);
   background: transparent;
+  font-weight: 600;
 }
 /* An SVG, not a text character — see icons.jsx. Sized explicitly and nudged up
    half a pixel so its optical centre lands on the label's x-height. */
@@ -374,9 +396,9 @@
   margin-top: -0.5px;
   color: currentColor;
 }
-.cwfj .cw-status--go        { color: var(--cw-go);        border-color: currentColor; }
-.cwfj .cw-status--warm      { color: var(--cw-accent);    border-color: var(--cw-accent-line); }
-.cwfj .cw-status--attention { color: var(--cw-attention); border-color: currentColor; }
+.cwfj .cw-status--go        { color: var(--cw-go);        border-color: currentColor; background: var(--cw-go-tint); }
+.cwfj .cw-status--warm      { color: var(--cw-attention); border-color: currentColor; background: var(--cw-attention-tint); }
+.cwfj .cw-status--attention { color: var(--cw-attention); border-color: currentColor; background: var(--cw-attention-tint); }
 .cwfj .cw-status--neutral   { color: var(--cw-muted);     border-color: var(--cw-line-strong); }
 
 /* ── Readiness grid ─────────────────────────────────────────────────────────
@@ -864,6 +886,15 @@
   .cwfj .cw-evidence__tick::after { transition: none; }
   .cwfj .cw-evidence:hover { transform: none; }
 }
+
+/* ── Record table cell tones ────────────────────────────────────────────────
+   Colour AND weight together — a reader who cannot separate the hues still gets
+   the emphasis, and the word in the cell always says it outright. */
+.cwfj .cw-cell-go        { color: var(--cw-go);        font-weight: 600; }
+.cwfj .cw-cell-attention { color: var(--cw-attention); font-weight: 600; }
+.cwfj .cw-cell-negative  { color: var(--cw-negative);  font-weight: 600; }
+.cwfj .cw-cell-plain     { color: var(--cw-ink-2);     font-weight: 500; }
+.cwfj .cw-cell-quiet     { color: var(--cw-muted);     font-weight: 400; }
 
 /* ── Tabular figures ────────────────────────────────────────────────────────
    Wherever a number sits above another number, so digits align and the eye can

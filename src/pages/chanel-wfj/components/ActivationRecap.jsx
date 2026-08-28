@@ -67,7 +67,7 @@ function Metric({ item }) {
       <span className="cw-display cw-display--figure text-[50px] sm:text-[60px] xl:text-[74px] text-[var(--cw-ink)] mb-5">
         <CountUp value={item.value} suffix={item.suffix} />
       </span>
-      <span className="font-['Outfit'] text-[12.5px] font-semibold tracking-[0.15em] uppercase text-[var(--cw-ink-2)] mb-2">
+      <span className="font-['Outfit'] text-[12.5px] font-semibold tracking-[0.15em] uppercase text-[var(--cw-ink)] mb-2">
         {item.label}
       </span>
       <span className="font-['Outfit'] text-[14px] leading-[1.6] text-[var(--cw-ink-2)]">
@@ -83,7 +83,7 @@ export function ActivationRecap() {
       <motion.div {...revealProps} className="mb-14 md:mb-20">
         <SectionLabel className="mb-5">System / 04</SectionLabel>
         <SectionHeading id="activation-recap-heading" className="mb-6">
-          The event ends. The learning doesn&rsquo;t.
+          The event ends. The learning doesn&rsquo;t
         </SectionHeading>
         <SectionIntro>
           A recap is only useful if it changes the next one.

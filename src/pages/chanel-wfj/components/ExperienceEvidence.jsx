@@ -60,7 +60,7 @@ function EvidenceBlock({ item }) {
             {m.value}
             {m.suffix ? <span className="cw-evidence__affix">{m.suffix}</span> : null}
           </span>
-          <span className="font-['Outfit'] text-[12px] tracking-[0.15em] uppercase text-[var(--cw-muted)] block mt-3 max-w-[190px]">
+          <span className="font-['Outfit'] text-[12px] font-semibold tracking-[0.15em] uppercase text-[var(--cw-ink-2)] block mt-3 max-w-[200px]">
             {m.label}
           </span>
         </div>
@@ -90,7 +90,7 @@ export function ExperienceEvidence() {
       <motion.div {...revealProps} className="mb-14 md:mb-20">
         <SectionLabel className="mb-5">Evidence / 05</SectionLabel>
         <SectionHeading id="evidence-heading" className="mb-6">
-          Built from real-world execution.
+          Built from real-world execution
         </SectionHeading>
         <SectionIntro>
           Everything above is a constructed scenario. Everything below is not.

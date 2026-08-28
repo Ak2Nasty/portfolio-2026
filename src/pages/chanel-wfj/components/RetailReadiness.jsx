@@ -62,7 +62,7 @@ function DocumentCard({ doc }) {
               <dt className="font-['Outfit'] text-[11px] tracking-[0.15em] uppercase text-[var(--cw-muted)]">
                 {f.label}
               </dt>
-              <dd className="font-['Outfit'] text-[14.5px] leading-[1.6] text-[var(--cw-ink-2)] m-0">
+              <dd className="font-['Outfit'] text-[14.5px] font-medium leading-[1.6] text-[var(--cw-ink-2)] m-0">
                 {f.value}
               </dd>
             </div>
@@ -87,7 +87,7 @@ export function RetailReadiness() {
       <motion.div {...revealProps} className="mb-14 md:mb-20">
         <SectionLabel className="mb-5">System / 03</SectionLabel>
         <SectionHeading id="retail-readiness-heading" className="mb-6">
-          Clear in the boutique before the client sees it.
+          Clear in the boutique before the client sees it
         </SectionHeading>
         <SectionIntro>
           {RETAIL_STATEMENT}

@@ -212,7 +212,7 @@ export function LaunchControl({ openId, onToggle }) {
       <motion.div {...revealProps} className="mb-14 md:mb-20">
         <SectionLabel className="mb-5">System / 01</SectionLabel>
         <SectionHeading id="launch-control-heading" className="mb-6">
-          One launch. Six workstreams. Zero lost details.
+          One launch. Six workstreams. Zero lost details
         </SectionHeading>
         <SectionIntro>
           Product, CRM, retail, VM, vendors and reporting — one view.
