@@ -354,11 +354,11 @@
   align-items: center;
   gap: 7px;
   white-space: nowrap;
-  font-size: 9.5px;
-  letter-spacing: 0.18em;
+  font-size: 13px;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
   line-height: 1;
-  padding: 5px 9px;
+  padding: 6px 11px;
   border: 1px solid var(--cw-line-strong);
   border-radius: 2px;
   color: var(--cw-muted);
@@ -367,8 +367,8 @@
 /* An SVG, not a text character — see icons.jsx. Sized explicitly and nudged up
    half a pixel so its optical centre lands on the label's x-height. */
 .cwfj .cw-status__glyph {
-  width: 9px;
-  height: 9px;
+  width: 10px;
+  height: 10px;
   flex-shrink: 0;
   display: block;
   margin-top: -0.5px;
@@ -568,7 +568,7 @@
 }
 .cwfj .cw-readout__num {
   font-family: 'Outfit', sans-serif;
-  font-size: 9px;
+  font-size: 13px;
   letter-spacing: 0.24em;
   color: var(--cw-accent);
   font-variant-numeric: tabular-nums;
@@ -583,7 +583,7 @@
 }
 .cwfj .cw-readout__idle {
   font-family: 'Outfit', sans-serif;
-  font-size: 9px;
+  font-size: 10.5px;
   line-height: 1.7;
   letter-spacing: 0.22em;
   text-transform: uppercase;

@@ -23,8 +23,15 @@ function DocumentCard({ doc }) {
       variants={fadeUp}
       className="cw-bezel-corners group relative flex flex-col bg-[var(--cw-surface)] border border-[var(--cw-line)] hover:border-[var(--cw-line-strong)] transition-colors duration-500 h-full"
     >
-      {/* Header band — the document's identity strip */}
-      <header className="flex items-start justify-between gap-4 px-6 py-5 border-b border-[var(--cw-line)]">
+      {/* Header band — the document's identity strip.
+          STACKED on narrow screens, side by side from sm up. Side by side at
+          every width was the bug: the status chip is shrink-0 and grew to 167px
+          with the type-scale lift, which squeezed the left column to almost
+          nothing and broke "WFJ / VM / 021" onto one character per line with
+          the chip overlapping it. whitespace-nowrap on the ref makes that
+          unrecoverable rather than merely ugly if the layout is ever squeezed
+          again. */}
+      <header className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 px-6 py-5 border-b border-[var(--cw-line)]">
         <div className="flex items-start gap-3.5 min-w-0">
           {/* Document mark. Decorative beside a label that already names the
               kind, so aria-hidden; it takes the accent on hover with the rule
@@ -33,29 +40,29 @@ function DocumentCard({ doc }) {
             <DocumentIcon name={doc.icon} className="w-[18px] h-[18px] block" />
           </span>
           <span className="flex flex-col gap-1.5 min-w-0">
-          <span className="font-['Outfit'] text-[9px] tracking-[0.22em] uppercase text-[var(--cw-accent)]">
-            {doc.kind}
-          </span>
-          <span className="cw-nums font-['Outfit'] text-[9px] tracking-[0.18em] uppercase text-[var(--cw-muted)]">
-            {doc.ref}
-          </span>
+            <span className="font-['Outfit'] text-[11px] tracking-[0.16em] uppercase text-[var(--cw-accent)] whitespace-nowrap">
+              {doc.kind}
+            </span>
+            <span className="cw-nums font-['Outfit'] text-[11px] tracking-[0.14em] uppercase text-[var(--cw-muted)] whitespace-nowrap">
+              {doc.ref}
+            </span>
           </span>
         </div>
-        <StatusChip status={doc.status} className="shrink-0" />
+        <StatusChip status={doc.status} className="shrink-0 self-start" />
       </header>
 
       <div className="flex flex-col flex-1 px-6 py-6">
-        <h3 className="font-['Outfit'] text-[14.5px] md:text-[15px] font-medium leading-[1.4] text-[var(--cw-ink)] mb-6 pb-5 border-b border-[var(--cw-line)]">
+        <h3 className="font-['Outfit'] text-[16.5px] md:text-[17px] font-medium leading-[1.4] text-[var(--cw-ink)] mb-6 pb-5 border-b border-[var(--cw-line)]">
           {doc.title}
         </h3>
 
         <dl className="flex flex-col gap-4 flex-1">
           {doc.fields.map((f) => (
             <div key={f.label} className="flex flex-col gap-1">
-              <dt className="font-['Outfit'] text-[9px] tracking-[0.2em] uppercase text-[var(--cw-muted)]">
+              <dt className="font-['Outfit'] text-[11px] tracking-[0.15em] uppercase text-[var(--cw-muted)]">
                 {f.label}
               </dt>
-              <dd className="font-['Outfit'] text-[12.5px] leading-[1.6] text-[var(--cw-ink-2)] m-0">
+              <dd className="font-['Outfit'] text-[14.5px] leading-[1.6] text-[var(--cw-ink-2)] m-0">
                 {f.value}
               </dd>
             </div>
@@ -96,7 +103,7 @@ export function RetailReadiness() {
       <motion.div {...revealProps} className="mt-12">
         <motion.p
           variants={fadeUp}
-          className="font-['Outfit'] text-[13px] md:text-[14px] leading-[1.75] text-[var(--cw-ink-2)] max-w-[660px]"
+          className="font-['Outfit'] text-[15px] md:text-[16px] leading-[1.75] text-[var(--cw-ink-2)] max-w-[660px]"
         >
 The checklist carries the same vendor dependency flagged in System / 01 — named identically, so nobody has to ask whether it is one issue or two.
         </motion.p>

@@ -25,7 +25,7 @@ function FunnelBar({ item, index, previous }) {
 
   return (
     <motion.div variants={fadeUp} className="grid grid-cols-[100px_1fr] sm:grid-cols-[150px_1fr] gap-4 sm:gap-6 items-center">
-      <span className="font-['Outfit'] text-[10.5px] sm:text-[11px] tracking-[0.16em] uppercase text-[var(--cw-ink-2)]">
+      <span className="font-['Outfit'] text-[12.5px] sm:text-[13px] tracking-[0.16em] uppercase text-[var(--cw-ink-2)]">
         {item.label}
       </span>
       <div className="flex items-center gap-4 min-w-0">
@@ -43,10 +43,10 @@ function FunnelBar({ item, index, previous }) {
             className="absolute inset-y-0 left-0 bg-[var(--cw-ink-2)]"
           />
         </div>
-        <span className="cw-nums font-['Outfit'] text-[14px] sm:text-[15px] font-medium text-[var(--cw-ink)] w-[42px] text-right shrink-0">
+        <span className="cw-nums font-['Outfit'] text-[16px] sm:text-[17px] font-medium text-[var(--cw-ink)] w-[42px] text-right shrink-0">
           {item.value}
         </span>
-        <span className="cw-nums hidden sm:block font-['Outfit'] text-[10px] tracking-[0.14em] text-[var(--cw-muted)] w-[52px] text-right shrink-0">
+        <span className="cw-nums hidden sm:block font-['Outfit'] text-[12px] tracking-[0.14em] text-[var(--cw-muted)] w-[52px] text-right shrink-0">
           {rate === null ? '—' : `${rate}%`}
         </span>
       </div>
@@ -93,7 +93,7 @@ export function ClientActivation() {
             variants={fadeUp}
             className="flex flex-wrap items-center justify-between gap-4 pb-5 mb-8 border-b border-[var(--cw-line-strong)]"
           >
-            <span className="font-['Outfit'] text-[10px] md:text-[11px] font-semibold tracking-[0.24em] uppercase text-[var(--cw-ink)]">
+            <span className="font-['Outfit'] text-[12px] md:text-[13px] font-semibold tracking-[0.17em] uppercase text-[var(--cw-ink)]">
               Activation funnel
             </span>
             <IllustrativeTag>Illustrative sample data</IllustrativeTag>
@@ -104,8 +104,8 @@ export function ClientActivation() {
               column. Above the bars it does the job it was written for. */}
           <div className="hidden sm:flex items-center gap-4 pl-[150px] mb-3">
             <span className="flex-1" />
-            <span className="font-['Outfit'] text-[9px] tracking-[0.2em] uppercase text-[var(--cw-muted)] w-[42px] text-right shrink-0">No.</span>
-            <span className="font-['Outfit'] text-[9px] tracking-[0.2em] uppercase text-[var(--cw-muted)] w-[52px] text-right shrink-0">Step</span>
+            <span className="font-['Outfit'] text-[11px] tracking-[0.15em] uppercase text-[var(--cw-muted)] w-[42px] text-right shrink-0">No.</span>
+            <span className="font-['Outfit'] text-[11px] tracking-[0.15em] uppercase text-[var(--cw-muted)] w-[52px] text-right shrink-0">Step</span>
           </div>
 
           <div className="flex flex-col gap-3.5">
@@ -116,7 +116,7 @@ export function ClientActivation() {
 
           <motion.p
             variants={fadeUp}
-            className="font-['Outfit'] text-[13px] md:text-[14px] leading-[1.75] text-[var(--cw-ink-2)] mt-9 border-l border-[var(--cw-line-strong)] pl-5 max-w-[460px]"
+            className="font-['Outfit'] text-[15px] md:text-[16px] leading-[1.75] text-[var(--cw-ink-2)] mt-9 border-l border-[var(--cw-line-strong)] pl-5 max-w-[460px]"
           >
             {ACTIVATION_NOTE}
           </motion.p>
@@ -128,7 +128,7 @@ export function ClientActivation() {
             variants={fadeUp}
             className="flex flex-wrap items-center justify-between gap-4 pb-5 mb-6 border-b border-[var(--cw-line-strong)]"
           >
-            <span className="font-['Outfit'] text-[10px] md:text-[11px] font-semibold tracking-[0.24em] uppercase text-[var(--cw-ink)]">
+            <span className="font-['Outfit'] text-[12px] md:text-[13px] font-semibold tracking-[0.17em] uppercase text-[var(--cw-ink)]">
               Client record — extract
             </span>
             <IllustrativeTag>Anonymised · illustrative</IllustrativeTag>
@@ -148,7 +148,7 @@ export function ClientActivation() {
                     <th
                       key={c.key}
                       scope="col"
-                      className="font-['Outfit'] text-[9px] tracking-[0.16em] uppercase text-[var(--cw-muted)] font-medium text-left pb-3 pr-5 whitespace-nowrap border-b border-[var(--cw-line-strong)]"
+                      className="font-['Outfit'] text-[11px] tracking-[0.16em] uppercase text-[var(--cw-muted)] font-medium text-left pb-3 pr-5 whitespace-nowrap border-b border-[var(--cw-line-strong)]"
                     >
                       {c.label}
                     </th>
@@ -161,7 +161,7 @@ export function ClientActivation() {
                     {COLUMNS.map((c) => (
                       <td
                         key={c.key}
-                        className={`font-['Outfit'] text-[12px] md:text-[12.5px] py-3.5 pr-5 whitespace-nowrap ${
+                        className={`font-['Outfit'] text-[14px] md:text-[14.5px] py-3.5 pr-5 whitespace-nowrap ${
                           c.key === 'id' ? 'cw-nums text-[var(--cw-ink)] font-medium' : toneFor(row[c.key])
                         }`}
                       >
@@ -176,7 +176,7 @@ export function ClientActivation() {
 
           <motion.p
             variants={fadeUp}
-            className="font-['Outfit'] text-[11px] leading-[1.7] text-[var(--cw-muted)] mt-6"
+            className="font-['Outfit'] text-[13px] leading-[1.7] text-[var(--cw-muted)] mt-6"
           >
 Client 004 confirmed and did not attend. The record stays open.
           </motion.p>

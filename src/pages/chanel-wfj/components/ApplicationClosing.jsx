@@ -49,7 +49,7 @@ export function ApplicationClosing() {
 
         <motion.p
           variants={fadeUp}
-          className="font-['Outfit'] text-[14px] md:text-[16px] leading-[1.75] text-[var(--cw-ink-2)] max-w-[540px] mt-8"
+          className="font-['Outfit'] text-[16px] md:text-[18px] leading-[1.75] text-[var(--cw-ink-2)] max-w-[540px] mt-8"
         >
           My role is to make every launch, activation and retail touchpoint feel
           considered, coordinated and ready.
@@ -81,11 +81,11 @@ export function ApplicationClosing() {
             <span aria-hidden="true" className="cw-plaque__corner cw-plaque__corner--br" />
 
             <span className="cw-plaque__inner">
-              <span className="font-['Outfit'] text-[9.5px] tracking-[0.3em] uppercase text-[var(--cw-accent)] block mb-6">
+              <span className="font-['Outfit'] text-[11.5px] tracking-[0.3em] uppercase text-[var(--cw-accent)] block mb-6">
                 Continue
               </span>
 
-              <span className="cw-display cw-display--mast block text-[26px] sm:text-[36px] md:text-[46px] xl:text-[56px] text-[var(--cw-ink)] leading-[1.08]">
+              <span className="cw-display cw-display--mast block text-[32px] sm:text-[36px] md:text-[46px] xl:text-[56px] text-[var(--cw-ink)] leading-[1.08]">
                 Enter the full portfolio
               </span>
 
@@ -96,10 +96,10 @@ export function ApplicationClosing() {
                 </span>
               </span>
 
-              <span className="font-['Outfit'] text-[12.5px] md:text-[13.5px] leading-[1.65] text-[var(--cw-ink-2)] max-w-[420px] block mt-8">
+              <span className="font-['Outfit'] text-[14.5px] md:text-[15.5px] leading-[1.65] text-[var(--cw-ink-2)] max-w-[420px] block mt-8">
                 Continue into the complete Akshathdayan Suresh portfolio
                 experience.
-                <span className="block text-[var(--cw-muted)] mt-2 text-[11px] tracking-[0.06em]">
+                <span className="block text-[var(--cw-muted)] mt-2 text-[13px] tracking-[0.06em]">
                   Opens in a new tab — this study stays where it is.
                 </span>
               </span>
@@ -113,7 +113,7 @@ export function ApplicationClosing() {
             href={RESUME_HREF}
             download={RESUME_FILENAME}
             onClick={() => setDownloaded(true)}
-            className={`inline-flex items-center justify-center px-9 py-3.5 font-['Outfit'] font-semibold text-[11px] tracking-[0.22em] uppercase border transition-all duration-300 ${
+            className={`inline-flex items-center justify-center px-9 py-3.5 font-['Outfit'] font-semibold text-[13px] tracking-[0.16em] uppercase border transition-all duration-300 ${
               downloaded
                 ? 'bg-transparent border-[var(--cw-go)] text-[var(--cw-go)]'
                 /* Solid ink at rest, hollowing out on hover. Both states are
@@ -128,7 +128,7 @@ export function ApplicationClosing() {
 
           <a
             href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Marketing and Retail Coordinator — Watches & Fine Jewellery')}`}
-            className="group inline-flex items-center justify-center gap-3 px-9 py-3.5 font-['Outfit'] font-semibold text-[11px] tracking-[0.22em] uppercase text-[var(--cw-ink-2)] border border-[var(--cw-line-strong)] hover:border-[var(--cw-accent)] hover:text-[var(--cw-ink)] transition-colors duration-300"
+            className="group inline-flex items-center justify-center gap-3 px-9 py-3.5 font-['Outfit'] font-semibold text-[13px] tracking-[0.16em] uppercase text-[var(--cw-ink-2)] border border-[var(--cw-line-strong)] hover:border-[var(--cw-accent)] hover:text-[var(--cw-ink)] transition-colors duration-300"
           >
             Contact Akshath
             <span className="text-[var(--cw-muted)] group-hover:text-[var(--cw-accent)] transition-colors duration-300">

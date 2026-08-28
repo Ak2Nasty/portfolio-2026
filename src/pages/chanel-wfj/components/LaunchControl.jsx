@@ -1,9 +1,9 @@
-import { useId, useRef } from 'react';
-import { motion, useScroll, useSpring, useTransform, useReducedMotion } from 'framer-motion';
+import { useId } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import {
   Section, SectionLabel, SectionHeading, SectionIntro, StatusChip, IllustrativeTag, Field,
 } from './primitives';
-import { fadeUp, revealProps } from './motion';
+import { EASE, fadeUp, revealProps } from './motion';
 import { TIMELINE, WORKSTREAMS, STATUS } from '../data/applicationData';
 import { WorkstreamIcon } from './icons';
 
@@ -34,15 +34,16 @@ import { WorkstreamIcon } from './icons';
    further right in the header and was 38px wider, and the T-8 / T-6 / T-4
    labels could never line up with the gridlines the bars were drawn against.
 
-   The third column is now a fixed width, sized for the widest chip
-   ("Awaiting input") plus the glyph, so the header and the rows resolve
-   identically and the scale means what it says. */
-const GRID = 'md:grid-cols-[minmax(180px,0.9fr)_minmax(0,2.7fr)_152px]';
+   The third column is a fixed width sized for the widest chip plus the
+   disclosure glyph, so the header and the rows resolve identically and the
+   scale means what it says. 200px, not 152px: the type-scale lift took
+   "Awaiting input" from 118px to 167px, and 152 no longer fit it. */
+const GRID = 'md:grid-cols-[minmax(170px,0.85fr)_minmax(0,2.6fr)_200px]';
 
 function TimelineHeader() {
   return (
     <div className={`hidden md:grid ${GRID} gap-6 items-end pb-3 border-b border-[var(--cw-line)]`}>
-      <span className="font-['Outfit'] text-[9px] tracking-[0.22em] uppercase text-[var(--cw-muted)]">
+      <span className="font-['Outfit'] text-[11px] tracking-[0.16em] uppercase text-[var(--cw-muted)]">
         Workstream
       </span>
       {/* Labels sit flush to the left edge of their column, which is exactly
@@ -52,7 +53,7 @@ function TimelineHeader() {
         {TIMELINE.map((t) => (
           <span
             key={t.id}
-            className={`font-['Outfit'] text-[9.5px] tracking-[0.14em] uppercase ${
+            className={`font-['Outfit'] text-[11.5px] tracking-[0.14em] uppercase ${
               t.id === 'launch'
                 ? 'text-[var(--cw-accent)] font-semibold'
                 : 'text-[var(--cw-muted)]'
@@ -62,7 +63,7 @@ function TimelineHeader() {
           </span>
         ))}
       </div>
-      <span className="font-['Outfit'] text-[9px] tracking-[0.22em] uppercase text-[var(--cw-muted)] text-right">
+      <span className="font-['Outfit'] text-[11px] tracking-[0.16em] uppercase text-[var(--cw-muted)] text-right">
         Status
       </span>
     </div>
@@ -72,19 +73,46 @@ function TimelineHeader() {
 /* The bar spans its active window. grid-column is 1-indexed and end is
    exclusive, hence the +1 / +2 against the zero-indexed data.
 
-   The fill inside it is scroll-LINKED: it travels from 0 to full as the section
-   passes through the viewport, and runs backwards when you scroll up. Each row
-   is offset slightly later than the one above, so the six bars fill in sequence
-   as you read down them — the launch advancing under the reader's own scroll.
+   THE FILL IS NOT SCROLL-LINKED, DELIBERATELY.
+   It was, and it made the chart lie. A bar that fills with scroll position sits
+   at some arbitrary fraction whenever you stop, and on a Gantt-shaped row a
+   part-filled bar reads as "this workstream is 60% complete" — which is not
+   what it meant and not a claim the data supports. Worse, the bar only reached
+   full if you happened to scroll far enough, so the window it was supposed to
+   show was rarely the window you saw.
+
+   It now draws itself once when the row arrives, and stays full. Full bar =
+   the whole active window, always, which is the only honest reading. The
+   stagger is on the entrance, not on the reader's scroll position.
 
    scaleX on an absolutely-positioned child, so it composites and never triggers
    layout on any of the six rows. */
-function Track({ span, progress }) {
+function Track({ span, index, reduced }) {
   const [start, end] = span;
+  /* The fill is driven by VARIANTS inherited from the row, not by its own
+     whileInView.
+
+     whileInView on this element deadlocks. It starts at scaleX(0), which gives
+     it a 0x4px bounding box, and IntersectionObserver cannot report a zero-area
+     box as intersecting — so the element that needs to be seen in order to grow
+     can never be seen. Some rows animated anyway, purely on the timing of when
+     the observer first attached, which is why five of six worked and the second
+     one silently never filled.
+
+     Variants propagate by name from any motion ancestor, so the row's existing
+     hidden/visible orchestration drives this and no observer ever has to
+     measure the collapsed element. */
+  const fillVariants = {
+    hidden: { scaleX: reduced ? 1 : 0 },
+    visible: {
+      scaleX: 1,
+      transition: { duration: reduced ? 0 : 0.75, ease: EASE, delay: reduced ? 0 : 0.05 + index * 0.09 },
+    },
+  };
   return (
     <div className="cw-track">
       <div className="cw-bar" style={{ gridColumn: `${start + 1} / ${end + 2}` }}>
-        <motion.span className="cw-bar__fill" style={{ scaleX: progress }} />
+        <motion.span className="cw-bar__fill" variants={fillVariants} />
         <span className="cw-node cw-node--start" />
         <span className="cw-node cw-node--end" />
       </div>
@@ -92,25 +120,12 @@ function Track({ span, progress }) {
   );
 }
 
-function WorkstreamRow({ item, index, scroll, reduced, isOpen, onToggle }) {
+function WorkstreamRow({ item, index, reduced, isOpen, onToggle }) {
   const uid = useId();
   const panelId = `${uid}-panel`;
   /* NOT named `window` — shadowing the global inside a component is a trap
      waiting for the first line that needs the real one. */
   const activeWindow = `${TIMELINE[item.span[0]].full} → ${TIMELINE[item.span[1]].full}`;
-
-  /* Each row derives its own slice of the section's scroll rather than the
-     parent precomputing six of them: useTransform is a hook, and six of them in
-     a .map() would be a hooks-order violation the moment the list changed.
-
-     Row i starts at 0.07i and takes 0.5 of the range, so the bars fill in
-     sequence with a long overlap — a cascade, not six things happening one at a
-     time. clamp keeps a bar full once filled instead of overshooting. */
-  const startAt = index * 0.07;
-  const fill = useTransform(scroll, [startAt, startAt + 0.5], [0, 1], { clamp: true });
-  /* Reduced motion gets the finished state: the bars are simply full, since
-     they carry real information about each window. */
-  const progress = reduced ? 1 : fill;
 
   return (
     <motion.div variants={fadeUp} className="last:border-b last:border-[var(--cw-line)]">
@@ -124,7 +139,7 @@ function WorkstreamRow({ item, index, scroll, reduced, isOpen, onToggle }) {
         <div className={`grid grid-cols-1 ${GRID} gap-4 md:gap-6 items-center`}>
           {/* Name */}
           <div className="flex items-center gap-3.5 min-w-0">
-            <span className="cw-nums font-['Outfit'] text-[10px] tracking-[0.12em] text-[var(--cw-muted)] shrink-0">
+            <span className="cw-nums font-['Outfit'] text-[12px] tracking-[0.12em] text-[var(--cw-muted)] shrink-0">
               {item.num}
             </span>
             {/* The workstream's mark. Decorative — it sits beside a label that
@@ -133,7 +148,7 @@ function WorkstreamRow({ item, index, scroll, reduced, isOpen, onToggle }) {
             <span className="shrink-0 text-[var(--cw-muted)] group-hover:text-[var(--cw-accent)] transition-all duration-300 group-hover:translate-x-0.5 motion-reduce:transition-none">
               <WorkstreamIcon name={item.icon} className="w-[17px] h-[17px] block" />
             </span>
-            <span className="font-['Outfit'] text-[13.5px] md:text-[14px] font-medium leading-snug text-[var(--cw-ink)] transition-colors duration-300">
+            <span className="font-['Outfit'] text-[15.5px] md:text-[16px] font-medium leading-snug text-[var(--cw-ink)] transition-colors duration-300">
               {item.name}
             </span>
           </div>
@@ -141,9 +156,9 @@ function WorkstreamRow({ item, index, scroll, reduced, isOpen, onToggle }) {
           {/* Track. The window is also written out for screen readers and for
               anyone who cannot resolve a 2px bar against a grid. */}
           <div className="min-w-0">
-            <Track span={item.span} progress={progress} />
+            <Track span={item.span} index={index} reduced={reduced} />
             <span className="sr-only">Active window: {activeWindow}</span>
-            <span className="md:hidden block font-['Outfit'] text-[10px] tracking-[0.1em] uppercase text-[var(--cw-muted)] mt-2">
+            <span className="md:hidden block font-['Outfit'] text-[12px] tracking-[0.1em] uppercase text-[var(--cw-muted)] mt-2">
               {activeWindow}
             </span>
           </div>
@@ -153,7 +168,7 @@ function WorkstreamRow({ item, index, scroll, reduced, isOpen, onToggle }) {
             <StatusChip status={item.status} />
             <span
               aria-hidden="true"
-              className={`font-['Outfit'] text-[15px] leading-none text-[var(--cw-muted)] transition-transform duration-300 motion-reduce:transition-none ${
+              className={`font-['Outfit'] text-[17px] leading-none text-[var(--cw-muted)] transition-transform duration-300 motion-reduce:transition-none ${
                 isOpen ? 'rotate-45' : ''
               }`}
             >
@@ -168,7 +183,7 @@ function WorkstreamRow({ item, index, scroll, reduced, isOpen, onToggle }) {
       <div id={panelId} className={`cw-panel ${isOpen ? 'cw-panel--open' : ''}`} role="region">
         <div>
           <div className="pb-8 pt-1 md:pl-[calc(210px+1.5rem)]">
-            <p className="font-['Outfit'] text-[13px] md:text-[13.5px] leading-[1.7] text-[var(--cw-ink-2)] max-w-[620px] mb-7 border-l border-[var(--cw-line-strong)] pl-5">
+            <p className="font-['Outfit'] text-[15px] md:text-[15.5px] leading-[1.7] text-[var(--cw-ink-2)] max-w-[620px] mb-7 border-l border-[var(--cw-line-strong)] pl-5">
               {item.note}
             </p>
             <dl className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-4 max-w-[900px]">
@@ -190,16 +205,7 @@ export function LaunchControl({ openId, onToggle }) {
      workstream and this view has to reflect that. The first row arrives open so
      the disclosure explains itself without needing to be discovered. */
 
-  /* One scroll source for all six rows. Measured across the rows container
-     rather than the whole section, so the fills track the instrument itself and
-     are not diluted by the heading block above it. */
-  const rowsRef = useRef(null);
   const reduced = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: rowsRef,
-    offset: ['start 0.85', 'end 0.45'],
-  });
-  const smooth = useSpring(scrollYProgress, { stiffness: 95, damping: 28, mass: 0.3 });
 
   return (
     <Section id="launch-control" label>
@@ -218,7 +224,7 @@ export function LaunchControl({ openId, onToggle }) {
           variants={fadeUp}
           className="flex flex-wrap items-center justify-between gap-4 pb-5 mb-2 border-b border-[var(--cw-line-strong)]"
         >
-          <span className="font-['Outfit'] text-[10px] md:text-[11px] font-semibold tracking-[0.24em] uppercase text-[var(--cw-ink)]">
+          <span className="font-['Outfit'] text-[12px] md:text-[13px] font-semibold tracking-[0.17em] uppercase text-[var(--cw-ink)]">
             Illustrative readiness view
           </span>
           <IllustrativeTag>Illustrative sample data</IllustrativeTag>
@@ -228,13 +234,12 @@ export function LaunchControl({ openId, onToggle }) {
           <TimelineHeader />
         </motion.div>
 
-        <div ref={rowsRef}>
+        <div>
           {WORKSTREAMS.map((item, i) => (
             <WorkstreamRow
               key={item.id}
               item={item}
               index={i}
-              scroll={smooth}
               reduced={reduced}
               isOpen={openId === item.id}
               onToggle={() => onToggle(openId === item.id ? null : item.id)}
@@ -244,7 +249,7 @@ export function LaunchControl({ openId, onToggle }) {
 
         <motion.p
           variants={fadeUp}
-          className="font-['Outfit'] text-[13px] md:text-[14px] leading-[1.7] text-[var(--cw-ink-2)] max-w-[520px] mt-10"
+          className="font-['Outfit'] text-[15px] md:text-[16px] leading-[1.7] text-[var(--cw-ink-2)] max-w-[520px] mt-10"
         >
           Five of six clear. The sixth flagged at T-8, not discovered at T-1.
         </motion.p>

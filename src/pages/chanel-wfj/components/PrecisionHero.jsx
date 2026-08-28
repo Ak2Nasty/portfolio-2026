@@ -143,13 +143,13 @@ export function PrecisionHero() {
               variants={{ hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } } }}
               className="flex flex-col gap-2 mb-8 md:mb-10"
             >
-              <span className="font-['Outfit'] font-semibold text-[10px] md:text-[11px] tracking-[0.25em] text-[var(--cw-muted)] uppercase">
+              <span className="font-['Outfit'] font-semibold text-[12px] md:text-[13px] tracking-[0.17em] text-[var(--cw-muted)] uppercase">
                 Application Study / 001
               </span>
-              <span className="font-['Outfit'] text-[10px] md:text-[11px] tracking-[0.25em] text-[var(--cw-muted)] uppercase">
+              <span className="font-['Outfit'] text-[12px] md:text-[13px] tracking-[0.17em] text-[var(--cw-muted)] uppercase">
                 Marketing &amp; Retail Coordination
               </span>
-              <span className="font-['Outfit'] text-[10px] md:text-[11px] tracking-[0.25em] text-[var(--cw-accent)] uppercase">
+              <span className="font-['Outfit'] text-[12px] md:text-[13px] tracking-[0.17em] text-[var(--cw-accent)] uppercase">
                 Watches &amp; Fine Jewellery
               </span>
             </motion.div>
@@ -164,7 +164,7 @@ export function PrecisionHero() {
 
             <motion.p
               variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: EASE } } }}
-              className="font-['Outfit'] text-[14px] md:text-[16px] leading-[1.75] text-[var(--cw-ink-2)] max-w-[520px] mt-8 md:mt-10"
+              className="font-['Outfit'] text-[16px] md:text-[18px] leading-[1.75] text-[var(--cw-ink-2)] max-w-[520px] mt-8 md:mt-10"
             >
               A luxury launch is experienced in an instant. It is built through
               disciplined timelines, precise communication and hundreds of
@@ -173,7 +173,7 @@ export function PrecisionHero() {
 
             <motion.p
               variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } } }}
-              className="font-['Outfit'] text-[11px] md:text-[12px] tracking-[0.14em] text-[var(--cw-muted)] uppercase mt-6"
+              className="font-['Outfit'] text-[13px] md:text-[14px] tracking-[0.14em] text-[var(--cw-muted)] uppercase mt-6"
             >
               An independent operational concept by Akshathdayan Suresh.
             </motion.p>
@@ -185,7 +185,7 @@ export function PrecisionHero() {
               <a
                 href="#launch-control"
                 onClick={(e) => { e.preventDefault(); scrollToSystem(); }}
-                className="group inline-flex items-center gap-4 font-['Outfit'] font-semibold text-[11px] md:text-[12px] tracking-[0.24em] uppercase text-[var(--cw-ink)] py-3"
+                className="group inline-flex items-center gap-4 font-['Outfit'] font-semibold text-[13px] md:text-[14px] tracking-[0.17em] uppercase text-[var(--cw-ink)] py-3"
               >
                 Enter the system
                 <span aria-hidden="true" className="relative block w-12 md:w-16 h-px bg-[var(--cw-line-strong)] overflow-hidden">
@@ -313,7 +313,7 @@ export function PrecisionHero() {
               </div>
             </div>
 
-            <p className="mt-7 text-center font-['Outfit'] text-[9.5px] tracking-[0.22em] uppercase text-[var(--cw-muted)]">
+            <p className="mt-7 text-center font-['Outfit'] text-[11.5px] tracking-[0.16em] uppercase text-[var(--cw-muted)]">
               Select a marker to jump to its section
             </p>
           </motion.div>

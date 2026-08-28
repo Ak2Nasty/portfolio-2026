@@ -34,18 +34,18 @@ function EvidenceBlock({ item }) {
         <div className="flex flex-col">
           <span aria-hidden="true" className="cw-nums cw-evidence__num">{item.num}</span>
 
-          <h3 className="cw-display cw-display--label text-[19px] sm:text-[22px] md:text-[26px] text-[var(--cw-ink)] mt-1">
+          <h3 className="cw-display cw-display--label text-[22px] sm:text-[25px] md:text-[32px] text-[var(--cw-ink)] mt-1">
             {item.org}
           </h3>
 
-          <span className="font-['Outfit'] text-[11.5px] tracking-[0.16em] uppercase text-[var(--cw-muted)] mt-3">
+          <span className="font-['Outfit'] text-[13.5px] tracking-[0.16em] uppercase text-[var(--cw-muted)] mt-3">
             {item.role}
           </span>
 
           {/* The explicit line to the posting. */}
           <span className="inline-flex items-center gap-3 mt-6">
             <span aria-hidden="true" className="cw-evidence__tick" />
-            <span className="font-['Outfit'] text-[9.5px] font-semibold tracking-[0.22em] uppercase text-[var(--cw-accent)]">
+            <span className="font-['Outfit'] text-[11.5px] font-semibold tracking-[0.16em] uppercase text-[var(--cw-accent)]">
               {item.link}
             </span>
           </span>
@@ -60,7 +60,7 @@ function EvidenceBlock({ item }) {
             {m.value}
             {m.suffix ? <span className="cw-evidence__affix">{m.suffix}</span> : null}
           </span>
-          <span className="font-['Outfit'] text-[10px] tracking-[0.2em] uppercase text-[var(--cw-muted)] block mt-3 max-w-[190px]">
+          <span className="font-['Outfit'] text-[12px] tracking-[0.15em] uppercase text-[var(--cw-muted)] block mt-3 max-w-[190px]">
             {m.label}
           </span>
         </div>
@@ -73,7 +73,7 @@ function EvidenceBlock({ item }) {
                   crosshair — that mark is engineering vocabulary and belongs on
                   the execution archive. */}
               <span aria-hidden="true" className="cw-facet mt-[6px]" />
-              <span className="font-['Outfit'] text-[13px] md:text-[13.5px] leading-[1.7] text-[var(--cw-ink-2)]">
+              <span className="font-['Outfit'] text-[15px] md:text-[15.5px] leading-[1.7] text-[var(--cw-ink-2)]">
                 {p}
               </span>
             </li>

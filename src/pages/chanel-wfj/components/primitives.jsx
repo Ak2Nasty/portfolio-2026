@@ -69,7 +69,7 @@ export function SectionLabel({ children, className = '' }) {
         </span>
         <span aria-hidden="true" className="cw-minute-track" />
       </span>
-      <span className="block font-['Outfit'] font-semibold text-[10px] md:text-[11px] tracking-[0.25em] text-[var(--cw-muted)] uppercase">
+      <span className="block font-['Outfit'] font-semibold text-[12px] md:text-[13px] tracking-[0.17em] text-[var(--cw-muted)] uppercase">
         {children}
       </span>
     </motion.div>
@@ -89,7 +89,7 @@ export function SectionHeading({ id, children, className = '' }) {
     <motion.h2
       id={id}
       variants={fadeUp}
-      className={`cw-display text-[21px] sm:text-[26px] md:text-[31px] xl:text-[37px] text-[var(--cw-ink)] max-w-[19ch] ${className}`}
+      className={`cw-display text-[26px] sm:text-[32px] md:text-[38px] xl:text-[46px] text-[var(--cw-ink)] max-w-[19ch] ${className}`}
     >
       {children}
     </motion.h2>
@@ -100,7 +100,7 @@ export function SectionIntro({ children, className = '' }) {
   return (
     <motion.p
       variants={fadeUp}
-      className={`font-['Outfit'] text-[14px] md:text-[16px] leading-[1.75] text-[var(--cw-ink-2)] max-w-[620px] ${className}`}
+      className={`font-['Outfit'] text-[16px] md:text-[18px] leading-[1.75] text-[var(--cw-ink-2)] max-w-[620px] ${className}`}
     >
       {children}
     </motion.p>
@@ -128,7 +128,7 @@ export function StatusChip({ status, className = '' }) {
 export function IllustrativeTag({ children = 'Illustrative sample data', className = '' }) {
   return (
     <span
-      className={`inline-flex items-center gap-2 font-['Outfit'] text-[9px] md:text-[9.5px] tracking-[0.22em] uppercase text-[var(--cw-muted)] ${className}`}
+      className={`inline-flex items-center gap-2 font-['Outfit'] text-[11px] md:text-[11.5px] tracking-[0.16em] uppercase text-[var(--cw-muted)] ${className}`}
     >
       <span aria-hidden="true" className="inline-block w-3 h-px bg-[var(--cw-faint)]" />
       {children}
@@ -142,10 +142,10 @@ export function IllustrativeTag({ children = 'Illustrative sample data', classNa
 export function Field({ label, value }) {
   return (
     <div className="flex flex-col gap-1.5 sm:flex-row sm:gap-5">
-      <dt className="font-['Outfit'] text-[9.5px] tracking-[0.2em] uppercase text-[var(--cw-muted)] sm:w-[104px] sm:shrink-0 sm:pt-[3px]">
+      <dt className="font-['Outfit'] text-[11.5px] tracking-[0.15em] uppercase text-[var(--cw-muted)] sm:w-[104px] sm:shrink-0 sm:pt-[3px]">
         {label}
       </dt>
-      <dd className="font-['Outfit'] text-[13px] md:text-[13.5px] leading-[1.6] text-[var(--cw-ink-2)] m-0">
+      <dd className="font-['Outfit'] text-[15px] md:text-[15.5px] leading-[1.6] text-[var(--cw-ink-2)] m-0">
         {value}
       </dd>
     </div>

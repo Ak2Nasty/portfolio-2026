@@ -29,7 +29,7 @@ export function ApplicationHeader() {
           href={PORTFOLIO_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="cw-display cw-display--label text-[13px] lg:text-[15px] text-[var(--cw-ink)] hover:opacity-70 transition-opacity duration-300 shrink-0"
+          className="cw-display cw-display--label text-[15px] lg:text-[17px] text-[var(--cw-ink)] hover:opacity-70 transition-opacity duration-300 shrink-0"
         >
           AKSHATH<span className="text-[var(--cw-muted)]">.</span>
         </a>
@@ -38,7 +38,7 @@ export function ApplicationHeader() {
           {/* Not a link — it names the document you are in. Hidden on the
               narrowest screens, where the portfolio route is the only thing
               worth spending the width on. */}
-          <span className="hidden sm:inline font-['Outfit'] text-[9px] md:text-[10px] tracking-[0.24em] uppercase text-[var(--cw-muted)] whitespace-nowrap">
+          <span className="hidden sm:inline font-['Outfit'] text-[11px] md:text-[12px] tracking-[0.17em] uppercase text-[var(--cw-muted)] whitespace-nowrap">
             Application Study
           </span>
 
@@ -52,9 +52,16 @@ export function ApplicationHeader() {
             href={PORTFOLIO_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative font-['Outfit'] text-[9px] md:text-[10px] font-semibold tracking-[0.24em] uppercase text-[var(--cw-ink-2)] hover:text-[var(--cw-ink)] transition-colors duration-300 whitespace-nowrap py-1"
+            aria-label="Enter the full portfolio"
+            className="group relative font-['Outfit'] text-[11px] md:text-[12px] font-semibold tracking-[0.17em] uppercase text-[var(--cw-ink-2)] hover:text-[var(--cw-ink)] transition-colors duration-300 whitespace-nowrap py-1"
           >
-            Enter the full portfolio
+            {/* The full label is 196px at the lifted type size and overran a
+                320px viewport by 9px. Rather than shrinking the type back down,
+                the narrowest screens get the short form. Both are visual only —
+                the accessible name comes from aria-label, so a screen reader
+                hears the same thing at every width. */}
+            <span aria-hidden="true" className="sm:hidden">Portfolio</span>
+            <span aria-hidden="true" className="hidden sm:inline">Enter the full portfolio</span>
             <span
               aria-hidden="true"
               className="absolute left-0 -bottom-0.5 h-px w-0 bg-[var(--cw-accent)] transition-[width] duration-500 ease-out group-hover:w-full group-focus-visible:w-full motion-reduce:transition-none"

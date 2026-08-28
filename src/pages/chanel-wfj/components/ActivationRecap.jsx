@@ -67,10 +67,10 @@ function Metric({ item }) {
       <span className="cw-display cw-display--figure text-[50px] sm:text-[60px] xl:text-[74px] text-[var(--cw-ink)] mb-5">
         <CountUp value={item.value} suffix={item.suffix} />
       </span>
-      <span className="font-['Outfit'] text-[10.5px] font-semibold tracking-[0.2em] uppercase text-[var(--cw-ink-2)] mb-2">
+      <span className="font-['Outfit'] text-[12.5px] font-semibold tracking-[0.15em] uppercase text-[var(--cw-ink-2)] mb-2">
         {item.label}
       </span>
-      <span className="font-['Outfit'] text-[12px] leading-[1.6] text-[var(--cw-ink-2)]">
+      <span className="font-['Outfit'] text-[14px] leading-[1.6] text-[var(--cw-ink-2)]">
         {item.detail}
       </span>
     </motion.div>
@@ -107,17 +107,17 @@ export function ActivationRecap() {
         <motion.div {...revealProps}>
           <motion.span
             variants={fadeUp}
-            className="block font-['Outfit'] text-[10px] md:text-[11px] font-semibold tracking-[0.24em] uppercase text-[var(--cw-ink)] pb-5 mb-8 border-b border-[var(--cw-line-strong)]"
+            className="block font-['Outfit'] text-[12px] md:text-[13px] font-semibold tracking-[0.17em] uppercase text-[var(--cw-ink)] pb-5 mb-8 border-b border-[var(--cw-line-strong)]"
           >
             What the numbers don&rsquo;t say
           </motion.span>
           <dl className="flex flex-col gap-7">
             {RECAP_QUALITATIVE.map((q) => (
               <motion.div variants={fadeUp} key={q.label} className="flex flex-col gap-2">
-                <dt className="font-['Outfit'] text-[9.5px] tracking-[0.2em] uppercase text-[var(--cw-accent)]">
+                <dt className="font-['Outfit'] text-[11.5px] tracking-[0.15em] uppercase text-[var(--cw-accent)]">
                   {q.label}
                 </dt>
-                <dd className="font-['Outfit'] text-[13px] leading-[1.7] text-[var(--cw-ink-2)] m-0">
+                <dd className="font-['Outfit'] text-[15px] leading-[1.7] text-[var(--cw-ink-2)] m-0">
                   {q.value}
                 </dd>
               </motion.div>
@@ -129,17 +129,17 @@ export function ActivationRecap() {
         <motion.div {...revealProps}>
           <motion.span
             variants={fadeUp}
-            className="block font-['Outfit'] text-[10px] md:text-[11px] font-semibold tracking-[0.24em] uppercase text-[var(--cw-ink)] pb-5 mb-8 border-b border-[var(--cw-line-strong)]"
+            className="block font-['Outfit'] text-[12px] md:text-[13px] font-semibold tracking-[0.17em] uppercase text-[var(--cw-ink)] pb-5 mb-8 border-b border-[var(--cw-line-strong)]"
           >
             Three next actions
           </motion.span>
           <ol className="flex flex-col gap-6">
             {RECAP_NEXT.map((action, i) => (
               <motion.li variants={fadeUp} key={action} className="flex gap-5 items-start">
-                <span className="cw-nums font-['Outfit'] text-[10px] tracking-[0.14em] text-[var(--cw-accent)] pt-[3px] shrink-0">
+                <span className="cw-nums font-['Outfit'] text-[12px] tracking-[0.14em] text-[var(--cw-accent)] pt-[3px] shrink-0">
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                <span className="font-['Outfit'] text-[13px] leading-[1.7] text-[var(--cw-ink-2)]">
+                <span className="font-['Outfit'] text-[15px] leading-[1.7] text-[var(--cw-ink-2)]">
                   {action}
                 </span>
               </motion.li>
