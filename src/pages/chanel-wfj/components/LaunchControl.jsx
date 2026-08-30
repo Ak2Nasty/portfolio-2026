@@ -215,7 +215,7 @@ export function LaunchControl({ openId, onToggle }) {
           One launch. Six workstreams. Zero lost details
         </SectionHeading>
         <SectionIntro>
-          Product, CRM, retail, VM, vendors and reporting — one view.
+          Six workstreams. One launch date. Every dependency visible eight weeks out, not discovered in the final week.
         </SectionIntro>
       </motion.div>
 

@@ -29,35 +29,54 @@ import { EASE } from './motion';
 const CX = 130;
 const CY = 130;
 const TAU = Math.PI * 2;
+
+/* ── Dial architecture ───────────────────────────────────────────────────────
+   The first version drew everything at one hairline weight across one
+   undifferentiated field, which is why it read as dead: no zones, no hierarchy,
+   nothing for the eye to rank. A real dial is built in concentric ZONES, each
+   at a different weight, and that is what makes it read as an object.
+
+     R_BEZEL   122   outer case edge, the heaviest line on the dial
+     R_TRACK   112   minute track, 60 graduations
+     R_CHAPTER 106   chapter ring, the numerals 01-06
+     R_MARK     89   applied markers
+     R_GRAIN 62-82   guilloche band, circular graining
+     R_CENTRE   58   clear field for the readout
+
+   Everything below is precomputed at module scope, not per render. */
+const R_BEZEL = 122;
+const R_TRACK = 112;
+const R_CHAPTER = 106;
+const R_MARK = 89;
+const R_GRAIN_IN = 62;
+const R_GRAIN_OUT = 82;
+
 const circumference = (r) => TAU * r;
+const pt = (r, deg) => {
+  const a = (deg * Math.PI) / 180 - Math.PI / 2;
+  return { x: CX + Math.cos(a) * r, y: CY + Math.sin(a) * r };
+};
 
-/* 48 graduations, every fourth drawn long — the way a calibrated scale
-   distinguishes major from minor divisions. */
-const TICKS = Array.from({ length: 48 }, (_, i) => {
-  const angle = (i / 48) * TAU - Math.PI / 2;
-  const major = i % 4 === 0;
-  return {
-    i,
-    major,
-    x1: CX + Math.cos(angle) * (major ? 112 : 117),
-    y1: CY + Math.sin(angle) * (major ? 112 : 117),
-    x2: CX + Math.cos(angle) * 122,
-    y2: CY + Math.sin(angle) * 122,
-  };
+/* 60 graduations. Every tenth runs long and heavy — the six that coincide with
+   the section markers — so the minute track and the markers agree instead of
+   being two unrelated rings. */
+const TICKS = Array.from({ length: 60 }, (_, i) => {
+  const deg = i * 6;
+  const major = i % 10 === 0;
+  const inner = major ? R_TRACK - 6 : R_TRACK - 3.5;
+  const a = pt(inner, deg);
+  const b = pt(R_BEZEL - 2, deg);
+  return { i, major, x1: a.x, y1: a.y, x2: b.x, y2: b.y };
 });
 
-/* Guilloché — the engine-turned ground of a dial, as 120 radiating hairlines.
-   Precomputed once at module scope rather than per render. */
-const GUILLOCHE = Array.from({ length: 120 }, (_, i) => {
-  const a = (i / 120) * TAU;
-  return {
-    i,
-    x1: CX + Math.cos(a) * 24,
-    y1: CY + Math.sin(a) * 24,
-    x2: CX + Math.cos(a) * 106,
-    y2: CY + Math.sin(a) * 106,
-  };
-});
+/* Circular graining — concentric rings rather than the radiating hairlines the
+   first version used. Those converged on the centre and piled into a grey haze
+   exactly where the readout sits; rings hold an even tone across the band and
+   are the more classical treatment anyway. */
+const GRAIN = Array.from(
+  { length: Math.floor((R_GRAIN_OUT - R_GRAIN_IN) / 2.6) + 1 },
+  (_, i) => ({ i, r: R_GRAIN_IN + i * 2.6 })
+);
 
 /* ── What the markers point at ───────────────────────────────────────────────
    The six markers are the six SECTIONS of the page, not the six workstreams
@@ -81,12 +100,17 @@ const SECTIONS = [
 ];
 
 const MARKS = SECTIONS.map((s, i) => {
-  const angle = (i / SECTIONS.length) * TAU - Math.PI / 2;
+  const deg = i * (360 / SECTIONS.length);
+  const m = pt(R_MARK, deg);
+  const c = pt(R_CHAPTER, deg);
   return {
     ...s,
-    deg: i * (360 / SECTIONS.length),
-    x: CX + Math.cos(angle) * 88,
-    y: CY + Math.sin(angle) * 88,
+    deg,
+    x: m.x,
+    y: m.y,
+    /* Where the chapter numeral sits, just outside its marker. */
+    nx: c.x,
+    ny: c.y,
   };
 });
 
@@ -183,7 +207,7 @@ export function PrecisionHero() {
               variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } } }}
               className="font-['Outfit'] text-[13px] md:text-[14px] tracking-[0.14em] text-[var(--cw-muted)] uppercase mt-6"
             >
-              An independent operational concept by Akshathdayan Suresh.
+              An independent study of how I would run the role, by Akshathdayan Suresh.
             </motion.p>
 
             <motion.div
@@ -219,72 +243,122 @@ export function PrecisionHero() {
                 aria-hidden="true"
                 className="absolute inset-0 w-full h-full overflow-visible"
               >
-                <g className="cw-guilloche">
-                  {GUILLOCHE.map((g) => (
-                    <line key={g.i} x1={g.x1} y1={g.y1} x2={g.x2} y2={g.y2} strokeWidth="0.4" />
+                <defs>
+                  {/* The dial face. A flat disc reads as a drawing; a light
+                      raked across it from upper-left reads as a surface, which
+                      is most of what makes this feel like an object. */}
+                  <radialGradient id="cwFace" cx="34%" cy="26%" r="78%">
+                    <stop offset="0%" stopColor="#fffdf8" stopOpacity="0.95" />
+                    <stop offset="55%" stopColor="#f6f0e3" stopOpacity="0.55" />
+                    <stop offset="100%" stopColor="#d8ccb2" stopOpacity="0.30" />
+                  </radialGradient>
+                  {/* Applied markers and the hand take a gold ramp rather than a
+                      flat fill, so they catch light like set metal. */}
+                  <linearGradient id="cwGold" x1="0" y1="0" x2="0.4" y2="1">
+                    <stop offset="0%" stopColor="#c9a961" />
+                    <stop offset="48%" stopColor="#8a6d2c" />
+                    <stop offset="100%" stopColor="#6f5822" />
+                  </linearGradient>
+                </defs>
+
+                {/* Face */}
+                <circle cx={CX} cy={CY} r={R_BEZEL - 1} fill="url(#cwFace)" />
+
+                {/* Circular graining, bounded top and bottom so it reads as a
+                    deliberate band rather than a smudge. */}
+                <g className="cw-grain">
+                  {GRAIN.map((g) => (
+                    <circle key={g.i} cx={CX} cy={CY} r={g.r} fill="none" strokeWidth="0.5" />
                   ))}
                 </g>
+                <circle cx={CX} cy={CY} r={R_GRAIN_IN - 2} className="cw-dial-hair" fill="none" strokeWidth="0.7" />
+                <circle cx={CX} cy={CY} r={R_GRAIN_OUT + 2} className="cw-dial-hair" fill="none" strokeWidth="0.7" />
 
+                {/* Minute track */}
                 <g>
                   {TICKS.map((t) => (
                     <line
                       key={t.i}
                       className={`cw-mark ${t.major ? 'cw-tick-major' : 'cw-tick-minor'}`}
-                      style={{ '--cw-delay': `${420 + t.i * 9}ms` }}
+                      style={{ '--cw-delay': `${380 + t.i * 7}ms` }}
                       x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2}
-                      strokeWidth={t.major ? 1.3 : 0.8}
+                      strokeWidth={t.major ? 2 : 0.7}
                       strokeLinecap="butt"
                     />
                   ))}
                 </g>
 
+                {/* Bezel — the heaviest line on the dial, and the outer edge of
+                    the object. Everything inside is lighter than it. */}
                 <circle
-                  className="cw-ring cw-dial-outer"
-                  style={{ '--cw-len': circumference(118), '--cw-delay': '0ms' }}
-                  cx={CX} cy={CY} r={118} fill="none" strokeWidth="1"
+                  className="cw-ring cw-dial-bezel"
+                  style={{ '--cw-len': circumference(R_BEZEL), '--cw-delay': '0ms' }}
+                  cx={CX} cy={CY} r={R_BEZEL} fill="none" strokeWidth="1.8"
                   transform={`rotate(-90 ${CX} ${CY})`}
                 />
+                {/* Marker ring */}
                 <circle
                   className="cw-ring cw-dial-mid"
-                  style={{ '--cw-len': circumference(88), '--cw-delay': '200ms' }}
-                  cx={CX} cy={CY} r={88} fill="none" strokeWidth="1"
-                  transform={`rotate(-90 ${CX} ${CY})`}
-                />
-                <circle
-                  className="cw-ring cw-dial-inner"
-                  style={{ '--cw-len': circumference(54), '--cw-delay': '360ms' }}
-                  cx={CX} cy={CY} r={54} fill="none" strokeWidth="1"
+                  style={{ '--cw-len': circumference(R_MARK), '--cw-delay': '240ms' }}
+                  cx={CX} cy={CY} r={R_MARK} fill="none" strokeWidth="0.9"
                   transform={`rotate(-90 ${CX} ${CY})`}
                 />
 
-                {/* The hand. cw-sweep carries the one-time entrance; --cw-hand
-                    is driven purely by which milestone is active, so after load
-                    it moves only when someone points at one. */}
-                <g className="cw-sweep" style={{ '--cw-hand': `${handDeg}deg` }}>
-                  <line x1={CX} y1={CY} x2={CX} y2={CY - 116} className="cw-sweep-line" strokeWidth="1.1" />
-                  <circle cx={CX} cy={CY - 116} r="3.2" className="cw-sweep-dot" />
-                  {/* Counterweight — what makes a rotating hairline read as
-                      balanced rather than a stray line through the middle. */}
-                  <line x1={CX} y1={CY} x2={CX} y2={CY + 22} className="cw-sweep-tail" strokeWidth="1" />
+                {/* Chapter numerals */}
+                <g>
+                  {MARKS.map((m, i) => (
+                    <text
+                      key={m.id}
+                      className={`cw-mark cw-chapter${active === i ? ' is-active' : ''}`}
+                      style={{ '--cw-delay': `${1000 + i * 80}ms` }}
+                      x={m.nx} y={m.ny}
+                      textAnchor="middle" dominantBaseline="central"
+                    >
+                      {m.num}
+                    </text>
+                  ))}
                 </g>
 
+                {/* The hand. cw-sweep carries the one-time entrance; --cw-hand
+                    is driven purely by which marker is active, so after load it
+                    moves only when someone points at one.
+
+                    Tapered rather than a hairline: a polygon that is widest at
+                    the hub and comes to a point, which is what a real hand does
+                    and what stops it reading as a stray line. */}
+                <g className="cw-sweep" style={{ '--cw-hand': `${handDeg}deg` }}>
+                  <polygon
+                    className="cw-sweep-body"
+                    points={`${CX - 2.6},${CY} ${CX},${CY - (R_BEZEL - 8)} ${CX + 2.6},${CY}`}
+                  />
+                  <polygon
+                    className="cw-sweep-tail"
+                    points={`${CX - 2.2},${CY} ${CX},${CY + 26} ${CX + 2.2},${CY}`}
+                  />
+                  <circle cx={CX} cy={CY - (R_BEZEL - 8)} r="2.6" className="cw-sweep-dot" />
+                </g>
+
+                {/* Applied markers — a jewel setting: an outer collet, a gold
+                    ring and a stone. Three parts at three weights is what makes
+                    them read as applied to the dial rather than printed on it. */}
                 {MARKS.map((m, i) => (
                   <g
                     key={m.id}
                     className={`cw-mark cw-milestone${active === i ? ' is-active' : ''}`}
-                    style={{ '--cw-delay': `${900 + i * 90}ms` }}
+                    style={{ '--cw-delay': `${820 + i * 85}ms` }}
                   >
-                    <circle cx={m.x} cy={m.y} r="5" className="cw-milestone-ring" strokeWidth="1.2" />
-                    <circle cx={m.x} cy={m.y} r="1.6" className="cw-milestone-dot" />
+                    <circle cx={m.x} cy={m.y} r="9" className="cw-milestone-halo" />
+                    <circle cx={m.x} cy={m.y} r="6.2" className="cw-milestone-ring" strokeWidth="1.6" />
+                    <circle cx={m.x} cy={m.y} r="2.6" className="cw-milestone-dot" />
                   </g>
                 ))}
 
-                <circle cx={CX} cy={CY} r="2.6" className="cw-hub" />
-                <circle
-                  className="cw-mark cw-hub-ring"
-                  style={{ '--cw-delay': '1400ms' }}
-                  cx={CX} cy={CY} r="20" fill="none" strokeWidth="1"
-                />
+                {/* Hub. No ring at the centre any more — one sat at r=60,
+                    exactly where the readout used to be, and sliced through the
+                    text. The readout has moved out of the dial entirely, so the
+                    hub is now just a hub. */}
+                <circle cx={CX} cy={CY} r="5.4" className="cw-hub" />
+                <circle cx={CX} cy={CY} r="1.8" className="cw-hub-pin" />
               </svg>
 
               {/* Real buttons over the marks. HTML rather than SVG, so they come
@@ -306,24 +380,35 @@ export function PrecisionHero() {
                 />
               ))}
 
-              {/* Centre readout. Names whichever milestone is active and falls
-                  back to the dial's caption at rest. aria-live so the change is
-                  announced without focus having to move. */}
-              <div className="cw-readout" aria-live="polite">
-                {activeMark ? (
-                  <>
-                    <span className="cw-readout__num">{activeMark.num}</span>
-                    <span className="cw-readout__name">{activeMark.name}</span>
-                  </>
-                ) : (
-                  <span className="cw-readout__idle">Six workstreams<br />One launch</span>
-                )}
-              </div>
             </div>
 
-            <p className="mt-7 text-center font-['Outfit'] text-[11.5px] tracking-[0.16em] uppercase text-[var(--cw-muted)]">
-              Select a marker to jump to its section
-            </p>
+            {/* Readout — BELOW the dial, not inside it.
+
+                It used to sit in the centre, which stopped working the moment
+                the dial got real architecture: the graining band, the hub ring
+                and the hand all pass through that space, so the text was being
+                sliced by geometry drawn on top of it. There is no reliable
+                clear field at the centre of a dial that has a hand in it.
+
+                Out here it is always legible, can run to two lines without
+                colliding with anything, and gets to be considerably larger.
+                Fixed min-height so the layout does not jump between the resting
+                caption and a two-line section name.
+
+                aria-live so a screen reader hears the change without focus
+                having to move. */}
+            <div className="cw-readout" aria-live="polite">
+              {activeMark ? (
+                <>
+                  <span className="cw-readout__num">Section {activeMark.num}</span>
+                  <span className="cw-readout__name">{activeMark.name}</span>
+                </>
+              ) : (
+                <span className="cw-readout__idle">
+                  Select a marker to jump to its section
+                </span>
+              )}
+            </div>
           </motion.div>
         </div>
       </div>

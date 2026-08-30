@@ -56,9 +56,9 @@ function EvidenceBlock({ item }) {
             Large enough to be the first thing read in the block. */}
         <div className="cw-evidence__metric">
           <span className="cw-display cw-display--figure cw-nums block text-[var(--cw-ink)] text-[46px] sm:text-[58px] md:text-[68px] xl:text-[80px]">
-            {m.prefix ? <span className="cw-evidence__affix">{m.prefix}</span> : null}
+            {m.prefix ? <span className="cw-evidence__affix cw-evidence__affix--pre">{m.prefix}</span> : null}
             {m.value}
-            {m.suffix ? <span className="cw-evidence__affix">{m.suffix}</span> : null}
+            {m.suffix ? <span className="cw-evidence__affix cw-evidence__affix--suf">{m.suffix}</span> : null}
           </span>
           <span className="font-['Outfit'] text-[12px] font-semibold tracking-[0.15em] uppercase text-[var(--cw-ink-2)] block mt-3 max-w-[200px]">
             {m.label}
@@ -93,7 +93,7 @@ export function ExperienceEvidence() {
           Built from real-world execution
         </SectionHeading>
         <SectionIntro>
-          Everything above is a constructed scenario. Everything below is not.
+          The scenarios above are invented. These four roles are not, and every figure in them is one I can be asked about.
         </SectionIntro>
       </motion.div>
 

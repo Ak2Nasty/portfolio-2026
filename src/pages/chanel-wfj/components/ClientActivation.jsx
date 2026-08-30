@@ -95,7 +95,7 @@ export function ClientActivation() {
           From invitation to follow-through
         </SectionHeading>
         <SectionIntro>
-          One record per client, from targeting to the conversation after. Anonymised throughout.
+          One record per client, from the targeting list to the follow-up after the event. Anonymised throughout — discretion is the job, not a footnote.
         </SectionIntro>
       </motion.div>
 

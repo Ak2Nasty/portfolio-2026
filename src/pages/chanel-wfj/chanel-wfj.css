@@ -496,17 +496,72 @@
 /* ── Dial ───────────────────────────────────────────────────────────────────
    Colour lives here rather than on the SVG elements: var() is unreliable inside
    an SVG presentation attribute, so the marks carry classes and the stylesheet
-   paints them. The dial re-themes with the page from one place. */
-.cwfj .cw-dial-outer { stroke: var(--cw-line-strong); }
-.cwfj .cw-dial-mid   { stroke: var(--cw-rule); }
-.cwfj .cw-dial-inner { stroke: var(--cw-line); }
-.cwfj .cw-tick-major { stroke: var(--cw-accent); }
-.cwfj .cw-tick-minor { stroke: var(--cw-line-strong); }
-.cwfj .cw-sweep-line { stroke: var(--cw-accent); }
-.cwfj .cw-sweep-tail { stroke: var(--cw-line-strong); }
-.cwfj .cw-sweep-dot  { fill: var(--cw-accent); }
-.cwfj .cw-hub        { fill: var(--cw-accent); }
-.cwfj .cw-hub-ring   { stroke: var(--cw-line); }
+   paints them.
+
+   WEIGHT IS THE WHOLE POINT. The first version drew bezel, rings, ticks and
+   markers all at roughly 1px in near-identical tones, so the dial had no
+   hierarchy and read as a flat diagram. Each zone now sits at a distinct weight
+   and value: the bezel is the heaviest thing on it, the graining the lightest,
+   and the applied markers are the only elements allowed to be solid gold. */
+
+/* Bezel — outer edge of the object, heaviest line on the dial. */
+.cwfj .cw-dial-bezel { stroke: var(--cw-gold-deep); opacity: 0.55; }
+/* Marker ring — mid weight, quiet. */
+.cwfj .cw-dial-mid   { stroke: var(--cw-gold); opacity: 0.42; }
+/* Hairlines bounding the graining band. */
+.cwfj .cw-dial-hair  { stroke: var(--cw-gold); opacity: 0.22; }
+
+/* Minute track. Majors are short heavy batons coinciding with the six markers;
+   minors are the finest strokes on the dial. */
+.cwfj .cw-tick-major { stroke: var(--cw-gold-deep); opacity: 0.75; }
+.cwfj .cw-tick-minor { stroke: var(--cw-gold-deep); opacity: 0.28; }
+
+/* Circular graining. Deliberately near the threshold of visibility — it should
+   register as a change of surface, not as rings you can count. */
+.cwfj .cw-grain circle { stroke: var(--cw-gold); opacity: 0.13; }
+
+/* Chapter numerals. Gold, small, wide-tracked; the active one lifts to full
+   weight so the ring reads along with the hand. */
+.cwfj .cw-chapter {
+  font-family: 'Outfit', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  fill: var(--cw-gold-deep);
+  opacity: 0.62;
+  transition: opacity 300ms ease;
+}
+.cwfj .cw-chapter.is-active { opacity: 1; }
+
+/* The hand — tapered polygons filled with the gold ramp. */
+.cwfj .cw-sweep-body { fill: url(#cwGold); }
+.cwfj .cw-sweep-tail { fill: var(--cw-gold-deep); opacity: 0.55; }
+.cwfj .cw-sweep-dot  { fill: var(--cw-gold-deep); }
+
+/* Applied markers. The halo is transparent at rest and appears only under the
+   active one, which gives the dial somewhere to go on interaction. */
+.cwfj .cw-milestone-halo {
+  fill: var(--cw-gold);
+  opacity: 0;
+  transition: opacity 320ms ease;
+}
+.cwfj .cw-milestone-ring {
+  fill: var(--cw-bg);
+  stroke: url(#cwGold);
+  transition: fill 320ms ease;
+}
+.cwfj .cw-milestone-dot {
+  fill: var(--cw-gold-deep);
+  transition: r 320ms ease;
+}
+.cwfj .cw-milestone.is-active .cw-milestone-halo { opacity: 0.16; }
+.cwfj .cw-milestone.is-active .cw-milestone-ring { fill: var(--cw-gold-wash); }
+.cwfj .cw-milestone.is-active .cw-milestone-dot  { r: 3.4; }
+
+/* Hub */
+.cwfj .cw-hub      { fill: url(#cwGold); }
+.cwfj .cw-hub-pin  { fill: var(--cw-bg); }
+.cwfj .cw-hub-ring { stroke: var(--cw-gold); opacity: 0.3; }
 
 /* Guilloché — the engine-turned ground of a dial. Faint enough to read as
    surface rather than as pattern; it is the single strongest watch cue on the
@@ -572,42 +627,48 @@
   outline-offset: -8px;
 }
 
-/* Centre readout. Absolutely centred inside the dial's square box and clear of
-   the inner ring, so a long workstream name wraps rather than colliding with
-   the geometry. */
+/* Readout — sits BELOW the dial, not inside it.
+
+   The centre of a dial that has a hand in it is never a reliable clear field:
+   the graining band, the hub and the hand itself all cross it, and the text was
+   being sliced by geometry drawn over it. Out here nothing can interrupt it, it
+   can run to two lines, and it gets to be a readable size.
+
+   min-height holds the space for the tallest state so the layout does not jump
+   as the readout changes between the resting caption and a section name. */
 .cwfj .cw-readout {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 46%;
-  text-align: center;
-  pointer-events: none;
+  margin-top: 26px;
+  min-height: 58px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  justify-content: flex-start;
+  gap: 7px;
+  text-align: center;
+  pointer-events: none;
 }
 .cwfj .cw-readout__num {
   font-family: 'Outfit', sans-serif;
-  font-size: 13px;
+  font-size: 10.5px;
+  font-weight: 600;
   letter-spacing: 0.24em;
-  color: var(--cw-accent);
-  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
+  color: var(--cw-gold-deep);
 }
 .cwfj .cw-readout__name {
   font-family: 'Outfit', sans-serif;
-  font-size: 10.5px;
-  line-height: 1.35;
-  letter-spacing: 0.04em;
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
   color: var(--cw-ink);
-  text-wrap: balance;
+  max-width: 22ch;
 }
 .cwfj .cw-readout__idle {
   font-family: 'Outfit', sans-serif;
-  font-size: 10.5px;
+  font-size: 11.5px;
   line-height: 1.7;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--cw-muted);
 }
@@ -869,15 +930,38 @@
    collision: the Couture glyph was far wider than its advance width and lapped
    over the first numeral. Raised with position rather than vertical-align so it
    still occupies its own horizontal space and cannot overlap the figure. */
+/* Currency and unit affixes.
+
+   MUST NOT be set in Couture: its cmap includes $ and draws it as a decorative
+   interlocking-C monogram, so a currency prefix in the display face came out
+   looking like a luxury house's trademark in front of the number. Outfit has an
+   ordinary dollar sign. Raised with position rather than vertical-align so each
+   keeps its own horizontal space and cannot lap over the figure.
+
+   PREFIX AND SUFFIX ARE POSITIONED SEPARATELY, because they are not the same
+   kind of mark. A currency sign is conventionally superscript, riding near the
+   cap line. A trailing + or % is not: pushed to the same height it detaches
+   from the numeral and reads as a stray mark floating above it. The suffix
+   therefore sits lower — around the numeral's upper-middle — and closer in. */
 .cwfj .cw-evidence__affix {
   font-family: 'Outfit', sans-serif;
-  font-size: 0.3em;
   font-weight: 500;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   color: var(--cw-accent);
   position: relative;
-  top: -1.5em;
-  margin: 0 0.12em;
+}
+/* Superscript currency, riding near the cap line. */
+.cwfj .cw-evidence__affix--pre {
+  font-size: 0.3em;
+  top: -1.42em;
+  margin-right: 0.07em;
+}
+/* Trailing unit — larger, lower and tighter, so it reads as attached to the
+   figure rather than hovering off the end of it. */
+.cwfj .cw-evidence__affix--suf {
+  font-size: 0.36em;
+  top: -0.86em;
+  margin-left: 0.05em;
 }
 
 @media (prefers-reduced-motion: reduce) {
