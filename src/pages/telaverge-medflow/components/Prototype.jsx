@@ -285,7 +285,13 @@ export function Prototype() {
             </span>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)]">
+          {/* 436px, not 380: the device column carries 28px of padding on each
+              side, so a 380px track left the DEVICE at 324px — 35px narrower
+              than the same device in section 09, and under the 340px line at
+              which the screen's container query shrinks the numeric fields. The
+              column is the frame plus its padding; the frame is what has to
+              match. */}
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,436px)_minmax(0,1fr)]">
             {/* ── The device ── */}
             {/* White, not the alt grey. The device bezel is --mf-bg-alt
                  everywhere on the page, so a grey column behind it would make

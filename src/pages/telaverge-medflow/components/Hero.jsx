@@ -25,7 +25,19 @@ export function Hero() {
   return (
     <section id="hero" aria-labelledby="hero-heading" className="w-full relative">
       <div className="mf-shell max-w-[88rem] mx-auto px-6 md:px-10 lg:px-14 pt-16 md:pt-24 pb-14 md:pb-20">
-        <motion.div {...revealProps} className="grid grid-cols-1 lg:grid-cols-[1.2fr_minmax(0,0.85fr)] gap-12 lg:gap-16 items-start">
+        {/* The right column is a hard 380px, and the left is the one that
+            flexes. As a fraction the right resolved to 343px at 1440, so the
+            hero's device came out 37px narrower than the identical device in
+            sections 09 and 10 — near enough to look like a mistake, far enough
+            to trip the screen's own 340px container query and render the
+            numeric fields a size smaller than they are everywhere else.
+
+            minmax(0,380px) was not enough either: with an fr sibling whose
+            min-content is a wide meta grid, the flexible track wins the argument
+            and the capped one gets whatever is left, which at 1024px was 333px.
+            A definite track and a minmax(0,1fr) beside it puts the shrinking
+            where prose can absorb it. */}
+        <motion.div {...revealProps} className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_380px] gap-12 lg:gap-16 items-start">
           {/* ── Left: the argument ── */}
           <div>
             <motion.span
