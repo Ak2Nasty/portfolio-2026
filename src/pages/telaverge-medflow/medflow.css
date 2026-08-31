@@ -729,6 +729,26 @@
   min-width: 4.5ch;
   flex: 1 1 auto;
 }
+/* NO OUTLINE ON THE INPUT ITSELF.
+   The input carries a tabindex (the prototype toggles it to make static screens
+   inert), so the page-wide `[tabindex]:focus-visible` rule was drawing a 2px
+   outline around it. The field is `overflow: hidden`, which cropped that
+   outline down to the single segment sitting at the input's right edge — a
+   stray vertical rule that appeared between the digits and the unit the moment
+   anyone typed.
+
+   Nothing is lost by removing it: the FIELD already shows focus via
+   :focus-within, with an accent border and a 3px ring. That is the better
+   indicator anyway, because the field is the control — the digits box and its
+   unit are one thing, and the focus ring should say so.
+
+   Specificity 0,3,1 against the global rule's 0,3,0, so it wins without
+   !important. */
+.mdf .mf-field input:focus,
+.mdf .mf-field input:focus-visible {
+  outline: none;
+}
+
 .mdf .mf-field__unit {
   font-size: 14px;
   font-weight: 500;
@@ -1173,35 +1193,40 @@
 
 
 /* ── Field pairs ─────────────────────────────────────────────────────────────
-   Two fields side by side need roughly 168px each once the digits, the unit and
-   the padding are counted. Below that they do not shrink gracefully — the field
-   clips, and what gets clipped is the end of the unit.
+   Two fields stay SIDE BY SIDE wherever they physically fit, and the threshold
+   is derived rather than guessed.
 
-   380px is the measured threshold: at 306px of screen the pair gave each field
-   129px against the ~165px it needed, a 30px shortfall. Under it they stack and
-   each field gets the full width.
+   A field needs: the digits box at its 4.5ch minimum (~50px at 22px) plus 14px
+   of left padding, and the unit — which never shrinks — at ~43px for "mL/hr"
+   plus 18px of padding. That is ~125px each, so a pair needs
+   125 x 2 + 12 gap + 36 screen padding = ~298px of screen.
+
+   The first attempt stacked below 380px, which was far too eager: the
+   prototype's device is 359px on desktop and a gallery card is 401px at a
+   1000px viewport — both had room for two fields and got one, for no reason.
+
+   Below 340px the field itself tightens a little (smaller digits, less
+   padding) to buy the headroom, and only below 300px — where side by side is
+   genuinely impossible — do they stack.
 
    The discrepancy screen's ORDER / ENTERED comparison is deliberately NOT a
-   .mf-pair. Those two must stay side by side at every width — putting the
-   ordered value above the entered one instead of beside it is exactly the
-   comparison the screen exists to make. They hold because they carry no input
-   chrome, only a number and a unit. */
-@container (max-width: 380px) {
-  .mdf .mf-pair {
-    grid-template-columns: minmax(0, 1fr);
+   .mf-pair at any width. Stacking the ordered value above the entered one
+   destroys the comparison the screen exists to make. */
+@container (max-width: 340px) {
+  .mdf .mf-field input {
+    font-size: 19px;
+    width: 3.6ch;
+    min-width: 3.6ch;
+    padding-left: 10px;
+  }
+  .mdf .mf-field__unit {
+    font-size: 12.5px;
+    padding: 0 9px 0 4px;
   }
 }
-
-/* At the narrowest the screen ever gets — 209px, a gallery card on a 320px
-   phone — wide tracking stops paying for itself. Letter-spacing appends space
-   AFTER the final character, so a label that exactly fits still overflows by
-   the width of one gap: "ENTERED" needed 55px in a 51px box, and 4px of that
-   was phantom space with no glyph in it. Tightened only here, so the labels
-   everywhere else keep the spacing the rest of the page is set in. */
-@container (max-width: 280px) {
-  .mdf .mf-screen .uppercase,
-  .mdf .mf-cmp-label {
-    letter-spacing: 0.09em;
+@container (max-width: 300px) {
+  .mdf .mf-pair {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
