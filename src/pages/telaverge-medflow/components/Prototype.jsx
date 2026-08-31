@@ -54,7 +54,7 @@ import { SCENARIO } from '../data/caseStudyData';
 
 const FLOW = [
   { id: 'dashboard', label: 'Dashboard', note: 'Four patients assigned. One requires infusion setup.' },
-  { id: 'verify', label: 'Verify patient', note: 'Identity must be verified before the safety-significant workflow begins.' },
+  { id: 'verify', label: 'Verify patient', note: 'Identity must be verified before the safety-significant workflow begins. If the scanner will not read, the manual route still has to be completed — it is a designed alternative, not a way past the gate.' },
   { id: 'order', label: 'Review order', note: 'Prescribed values, shown read-only.' },
   { id: 'configure', label: 'Configure', note: 'The rate field is pre-filled with 50 mL/hr — a deliberate ten-fold entry slip.' },
   { id: 'discrepancy', label: 'Discrepancy', note: 'Progression is blocked. The entered rate does not match the order.' },
@@ -129,10 +129,22 @@ export function Prototype() {
         case 'dashboard':
           return advance('verify');
 
+        /* Two routes to the same gate, and the record keeps them apart.
+           "Unable to scan" used to land here as well and set `verified` — so
+           declining to scan verified the patient, on the screen whose only job
+           is the identity check. It no longer reaches the workflow at all: it
+           switches the screen to the manual read-back, and only completing that
+           produces 'verify-manual'. */
         case 'verify':
           if (action === 'verify') {
-            setState((s) => ({ ...s, verified: true }));
-            return setEvent('Patient identity verified.');
+            setState((s) => ({ ...s, verified: 'scan' }));
+            return setEvent('Wristband scanned. Patient identity verified.');
+          }
+          if (action === 'verify-manual') {
+            setState((s) => ({ ...s, verified: 'manual' }));
+            return setEvent(
+              'Identity confirmed by manual read-back. Recorded as a manual check, not a scan.',
+            );
           }
           return advance('order');
 
@@ -282,8 +294,12 @@ export function Prototype() {
                  compensate — which fixed the contrast here and made the
                  prototype's device the only one on the page that did not match
                  the others. The backing changes; the device never does. */}
+            {/* p-4 below sm, not p-5. Eight pixels, and they are the eight that
+                put a 360px phone's screen at 304px rather than 296px — over the
+                300px line at which the field pairs stack, which is what keeps
+                the device the same 592px here as everywhere else on the page. */}
             <div
-              className="p-5 md:p-7 flex flex-col"
+              className="p-4 sm:p-5 md:p-7 flex flex-col"
               style={{ background: 'var(--mf-surface)', borderRight: '1px solid var(--mf-line)' }}
             >
               {/* `live` here drives the device clock as well as the screen —

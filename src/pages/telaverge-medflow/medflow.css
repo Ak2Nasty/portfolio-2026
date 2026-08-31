@@ -115,20 +115,16 @@
 }
 
 /* ─── Scroll progress ────────────────────────────────────────────────────────
-   One hairline, scaleX-driven, compositor-only. Scroll-LINKED, which is the
-   only thing on this page that is: it has no duration of its own and it runs
-   backwards on the way up, which is what makes it a position readout rather
-   than an animation. */
-.mdf-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--mf-accent);
-  transform-origin: 0 50%;
-  z-index: 60;
-}
+   Scroll-LINKED, which is the only thing on this page that is: it has no
+   duration of its own and it runs backwards on the way up, which is what makes
+   it a position readout rather than an animation.
+
+   It is drawn as .mf-header__rule, on the header's bottom edge. It used to be a
+   separate `.mdf-progress` bar fixed to the top of the viewport, which meant it
+   stayed put when the header hid on the way down — a bare accent hairline
+   pinned across the top of the content with nothing attached to it, which reads
+   as a seek control the reader will try to drag. It belongs to the header or it
+   belongs nowhere. */
 
 /* ─── Section chrome ─────────────────────────────────────────────────────── */
 
@@ -194,33 +190,174 @@
 .mdf .mf-chip--off  { color: var(--mf-off);  background: var(--mf-off-bg);  border-color: var(--mf-off-line); }
 .mdf .mf-chip--accent { color: var(--mf-accent); background: var(--mf-accent-bg); border-color: var(--mf-accent-line); }
 
-/* ─── Gallery alignment ──────────────────────────────────────────────────────
-   Screens are different heights by nature — a dashboard with four patient cards
-   is taller than an alert with one banner. Left alone, that pushed every
-   caption to a different vertical position: measured at up to 71px of
-   stagger across a single row, so "04 Configure infusion" and "06 Final
-   confirmation" sat on visibly different lines and the whole grid read as
-   loose type wrapping around images rather than as a set.
+/* ─── ONE DEVICE, EVERYWHERE ─────────────────────────────────────────────────
+   The same screen is rendered in four places — the hero, the featured card at
+   the top of section 09, the section 09 gallery, and the live prototype in
+   section 10 — and every one of them used to come out a different size. Measured
+   at 1440px: hero 321.7×420, featured 358.8×496.5, gallery 316.8×592, prototype
+   302×592. At 375px the prototype's screen was 263.6px against the gallery's
+   306px, a 42px difference between two pictures of the same device on the same
+   page.
 
-   From the first multi-column breakpoint the screens take a uniform height, so
-   every device frame in a row ends on the same line and every caption starts on
-   the same line. The screens' action rows are already pinned with `mt-auto`, so
-   the extra height falls where it should — as breathing room above the
-   buttons, not as a gap in the middle of the content.
+   A device screen is a piece of hardware. It is not taller because the dashboard
+   has four patient cards and shorter because the monitor screen has two, and it
+   is not a different width in section 10 than it was in section 09. So the
+   height is fixed for every screen in every context, and the frame is capped at
+   one width so no context can inflate it.
 
-   Below 640px the gallery is a single column, where there is nothing to align
-   against and a forced height would only add dead space. */
-/* 592px, not a guessed round number: the tallest screen is the dashboard at
-   587px — four patient cards, each two rows once the name and its status chip
-   stack — and that figure holds steady across every column width the auto-fill
-   grid produces, from 322px to 648px. The first attempt used 512px and silently
-   clipped the fourth ward card off the bottom.
+   THE HEIGHT IS THE TALLEST STATE, NOT A ROUND NUMBER — nothing scrolls and
+   nothing clips. The extra falls above the action row, where a device UI wants
+   it anyway: content at the top, actions pinned at the bottom. 592px is the
+   dashboard, the tallest of the nine at 587px — four patient cards, each two
+   rows once the name and its status chip stack. An earlier attempt at 512px
+   silently clipped the fourth ward card off the bottom.
 
-   The other screens gain the difference as space above their action row, which
-   is where a device UI wants it anyway: content at the top, actions pinned at
-   the bottom. */
-@media (min-width: 640px) {
-  .mdf .mf-gallery .mf-screen { height: 592px; }
+   Three values, because the screen's own container queries reshape its contents
+   as it narrows, and what fits in 592px depends on which of them have fired:
+
+     screen > 300px    field pairs side by side; the dashboard is the tallest
+                       screen at 587px.                        → 592px.
+     224–300px         the pairs stack, and Configure overtakes the dashboard
+                       as the tallest at 650px.                → 664px.
+     ≤ 224px           everything is taller again.             → 728px.
+
+   Each figure is the tallest state measured in a full walk of all nine steps and
+   every sub-state at that width.
+
+   THESE ARE CONTAINER QUERIES, NOT VIEWPORT ONES, and 300px is deliberately the
+   same number the field pairs stack at — because it is the same event. The first
+   attempt used viewport breakpoints (412 / 350) derived by measuring which
+   viewport produced which screen width, and that is a translation that only
+   holds while the console's padding, the device's max-width and the page gutters
+   all stay exactly as they are. Asking the container what width it actually is
+   removes the translation, and the height and the layout it is sized for can no
+   longer disagree.
+
+   overflow-y is a seatbelt, not a feature: if a future edit adds a line, the
+   screen scrolls instead of silently clipping an action off the bottom. */
+.mdf .mf-device__screen { container-type: inline-size; }
+.mdf .mf-screen {
+  height: 592px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+@container (max-width: 300px) {
+  .mdf .mf-screen { height: 664px; }
+}
+@container (max-width: 224px) {
+  .mdf .mf-screen { height: 728px; }
+}
+
+/* The scrollbar the seatbelt can produce. Left native it is a 15px grey slab
+   with a raised thumb sitting inside a medical device — the single least
+   device-like object it is possible to put on that screen. Thin, unpainted
+   track, thumb in the page's own hairline colour. */
+.mdf .mf-screen {
+  scrollbar-width: thin;
+  scrollbar-color: var(--mf-line-strong) transparent;
+}
+.mdf .mf-screen::-webkit-scrollbar { width: 5px; }
+.mdf .mf-screen::-webkit-scrollbar-track { background: transparent; }
+.mdf .mf-screen::-webkit-scrollbar-thumb {
+  background: var(--mf-line-strong);
+  border-radius: 3px;
+}
+.mdf .mf-screen::-webkit-scrollbar-thumb:hover { background: var(--mf-muted); }
+
+/* One frame width, so the hero, the featured card and the prototype render the
+   device at exactly the same size. The gallery's cards are narrower because
+   they are a grid of eight — that reads as a contact sheet, not as a mismatch —
+   but they never exceed this either. */
+.mdf .mf-device {
+  max-width: 380px;
+  margin-inline: auto;
+}
+
+/* ── The console goes full-bleed on a phone ──────────────────────────────────
+   Not a flourish — arithmetic. Inside the page's 24px gutters the console had
+   324px of interior, and after its own 20px column padding and the device's
+   20px bezel that left the screen 264px: below the 300px threshold at which the
+   field pairs stack, which is why the prototype's device was 42px narrower and
+   72px taller than the identical device in section 09 directly above it.
+
+   Letting the console reach the viewport edge returns 48px. The screen comes
+   out at 315px against the gallery's 306px — the same device, to within nine
+   pixels, instead of forty-two — the pairs stay side by side, and the height
+   lands on the same 592px as everywhere else on the page.
+
+   Side border and radius go with it: a border running down the very edge of the
+   viewport reads as a rendering fault rather than as an edge.
+
+   The featured card at the top of section 09 gets the same treatment for the
+   same reason, so the two framed blocks on the page behave alike on a phone. */
+@media (max-width: 767px) {
+  .mdf .mf-console,
+  .mdf .mf-bleed {
+    margin-inline: -24px;
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
+  }
+}
+
+/* ── Manual identity read-back ───────────────────────────────────────────────
+   The fallback when the wristband will not scan. Two checkboxes, and the native
+   input is kept in the DOM and hidden rather than replaced — it carries the
+   role, the checked state, the label association and the keyboard behaviour,
+   and a div with aria-checked bolted on carries none of them for free.
+
+   44px tall under a thumb, because this is a control someone taps twice while
+   holding a phone in the other hand. */
+.mdf .mf-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 11px 13px;
+  min-height: 44px;
+  border-radius: 4px;
+  border: 1px solid var(--mf-line);
+  background: var(--mf-bg-alt);
+  cursor: pointer;
+  transition: border-color 180ms ease, background-color 180ms ease;
+}
+.mdf .mf-check input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.mdf .mf-check__box {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  border-radius: 3px;
+  border: 1.5px solid var(--mf-line-strong);
+  background: var(--mf-surface);
+  display: grid;
+  place-items: center;
+  color: var(--mf-surface);
+  transition: border-color 180ms ease, background-color 180ms ease;
+}
+.mdf .mf-check__label {
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--mf-ink-2);
+}
+.mdf .mf-check--on {
+  border-color: var(--mf-run-line);
+  background: var(--mf-run-bg);
+}
+.mdf .mf-check--on .mf-check__box {
+  border-color: var(--mf-run);
+  background: var(--mf-run);
+}
+.mdf .mf-check--on .mf-check__label { color: var(--mf-run); }
+/* The focus ring belongs to the visible box, not to the hidden input. */
+.mdf .mf-check:focus-within .mf-check__box {
+  border-color: var(--mf-accent);
+  box-shadow: 0 0 0 3px var(--mf-accent-bg);
 }
 
 /* The ORDER / ENTERED labels on the discrepancy screen. Their tracking is a
@@ -1137,14 +1274,75 @@
 }
 
 /* The header's own scroll progress, drawn along its bottom edge. Doubles as the
-   border, so it costs no height. */
+   border, so it costs no height — and, unlike the fixed bar this replaced, it
+   hides and returns with the header rather than being left lying across the top
+   of the content on its own. */
 .mdf .mf-header__rule {
   position: absolute;
   left: 0;
+  right: 0;
   bottom: -1px;
   height: 2px;
   background: var(--mf-accent);
   transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+/* ── Mobile context strip ────────────────────────────────────────────────────
+   A second header line, phones only, carrying the position readout that has no
+   room on the first one. 26px and quiet: it is orientation, not navigation, and
+   it must not compete with the wordmark above it. */
+.mdf .mf-header a.mf-header__strip {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  /* 34px, and it opts out of the page's 44px coarse-pointer floor. That floor
+     exists for links sitting in running text, where a miss lands on a
+     paragraph; this one is a full-width bar — 34 x 375px of target — and 44px
+     would put the header at 107px, a seventh of a phone screen, for a line of
+     orientation text. Well clear of the 24px minimum either way. */
+  height: 34px;
+  min-height: 34px;
+  padding: 0 24px;
+  border-top: 1px solid var(--mf-line);
+  background: var(--mf-bg);
+  font-family: 'Outfit', system-ui, sans-serif;
+  text-decoration: none;
+}
+.mdf .mf-header__strip-n {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--mf-accent);
+  flex-shrink: 0;
+}
+.mdf .mf-header__strip-name {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--mf-ink-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.mdf .mf-header__strip-count {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--mf-muted);
+}
+/* Gone from sm up, where the position readout fits on the first row alongside
+   the wordmark. Declared here rather than left to Tailwind's `sm:hidden`: the
+   rule above is (0,3,1) and `.hidden` is (0,1,0), so the utility loses and the
+   strip rendered on desktop too — the same specificity trap that once kept the
+   header's position pill visible on phones. Placed AFTER the base rule, because
+   equal specificity is settled by source order and a media query does not
+   change that. */
+@media (min-width: 640px) {
+  .mdf .mf-header a.mf-header__strip { display: none; }
 }
 
 /* ─── Sticky section index ───────────────────────────────────────────────────

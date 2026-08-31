@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, memo, useCallback } from 'react';
+import { motion, useScroll, useSpring } from 'framer-motion';
 import { useLenis } from 'lenis/react';
 import { STUDY, SECTIONS, DISCLAIMER } from '../data/caseStudyData';
 import { Icon } from './icons';
@@ -91,6 +92,17 @@ export function CaseStudyHeader() {
   const active = useActiveSection();
   const current = SECTIONS.find((s) => s.id === active) ?? SECTIONS[0];
 
+  /* Scroll position, drawn along the header's bottom edge. It was a separate
+     fixed bar at the top of the viewport, which meant it stayed behind when the
+     header hid on the way down — an accent hairline lying across the content
+     with nothing attached to it, which reads as a seek control rather than a
+     readout. Here it doubles as the border, so it costs no height, and it goes
+     when the header goes.
+
+     scaleX on a 2px element is compositor-only: no layout, no paint. */
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 90, damping: 26, mass: 0.3 });
+
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY;
@@ -182,6 +194,32 @@ export function CaseStudyHeader() {
         </div>
       </div>
 
+      {/* ── Mobile context strip ──
+          Below sm the bar carried a wordmark and a button and nothing else: no
+          section number, no section name, nothing that answered "where am I".
+          Scrolling up produced a header that had returned for no reason. The
+          position readout is the single most useful thing a header can carry on
+          a twenty-section document, and there is no room for it on the first
+          row at 375px — the wordmark and the prototype button already take 215
+          of 327 pixels — so it gets its own 26px line, which exists only where
+          the readout was missing. */}
+      <a
+        href={`#${current.id}`}
+        className="mf-header__strip sm:hidden"
+        aria-label={`Currently in section ${current.n}, ${current.name}`}
+      >
+        <span className="mf-header__strip-n tabular-nums">{current.n}</span>
+        <span className="mf-header__strip-name">{current.name}</span>
+        <span className="mf-header__strip-count tabular-nums">
+          {current.n} / {String(SECTIONS.length).padStart(2, '0')}
+        </span>
+      </a>
+
+      <motion.div
+        className="mf-header__rule"
+        style={{ scaleX }}
+        aria-hidden="true"
+      />
     </header>
   );
 }

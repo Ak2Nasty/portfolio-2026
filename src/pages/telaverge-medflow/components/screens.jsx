@@ -240,8 +240,11 @@ function EscalateControl({ live, disabled = false }) {
    approving a change inside a portfolio prototype would be inventing a clinical
    workflow this study has no basis to depict. It ends at "sent", which is the
    honest end of what the interface can show. */
-function OrderChangePanel({ live, entered }) {
-  const [phase, setPhase] = useState('idle'); // idle | compose | sent
+/* `phase` is owned by the Discrepancy screen rather than by this component.
+   It has to be: once a request has been sent, the screen's standing "starting
+   is unavailable…" line is saying the same thing this alert says, one element
+   further down, and the screen needs to know that in order to drop it. */
+function OrderChangePanel({ live, entered, phase, setPhase }) {
   const uid = useId();
 
   if (phase === 'sent') {
@@ -250,71 +253,92 @@ function OrderChangePanel({ live, entered }) {
         <span className="shrink-0 mt-[2px]" style={{ color: 'var(--mf-info)' }}>
           <Icon name="clock" size={14} />
         </span>
-        <div>
-          <p className="text-[12.5px] font-semibold m-0" style={{ color: 'var(--mf-info)' }}>
-            Order change requested
-          </p>
-          <p aria-live="polite" className="text-[11.5px] leading-[1.5] mt-1 m-0" style={{ color: 'var(--mf-info)' }}>
-            Sent to {DOC.full} · {DOC.contact}. Starting stays unavailable until a revised order
-            arrives — a pending request is not an authorisation.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  if (phase === 'compose') {
-    return (
-      <div
-        className="rounded-[4px] p-3.5"
-        style={{ background: 'var(--mf-attn-bg)', border: '1px solid var(--mf-attn-line)' }}
-      >
-        <p id={`${uid}-t`} className="text-[12px] font-semibold m-0 mb-2.5" style={{ color: 'var(--mf-attn)' }}>
-          Request a revised order from {DOC.short}
+        {/* ONE paragraph, not a title and a body.
+            This block replaces a 42px button on a screen whose height is now
+            fixed, so every line it takes has to come from somewhere. As a
+            two-tier alert it was 117px and pushed the screen 43px past its
+            frame; as a single lead-in sentence it is 81px and fits with room to
+            spare. Nothing that matters was cut — the prescriber is named in the
+            sheet the reader just used, and the last clause, which is the whole
+            point of the component, is untouched: a pending request is not an
+            authorisation, and "Start infusion" stays disabled to prove it. */}
+        <p aria-live="polite" className="text-[11.5px] leading-[1.5] m-0" style={{ color: 'var(--mf-info)' }}>
+          <span className="font-semibold">Order change requested.</span>{' '}
+          Starting stays unavailable until a revised order arrives &mdash; a pending request is
+          not an authorisation.
         </p>
-        <dl className="flex flex-col gap-1 m-0 mb-3">
-          {[['Patient', P.name], ['Current order', ORDER.rate], ['Requested', `${entered} mL/hr`]].map(([k, v]) => (
-            <div key={k} className="flex items-baseline justify-between gap-3">
-              <dt className="text-[10px] uppercase" style={{ letterSpacing: '0.1em', color: 'var(--mf-attn)', opacity: 0.85 }}>{k}</dt>
-              <dd className="text-[12px] font-semibold tabular-nums m-0" style={{ color: 'var(--mf-attn)' }}>{v}</dd>
-            </div>
-          ))}
-        </dl>
-        <div className="grid grid-cols-2 gap-2.5">
-          <button
-            type="button"
-            className="mf-btn mf-btn--secondary"
-            style={{ minHeight: 40, fontSize: 12 }}
-            tabIndex={live ? 0 : -1}
-            onClick={live ? () => setPhase('idle') : undefined}
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            className="mf-btn mf-btn--primary"
-            style={{ minHeight: 40, fontSize: 12 }}
-            tabIndex={live ? 0 : -1}
-            onClick={live ? () => setPhase('sent') : undefined}
-          >
-            Send request
-          </button>
-        </div>
       </div>
     );
   }
 
+  /* ── The compose step is an OVERLAY, not an inline panel ──
+     It used to expand in place, which pushed the discrepancy screen from 542px
+     to 681px — the single largest height change in the whole flow, on the one
+     screen a reader is most likely to sit and read. A device screen is a fixed
+     piece of hardware; it does not grow a hundred and forty pixels because a
+     disclosure opened.
+
+     As a sheet it costs the screen no height at all, and it uses the same
+     in-screen overlay the escalation confirmation already uses — so a request
+     that leaves the device looks like the other thing on these screens that
+     leaves the device. */
   return (
-    <button
-      type="button"
-      className="mf-btn mf-btn--secondary w-full"
-      style={{ minHeight: 42, fontSize: 12.5 }}
-      tabIndex={live ? 0 : -1}
-      onClick={live ? () => setPhase('compose') : undefined}
-    >
-      <Icon name="certificate" size={13} />
-      Request order change
-    </button>
+    <>
+      <button
+        type="button"
+        className="mf-btn mf-btn--secondary w-full"
+        style={{ minHeight: 42, fontSize: 12.5 }}
+        tabIndex={live ? 0 : -1}
+        onClick={live ? () => setPhase('compose') : undefined}
+      >
+        <Icon name="certificate" size={13} />
+        Request order change
+      </button>
+
+      {phase === 'compose' && (
+        <div className="mf-overlay" role="dialog" aria-modal="true" aria-labelledby={`${uid}-t`}>
+          <div className="mf-overlay__panel">
+            <span className="flex items-center gap-2.5 mb-3">
+              <span style={{ color: 'var(--mf-attn)' }}><Icon name="certificate" size={16} /></span>
+              <span id={`${uid}-t`} className="text-[14px] font-semibold leading-tight" style={{ color: 'var(--mf-attn)' }}>
+                Request a revised order from {DOC.short}
+              </span>
+            </span>
+            <dl
+              className="flex flex-col gap-1.5 m-0 mb-4 pt-3"
+              style={{ borderTop: '1px solid var(--mf-line)' }}
+            >
+              {[['Patient', P.name], ['Current order', ORDER.rate], ['Requested', `${entered} mL/hr`]].map(([k, v]) => (
+                <div key={k} className="flex items-baseline justify-between gap-3">
+                  <dt className="text-[10px] uppercase" style={{ letterSpacing: '0.1em', color: 'var(--mf-muted)' }}>{k}</dt>
+                  <dd className="text-[12.5px] font-semibold tabular-nums m-0" style={{ color: 'var(--mf-ink)' }}>{v}</dd>
+                </div>
+              ))}
+            </dl>
+            <div className="grid grid-cols-2 gap-2.5">
+              <button
+                type="button"
+                className="mf-btn mf-btn--secondary"
+                style={{ minHeight: 40, fontSize: 12 }}
+                tabIndex={live ? 0 : -1}
+                onClick={live ? () => setPhase('idle') : undefined}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="mf-btn mf-btn--primary"
+                style={{ minHeight: 40, fontSize: 12 }}
+                tabIndex={live ? 0 : -1}
+                onClick={live ? () => setPhase('sent') : undefined}
+              >
+                Send request
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -427,8 +451,17 @@ function IdentityBar({ verified = true, compact = false, live = false }) {
           </span>
         </span>
       </div>
+        {/* THREE states, not two. "Verified" and "verified by reading the
+            wristband back by hand because the scanner would not read" are not
+            the same fact, and a bar that renders them identically has thrown
+            away the one piece of information a reviewer would want later. The
+            manual route is legitimate — it is not an error state — so it reads
+            as verified, in the same green, with the method appended rather than
+            a warning attached to it. */}
         {!compact && (
-          verified ? (
+          verified === 'manual' ? (
+            <Chip tone="done" shape="check">Verified &middot; manual</Chip>
+          ) : verified ? (
             <Chip tone="done" shape="check">Verified</Chip>
           ) : (
             <Chip tone="attn">Unverified</Chip>
@@ -634,11 +667,30 @@ function Dashboard({ live, onAction }) {
    the alternative has to be designed, not left to the user to improvise. */
 function Verify({ live, onAction, state }) {
   const done = state?.verified;
+  /* 'scan' until the reader says the scanner will not read. Local, like the
+     order-change panel: the prototype owns where the workflow goes, this owns
+     which of the two identity routes is on screen. */
+  const [mode, setMode] = useState('scan');
+  /* The two read-backs, ticked independently. Neither is pre-ticked and there
+     is no "check all". */
+  const [checks, setChecks] = useState({ dob: false, id: false });
+  const bothChecked = checks.dob && checks.id;
+
+  const manual = mode === 'manual' && !done;
+
   return (
     <div className="mf-screen">
       <IdentityBar verified={done} live={live} />
-      <ScreenTitle sub={done ? undefined : 'Confirm you are working with the correct patient before continuing.'}>
-        {done ? 'Patient identity verified' : 'Verify patient identity'}
+      <ScreenTitle
+        sub={
+          done
+            ? undefined
+            : manual
+              ? 'Read each value off the wristband and confirm it against the record.'
+              : 'Confirm you are working with the correct patient before continuing.'
+        }
+      >
+        {done ? 'Patient identity verified' : manual ? 'Confirm identity manually' : 'Verify patient identity'}
       </ScreenTitle>
 
       <div className="px-[18px] py-4 flex flex-col gap-3">
@@ -653,11 +705,50 @@ function Verify({ live, onAction, state }) {
               <StatusGlyph shape="check" size={14} />
             </span>
             <div>
-              <p className="text-[13.5px] font-semibold m-0" style={{ color: 'var(--mf-info)' }}>Identity verified</p>
+              <p className="text-[13.5px] font-semibold m-0" style={{ color: 'var(--mf-info)' }}>
+                {done === 'manual' ? 'Identity confirmed manually' : 'Identity verified'}
+              </p>
               <p className="text-[12.5px] leading-[1.55] mt-1 m-0" style={{ color: 'var(--mf-info)' }}>
-                Wristband matched to the assigned patient record.
+                {done === 'manual'
+                  ? 'Both values read back from the wristband and confirmed. Recorded as a manual check.'
+                  : 'Wristband matched to the assigned patient record.'}
               </p>
             </div>
+          </div>
+        ) : manual ? (
+          /* ── The designed alternative ──
+             Two separate confirmations, because the two values fail
+             differently: a date of birth is easy to mis-read and a patient ID
+             is easy to mis-transcribe. One combined "I confirm the patient"
+             tick would be a single acknowledgement standing in for two
+             distinct checks, which is the shape of control people learn to
+             clear without reading. */
+          <div className="flex flex-col gap-2">
+            {[
+              ['dob', 'Date of birth on the wristband matches'],
+              ['id', 'Patient ID on the wristband matches'],
+            ].map(([key, label]) => (
+              <label key={key} className={`mf-check ${checks[key] ? 'mf-check--on' : ''}`}>
+                <input
+                  type="checkbox"
+                  checked={checks[key]}
+                  tabIndex={live ? 0 : -1}
+                  onChange={live ? () => setChecks((c) => ({ ...c, [key]: !c[key] })) : undefined}
+                  readOnly={!live}
+                />
+                <span className="mf-check__box" aria-hidden="true">
+                  {checks[key] && <StatusGlyph shape="check" size={11} />}
+                </span>
+                <span className="mf-check__label">{label}</span>
+              </label>
+            ))}
+            {/* Says why the button is dead, next to the thing that will
+                enable it — the same rule the discrepancy screen follows. */}
+            {!bothChecked && (
+              <p className="text-[11.5px] leading-[1.45] mt-0.5 m-0" style={{ color: 'var(--mf-muted)' }}>
+                Both values must be confirmed before the workflow continues.
+              </p>
+            )}
           </div>
         ) : (
           <div
@@ -678,10 +769,27 @@ function Verify({ live, onAction, state }) {
             Continue to order
             <Icon name="arrow-right" size={14} />
           </Btn>
+        ) : manual ? (
+          <>
+            <Btn variant="secondary" live={live} onClick={() => { setChecks({ dob: false, id: false }); setMode('scan'); }}>
+              Back to scan
+            </Btn>
+            {/* Disabled until BOTH are ticked, and it says so rather than
+                sitting dead. Same rule as the discrepancy screen: a control
+                that will not act explains itself where it is. */}
+            <Btn variant="primary" live={live} disabled={!bothChecked} onClick={() => onAction('verify-manual')}>
+              Confirm identity
+            </Btn>
+          </>
         ) : (
           <>
             <Btn variant="primary" live={live} onClick={() => onAction('verify')}>Scan wristband</Btn>
-            <Btn variant="secondary" live={live} onClick={() => onAction('verify')}>Unable to scan</Btn>
+            {/* THIS DOES NOT VERIFY.
+                It used to call the same handler as "Scan wristband", which
+                meant declining to scan marked the patient verified — on the one
+                screen whose entire purpose is the identity gate. It now opens
+                the manual route, which still has to be completed. */}
+            <Btn variant="secondary" live={live} onClick={() => setMode('manual')}>Unable to scan</Btn>
           </>
         )}
       </Actions>
@@ -795,6 +903,7 @@ function Discrepancy({ live, onAction, state }) {
      heading saying they do not match. Falls back to the live rate, then to the
      seeded value for the static render in section 09. */
   const entered = state?.flaggedRate ?? state?.rate ?? SCENARIO.mistypedRate;
+  const [request, setRequest] = useState('idle'); // idle | compose | sent
   return (
     <div className="mf-screen">
       <IdentityBar live={live} />
@@ -848,10 +957,17 @@ function Discrepancy({ live, onAction, state }) {
           </div>
         </div>
 
-        {/* The disabled control explains itself in text, next to itself. */}
-        <p id="mf-start-why" className="text-[12px] leading-[1.5] mt-3.5 m-0" style={{ color: 'var(--mf-muted)' }}>
-          Starting is unavailable until the entered rate matches the order or the discrepancy is resolved.
-        </p>
+        {/* The disabled control explains itself in text, next to itself.
+            Dropped once a request has been sent, because the confirmation below
+            the buttons then carries the same statement in more specific terms
+            ("until a revised order arrives"). Two sentences saying starting is
+            unavailable, forty pixels apart, is not twice the clarity — and the
+            reason has to stay visible, not stay duplicated. */}
+        {request !== 'sent' && (
+          <p id="mf-start-why" className="text-[12px] leading-[1.5] mt-3.5 m-0" style={{ color: 'var(--mf-muted)' }}>
+            Starting is unavailable until the entered rate matches the order or the discrepancy is resolved.
+          </p>
+        )}
       </div>
 
       {/* Two exits, and neither of them is an override.
@@ -862,7 +978,7 @@ function Discrepancy({ live, onAction, state }) {
           <Btn variant="primary" live={live} onClick={() => onAction('back')}>Review settings</Btn>
           <Btn variant="primary" live={live} disabled>Start infusion</Btn>
         </div>
-        <OrderChangePanel live={live} entered={entered} />
+        <OrderChangePanel live={live} entered={entered} phase={request} setPhase={setRequest} />
       </div>
     </div>
   );
@@ -898,9 +1014,14 @@ function Confirm({ live, onAction, state }) {
         </div>
 
         <div className="flex flex-col gap-2 pt-1">
+          {/* Names the method, because the confirmation screen's job is to
+              restate what has actually happened rather than that a box was
+              ticked somewhere. */}
           <span className="flex items-center gap-2.5 text-[12.5px]" style={{ color: 'var(--mf-ink-2)' }}>
             <span style={{ color: 'var(--mf-run)' }}><StatusGlyph shape="check" size={13} /></span>
-            Patient identity verified
+            {state?.verified === 'manual'
+              ? 'Patient identity confirmed manually'
+              : 'Patient identity verified by scan'}
           </span>
           <span className="flex items-center gap-2.5 text-[12.5px]" style={{ color: 'var(--mf-ink-2)' }}>
             <span style={{ color: 'var(--mf-run)' }}><StatusGlyph shape="check" size={13} /></span>

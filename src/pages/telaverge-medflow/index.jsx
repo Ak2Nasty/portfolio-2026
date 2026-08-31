@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { motion, useScroll, useSpring } from 'framer-motion';
 import { useLenis } from 'lenis/react';
 import './medflow.css';
 
 import { CaseStudyHeader, SectionIndex, CaseStudyFooter } from './components/Chrome';
+import { PowerOnSelfTest } from './components/PowerOnSelfTest';
 import { Hero } from './components/Hero';
 import { WhyThisStudy, Scenario, HumanFactors } from './components/Context';
 import { UserNeeds, WorkflowAnalysis, RiskAnalysis } from './components/Analysis';
@@ -98,22 +98,12 @@ function useCaseStudyMetadata() {
   }, []);
 }
 
-/* ─── Scroll progress ────────────────────────────────────────────────────────
-   Reads page scroll directly and drives one hairline's scaleX, spring-smoothed
-   so it glides rather than stepping with each scroll event.
-
-   This is scroll-LINKED, and it is the only thing on the page that is: it has
-   no start, no end and no duration of its own, and it runs backwards when you
-   scroll up. That is what makes it a position readout rather than an animation
-   — the distinction every other moving thing on this page is on the other side
-   of. On a document this long it is also genuinely useful.
-
-   scaleX on a 2px element is compositor-only: no layout, no paint. */
-function ScrollProgress() {
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 90, damping: 26, mass: 0.3 });
-  return <motion.div className="mdf-progress" style={{ scaleX }} aria-hidden="true" />;
-}
+/* The scroll-progress hairline used to live here, as a fixed 2px bar pinned to
+   the top of the viewport. It has moved onto the header's own bottom edge — see
+   CaseStudyHeader. Pinned to the viewport it survived the header hiding on the
+   way down, which left an accent bar lying across the top of the content with
+   nothing attached to it, reading as a seek control rather than as a readout.
+   Attached to the header it hides and returns with the thing it belongs to. */
 
 export default function MedFlowPage() {
   const lenis = useLenis();
@@ -154,12 +144,13 @@ export default function MedFlowPage() {
         Skip to the case study
       </a>
 
-      <ScrollProgress />
+      <PowerOnSelfTest />
       <CaseStudyHeader />
       <SectionIndex />
 
-      {/* Clears the fixed header. */}
-      <main className="pt-[58px]">
+      {/* Clears the fixed header — which is two rows tall below sm, where it
+          carries the position readout that has no room beside the wordmark. */}
+      <main className="pt-[97px] sm:pt-[58px]">
         <Hero />
         <WhyThisStudy />
         <Scenario />

@@ -337,8 +337,14 @@ export function FinalInterface() {
 
         {/* The screen the study rests on, given its own row. */}
         {emphasis && (
+          /* mf-bleed: on a phone this box goes to the viewport edge, like the
+             prototype console. Inside the page's gutters it left the featured
+             device 285px wide — under the 300px line at which the field pairs
+             stack — so the one screen the study rests on was rendering 42px
+             narrower and 72px taller than the same screen in the gallery
+             immediately below it. */
           <div
-            className="mb-12 md:mb-16 p-5 md:p-8 rounded-[4px]"
+            className="mf-bleed mb-12 md:mb-16 p-5 md:p-8 rounded-[4px]"
             style={{ background: 'var(--mf-bg-alt)', border: '1px solid var(--mf-line-strong)' }}
           >
             <span className="flex items-center gap-2.5 mb-6">
