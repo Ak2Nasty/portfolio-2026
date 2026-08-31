@@ -676,9 +676,18 @@ export const SCREENS = [
    scanning problem rather than showing a single card. Reduced visual priority
    in the UI — they are context, not the task. */
 export const WARD = [
+  /* Each of these needs its OWN glyph, and two of them were wrong.
+     Both sat on `off`, which draws a pause bar — so the dashboard said a
+     finished infusion was paused, and said a patient with nothing prescribed
+     was paused too. Section 09 argues in writing that finished must not look
+     like paused, and the dashboard was quietly contradicting it three cards
+     down. A pause bar is a claim: something was running and was stopped. */
   { initials: 'JR', name: 'James Ruiz', room: 'Room 408', state: 'Infusion running', tone: 'run' },
-  { initials: 'AO', name: 'Amara Osei', room: 'Room 410', state: 'No active orders', tone: 'off' },
-  { initials: 'TL', name: 'Tomas Lind', room: 'Room 415', state: 'Infusion complete', tone: 'off' },
+  /* Nothing was ever running, so nothing is paused. A neutral dot, not a bar. */
+  { initials: 'AO', name: 'Amara Osei', room: 'Room 410', state: 'No active orders', tone: 'off', shape: 'dot' },
+  /* Ran to term. Its own tier, with the tick — the same one the completion
+     screen uses, because they are reporting the same thing. */
+  { initials: 'TL', name: 'Tomas Lind', room: 'Room 415', state: 'Infusion complete', tone: 'done' },
 ];
 
 /* ─── 11 · Design system ───────────────────────────────────────────────────── */

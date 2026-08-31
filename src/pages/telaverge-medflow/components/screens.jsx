@@ -620,7 +620,7 @@ function Dashboard({ live, onAction }) {
                 <span className="text-[11px] leading-tight mt-0.5" style={{ color: 'var(--mf-muted)' }}>{w.room}</span>
               </span>
             </div>
-            <Chip tone={w.tone}>{w.state}</Chip>
+            <Chip tone={w.tone} shape={w.shape}>{w.state}</Chip>
           </div>
         ))}
       </div>
