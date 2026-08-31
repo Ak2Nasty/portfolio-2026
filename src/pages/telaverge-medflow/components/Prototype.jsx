@@ -59,7 +59,7 @@ const FLOW = [
   { id: 'configure', label: 'Configure', note: 'The rate field is pre-filled with 50 mL/hr — a deliberate ten-fold entry slip.' },
   { id: 'discrepancy', label: 'Discrepancy', note: 'Progression is blocked. The entered rate does not match the order.' },
   { id: 'confirm', label: 'Confirm', note: 'A dedicated review stage immediately before a safety-significant action.' },
-  { id: 'active', label: 'Monitor', note: 'Infusion running. State, therapy and rate are all visible at once.' },
+  { id: 'active', label: 'Monitor', note: 'Infusion running. State, therapy and rate are all visible at once. Pause and detail are the device’s; the alarm is not, so it is raised from the control below.' },
   { id: 'alert', label: 'Alert', note: 'An occlusion has interrupted the infusion. Four signals, before colour is counted.' },
   { id: 'complete', label: 'Complete', note: 'Finished, and visibly distinct from paused or interrupted — its own state, glyph, and delivery summary.' },
 ];
@@ -177,7 +177,18 @@ export function Prototype() {
           setEvent('Simulated infusion started.');
           return advance('active');
 
+        /* Only the walkthrough control reaches here. The device's own buttons on
+           this screen — pause and view details — are the device's business and
+           are handled on the screen itself. They used to call this handler, both
+           of them, which is why pressing "View details" produced an occlusion
+           alarm.
+
+           An occlusion is not a thing a nurse does. It is a condition the device
+           detects, so the control that raises it is labelled as the prototype's
+           and sits beside the device rather than on it. */
         case 'active':
+          if (action !== 'event') return undefined;
+          setEvent('Occlusion detected. The device has stopped delivery and raised an alarm.');
           return advance('alert');
 
         case 'alert':
@@ -516,6 +527,42 @@ export function Prototype() {
                       There is no override, and the rail cannot skip past it. Go back and change
                       the rate to {SCENARIO.correctRate} to continue &mdash; which is the design
                       response to R-02 being demonstrated rather than described.
+                    </p>
+                  </div>
+                )}
+
+                {/* ── The one control that belongs to the prototype, not the
+                    device ──
+                    An occlusion is a condition the pump detects, not an action
+                    a nurse performs, so there is no honest button for it on the
+                    device. It used to be triggered by the device's own "Pause
+                    infusion" and "View details" buttons, which both called the
+                    same handler — so reading the screen caused an alarm.
+
+                    Out here it is labelled as what it is, in the readout column
+                    where the walkthrough's own commentary lives, visually
+                    quieter than anything on the device. */}
+                {stepId === 'active' && (
+                  <div className="mt-3.5 pt-3.5" style={{ borderTop: '1px solid var(--mf-line)' }}>
+                    <span
+                      className="font-['Outfit'] text-[10px] font-semibold uppercase block mb-2.5"
+                      style={{ letterSpacing: '0.14em', color: 'var(--mf-muted)' }}
+                    >
+                      Walkthrough control
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => onAction('event')}
+                      className="mf-btn mf-btn--secondary w-full"
+                      style={{ fontSize: 12 }}
+                    >
+                      <Icon name="bell-alert" size={13} />
+                      Simulate an occlusion alarm
+                    </button>
+                    <p className="font-['Outfit'] text-[12px] leading-[1.5] mt-2.5 m-0" style={{ color: 'var(--mf-muted)' }}>
+                      The device&rsquo;s own buttons pause the infusion and open its detail view.
+                      Neither of them can raise an alarm, because an occlusion is something the
+                      pump detects rather than something the nurse does.
                     </p>
                   </div>
                 )}

@@ -556,6 +556,60 @@ function NumericField({ label, value, unit, onChange, error, ok, live, id }) {
   );
 }
 
+/* ── In-screen detail sheet ───────────────────────────────────────────────────
+   What "View details" and "View summary" open.
+
+   THE BUG THIS EXISTS TO FIX: both of those buttons used to call onAction('next')
+   — the same handler as the primary control beside them — so "View details" on
+   the monitor screen produced an occlusion alarm, and "View details" on the
+   alert screen ACKNOWLEDGED the alarm. A read-only control performing a
+   safety-significant action is the exact failure this study is written about,
+   and it was sitting in the study. It is the same defect as the verify screen's
+   "Unable to scan", which called the handler that marked the patient verified.
+
+   A detail view is read-only by definition, so this changes no state, advances
+   no step and offers exactly one way out. It uses the same overlay as the
+   escalation confirmation and the order-change request, so everything that
+   opens over the screen looks like the same kind of thing. */
+function DetailSheet({ title, icon, tone = 'var(--mf-accent)', rows, note, live, onClose }) {
+  const uid = useId();
+  return (
+    <div className="mf-overlay" role="dialog" aria-modal="true" aria-labelledby={`${uid}-t`}>
+      <div className="mf-overlay__panel">
+        <span className="flex items-center gap-2.5 mb-3">
+          <span style={{ color: tone }}><Icon name={icon} size={16} /></span>
+          <span id={`${uid}-t`} className="text-[14px] font-semibold leading-tight" style={{ color: tone }}>
+            {title}
+          </span>
+        </span>
+
+        <dl className="flex flex-col gap-1.5 m-0 pt-3" style={{ borderTop: '1px solid var(--mf-line)' }}>
+          {rows.map(([k, v]) => (
+            <div key={k} className="flex items-baseline justify-between gap-3">
+              <dt className="text-[10px] uppercase shrink-0" style={{ letterSpacing: '0.1em', color: 'var(--mf-muted)' }}>{k}</dt>
+              <dd className="text-[12.5px] font-medium tabular-nums m-0 text-right" style={{ color: 'var(--mf-ink)' }}>{v}</dd>
+            </div>
+          ))}
+        </dl>
+
+        {note && (
+          <p className="text-[11.5px] leading-[1.45] mt-3 m-0" style={{ color: 'var(--mf-muted)' }}>{note}</p>
+        )}
+
+        <button
+          type="button"
+          className="mf-btn mf-btn--secondary w-full mt-4"
+          style={{ minHeight: 40, fontSize: 12 }}
+          tabIndex={live ? 0 : -1}
+          onClick={live ? onClose : undefined}
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  );
+}
+
 /* Actions row. `live` gates both the handler and the tab order. */
 function Actions({ children }) {
   return <div className="mt-auto px-[18px] pb-[18px] pt-4 grid grid-cols-2 gap-2.5">{children}</div>;
@@ -1041,14 +1095,39 @@ function Confirm({ live, onAction, state }) {
 /* ═══ 07 · Active infusion ═════════════════════════════════════════════════════
    State first, then therapy, then rate, then progress. The order is the
    priority order a nurse walking up to the device needs — UN-05. */
-function Active({ live, onAction, state }) {
+/* No `onAction`, deliberately. This screen has no control that advances the
+   workflow: pause and detail are the device's own, and the occlusion that moves
+   the walkthrough on is raised from the prototype's control beside the device,
+   because an occlusion is a condition the pump detects rather than an action a
+   nurse takes. */
+function Active({ live, state }) {
   const rate = state?.rate ?? SCENARIO.correctRate;
+  /* Both of these are the device's own business and neither of them is the
+     workflow. Pausing is a state this screen holds; the details are a sheet it
+     opens. Neither reaches the prototype's state machine, which is why neither
+     can produce an occlusion any more. */
+  const [paused, setPaused] = useState(false);
+  const [confirmPause, setConfirmPause] = useState(false);
+  const [details, setDetails] = useState(false);
+  const uid = useId();
+
   return (
     <div className="mf-screen">
       <IdentityBar live={live} />
 
       <div className="px-[18px] pt-[18px] pb-4">
-        <Chip tone="run">Infusion active</Chip>
+        {/* PAUSED BY THE NURSE IS NOT INTERRUPTED BY THE DEVICE.
+            Both are "not currently delivering", and an interface that lets them
+            share a look invites a deliberate pause to be investigated as a fault
+            and a fault to be left alone as a pause. So this is the off tone with
+            a pause glyph, and the occlusion on the next screen keeps the
+            critical tone and its octagon. Same argument as the completion
+            screen, one state further along. */}
+        {paused ? (
+          <Chip tone="off" shape="pause">Infusion paused</Chip>
+        ) : (
+          <Chip tone="run">Infusion active</Chip>
+        )}
 
         <div className="flex items-baseline gap-2.5 mt-4">
           <span className="text-[15px] font-medium" style={{ color: 'var(--mf-ink-2)' }}>{ORDER.medication}</span>
@@ -1072,11 +1151,14 @@ function Active({ live, onAction, state }) {
           role="img"
           aria-label={`${TIMING.percentDelivered} percent delivered. ${TIMING.remainingMl} millilitres remaining of ${TIMING.volume} millilitres.`}
         >
+          {/* The bar stops moving when the infusion is paused, and so does the
+              countdown below it. A pump that keeps animating flow while it has
+              stopped delivering is telling the room something untrue. */}
           <div
-            className={`mf-bar__fill ${live ? 'mf-bar__fill--live' : ''}`}
+            className={`mf-bar__fill ${live && !paused ? 'mf-bar__fill--live' : ''}`}
             style={{ '--mf-p': `${TIMING.percentDelivered}%`, '--mf-p2': `${TIMING.percentDelivered + 9}%` }}
           >
-            {live && <span className="mf-bar__flow" aria-hidden="true" />}
+            {live && !paused && <span className="mf-bar__flow" aria-hidden="true" />}
           </div>
         </div>
         <div className="flex items-center justify-between gap-3 mt-2.5 text-[11.5px]" style={{ color: 'var(--mf-muted)' }}>
@@ -1101,7 +1183,7 @@ function Active({ live, onAction, state }) {
                 make green mean a fourth thing, which is how a colour system
                 stops carrying meaning. */}
             <span className="text-[16px] font-semibold" style={{ color: 'var(--mf-ink)' }}>
-              <Countdown live={live} seconds={TIMING.remainingSeconds} />
+              <Countdown live={live && !paused} seconds={TIMING.remainingSeconds} />
             </span>
             <span className="sr-only">{TIMING.remainingDuration} remaining</span>
           </span>
@@ -1109,9 +1191,84 @@ function Active({ live, onAction, state }) {
       </div>
 
       <Actions>
-        <Btn variant="secondary" live={live} onClick={() => onAction('next')}>Pause infusion</Btn>
-        <Btn variant="primary" live={live} onClick={() => onAction('next')}>View details</Btn>
+        {/* Neither of these calls onAction. They used to — both of them, to the
+            same handler — which is why pressing "View details" produced an
+            occlusion alarm. The occlusion is an EVENT the device detects, not
+            something a nurse can press a button to cause, so in the prototype it
+            arrives from a walkthrough control beside the device rather than from
+            the device itself. */}
+        {/* Pausing CONFIRMS; resuming does not.
+            They are not symmetrical acts. Pausing stops the patient receiving
+            the medication and is easy to do by a mis-grab while carrying
+            something; resuming restores the therapy the order already
+            authorised. Friction goes where being wrong is expensive and nowhere
+            else — the same trade the escalation control and the discrepancy
+            screen make. */}
+        <Btn
+          variant="secondary"
+          live={live}
+          onClick={() => (paused ? setPaused(false) : setConfirmPause(true))}
+        >
+          {paused ? 'Resume infusion' : 'Pause infusion'}
+        </Btn>
+        <Btn variant="primary" live={live} onClick={() => setDetails(true)}>View details</Btn>
       </Actions>
+
+      {confirmPause && (
+        <div className="mf-overlay" role="dialog" aria-modal="true" aria-labelledby={`${uid}-pause`}>
+          <div className="mf-overlay__panel">
+            <span className="flex items-center gap-2.5 mb-3">
+              <span style={{ color: 'var(--mf-attn)' }}><StatusGlyph shape="pause" size={15} /></span>
+              <span id={`${uid}-pause`} className="text-[15px] font-semibold" style={{ color: 'var(--mf-attn)' }}>
+                Pause the infusion?
+              </span>
+            </span>
+            <p className="text-[13px] leading-[1.6] m-0 mb-5" style={{ color: 'var(--mf-ink-2)' }}>
+              Delivery stops until you resume it, and the patient stops receiving {ORDER.medication}.
+              The device will show a paused state rather than an alarm.
+            </p>
+            <div className="grid grid-cols-2 gap-2.5">
+              <button
+                type="button"
+                className="mf-btn mf-btn--secondary"
+                style={{ minHeight: 40, fontSize: 12 }}
+                tabIndex={live ? 0 : -1}
+                onClick={live ? () => setConfirmPause(false) : undefined}
+              >
+                Keep infusing
+              </button>
+              <button
+                type="button"
+                className="mf-btn mf-btn--critical"
+                style={{ minHeight: 40, fontSize: 12 }}
+                tabIndex={live ? 0 : -1}
+                onClick={live ? () => { setPaused(true); setConfirmPause(false); } : undefined}
+              >
+                Pause infusion
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {details && (
+        <DetailSheet
+          title="Infusion detail"
+          icon="pump"
+          live={live}
+          onClose={() => setDetails(false)}
+          rows={[
+            ['Medication', ORDER.medication],
+            ['Concentration', ORDER.concentration],
+            ['Rate', `${rate} mL/hr`],
+            ['Delivered', `${TIMING.deliveredMl} of ${TIMING.volume} mL`],
+            ['Started', TIMING.startedAt],
+            ['Est. complete', TIMING.completesAt],
+            ['State', paused ? 'Paused' : 'Delivering'],
+          ]}
+          note="Read-only. Nothing on this sheet changes the infusion."
+        />
+      )}
     </div>
   );
 }
@@ -1125,6 +1282,7 @@ function Active({ live, onAction, state }) {
    established clinical procedure". Inventing troubleshooting steps would be
    inventing clinical guidance, which this study has no basis to do. */
 function Alert({ live, onAction }) {
+  const [details, setDetails] = useState(false);
   return (
     <div className="mf-screen">
       <IdentityBar live={live} />
@@ -1148,7 +1306,12 @@ function Alert({ live, onAction }) {
             <StatusGlyph shape="octagon" size={15} />
           </span>
           <div>
-            <p className="text-[13px] font-semibold m-0" style={{ color: 'var(--mf-crit)' }}>Infusion paused</p>
+            {/* "Delivery stopped by the device", not "Infusion paused". The
+                monitor screen now has a real user-initiated pause, and the whole
+                point of that state is that it is not this one — reusing the word
+                here would put the same label on the thing the nurse did and the
+                thing the device did to her. */}
+            <p className="text-[13px] font-semibold m-0" style={{ color: 'var(--mf-crit)' }}>Delivery stopped by the device</p>
             <p className="text-[12.5px] leading-[1.55] mt-1 m-0" style={{ color: 'var(--mf-crit)' }}>
               Check the infusion line and patient according to established clinical procedure.
             </p>
@@ -1157,9 +1320,32 @@ function Alert({ live, onAction }) {
       </div>
 
       <Actions>
-        <Btn variant="secondary" live={live} onClick={() => onAction('next')}>View details</Btn>
+        {/* "View details" used to call the same handler as "Acknowledge alert",
+            so reading the alarm acknowledged it. Acknowledging an alarm is a
+            record that a clinician saw it and took it on; a read-only sheet is
+            not that, and the two must never share a control. */}
+        <Btn variant="secondary" live={live} onClick={() => setDetails(true)}>View details</Btn>
         <Btn variant="critical" live={live} onClick={() => onAction('next')}>Acknowledge alert</Btn>
       </Actions>
+
+      {details && (
+        <DetailSheet
+          title="Alarm detail"
+          icon="bell-alert"
+          tone="var(--mf-crit)"
+          live={live}
+          onClose={() => setDetails(false)}
+          rows={[
+            ['Condition', 'Occlusion detected'],
+            ['Patient', P.name],
+            ['Medication', ORDER.medication],
+            ['Delivery', 'Stopped'],
+            ['Delivered', `${TIMING.deliveredMl} of ${TIMING.volume} mL`],
+            ['Detected', TIMING.nowAt],
+          ]}
+          note="Read-only. Viewing an alarm does not acknowledge it."
+        />
+      )}
     </div>
   );
 }
@@ -1179,6 +1365,7 @@ function Alert({ live, onAction }) {
 function Complete({ live, onAction, state }) {
   const rate = state?.rate ?? SCENARIO.correctRate;
   const volume = state?.volume ?? '100';
+  const [summary, setSummary] = useState(false);
   return (
     <div className="mf-screen">
       <IdentityBar live={live} />
@@ -1235,9 +1422,32 @@ function Complete({ live, onAction, state }) {
       </div>
 
       <Actions>
-        <Btn variant="secondary" live={live} onClick={() => onAction('next')}>View summary</Btn>
+        {/* Same fix as the two screens before it: "View summary" shared a
+            handler with "Acknowledge", so reading the record cleared it — and in
+            the prototype, reset the whole walkthrough. */}
+        <Btn variant="secondary" live={live} onClick={() => setSummary(true)}>View summary</Btn>
         <Btn variant="primary" live={live} onClick={() => onAction('next')}>Acknowledge</Btn>
       </Actions>
+
+      {summary && (
+        <DetailSheet
+          title="Delivery record"
+          icon="clipboard-check"
+          tone="var(--mf-run)"
+          live={live}
+          onClose={() => setSummary(false)}
+          rows={[
+            ['Medication', ORDER.medication],
+            ['Delivered', `${volume} of ${volume} mL`],
+            ['Rate', `${rate} mL/hr`],
+            ['Started', TIMING.startedAt],
+            ['Finished', TIMING.finishedAt],
+            ['Duration', TIMING.totalDuration],
+            ['Identity', state?.verified === 'manual' ? 'Manual read-back' : 'Wristband scan'],
+          ]}
+          note="Read-only. Acknowledging is a separate, deliberate action."
+        />
+      )}
     </div>
   );
 }
