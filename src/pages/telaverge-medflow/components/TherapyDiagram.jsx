@@ -39,30 +39,42 @@ function Apparatus() {
       <path d="M95 6v10" stroke={line} />
       <path d="M83 6h24" stroke={line} />
 
-      {/* ── Bag, with a fluid level ── */}
-      <rect x="66" y="16" width="58" height="70" rx="5" stroke={line} />
-      <path d="M66 34h58" stroke={line} strokeDasharray="3 3" opacity="0.7" />
-      <rect x="67" y="35" width="56" height="50" rx="4" fill="var(--mf-accent-bg)" stroke="none" />
-      <text x="95" y="60" textAnchor="middle" fontSize="11" fontWeight="600" fill={accent} fontFamily="Outfit, sans-serif">
-        100 mL
-      </text>
-      <text x="95" y="74" textAnchor="middle" fontSize="9.5" fill={accent} fontFamily="Outfit, sans-serif" opacity="0.85">
-        10 mg/mL
-      </text>
+      {/* ── The bag ──
+          Outlined and filled at 40%, not solid. A solid block reads as a
+          battery; a translucent fill with air above it and a drawn surface
+          reads as liquid you can see the level of, which is what an IV bag
+          actually looks like and what makes the drain legible.
+
+          The fill is the SAME colour as the drop and the fluid collecting in
+          the chamber — it is one liquid, so it is one colour. */}
+      <rect x="66" y="16" width="58" height="70" rx="5" stroke={line} fill="var(--mf-surface)" />
+      <g className="mf-bagfluid">
+        <rect x="67" y="34" width="56" height="51" rx="3" fill={accent} opacity="0.4" stroke="none" />
+      </g>
+      {/* The surface, riding down on the same clock as the fill. */}
+      <path className="mf-bagline" d="M67 34h56" stroke={accent} strokeWidth="1.5" opacity="0.9" />
 
       {/* ── Neck into the drip chamber ── */}
       <path d="M95 86v10" stroke={line} />
 
-      {/* ── Drip chamber. The droplet lives here. ── */}
-      <rect x="83" y="96" width="24" height="42" rx="4" stroke={line} />
-      {/* the spout the drop forms on */}
+      {/* ── Drip chamber ── */}
+      <rect x="83" y="96" width="24" height="42" rx="4" stroke={line} fill="var(--mf-surface)" />
       <path d="M95 100v4" stroke={line} />
       <circle className="mf-drop" cx="95" cy="108" r="3.2" fill={accent} />
-      {/* collected fluid at the bottom of the chamber */}
-      <path d="M84 131h22v3a3 3 0 01-3 3h-16a3 3 0 01-3-3v-3z" fill="var(--mf-accent-bg)" stroke="none" />
+      {/* The drop's lower edge lands at y=131.2; this surface sits at y=131.
+          It swells as the drop arrives, on the same clock, so the landing is
+          one event rather than two things happening near each other. */}
+      <path
+        className="mf-chamberfluid"
+        d="M84 131h22v3a3 3 0 01-3 3h-16a3 3 0 01-3-3v-3z"
+        fill={accent}
+        opacity="0.4"
+        stroke="none"
+      />
 
-      {/* ── Tube down to the pump ── */}
+      {/* ── Chamber to pump, with a bolus travelling it ── */}
       <path d="M95 138v22" stroke={line} />
+      <rect className="mf-flow-a" x="93.4" y="139" width="3.2" height="9" rx="1.6" fill={accent} />
 
       {/* ── The pump. The rate lives here, and it is the only accented part. ── */}
       <rect x="48" y="160" width="94" height="56" rx="5" stroke={accent} strokeWidth="2" fill="var(--mf-accent-bg)" />
@@ -76,8 +88,9 @@ function Apparatus() {
         PUMP
       </text>
 
-      {/* ── Line down to the patient ── */}
+      {/* ── Pump to patient, with the second bolus ── */}
       <path d="M95 216v34" stroke={line} />
+      <rect className="mf-flow-b" x="93.4" y="217" width="3.2" height="9" rx="1.6" fill={accent} />
 
       {/* ── The arm and cannula ── */}
       <path d="M40 262h110a12 12 0 010 24H40a12 12 0 010-24z" stroke={line} fill="var(--mf-bg-alt)" />
@@ -201,8 +214,18 @@ export function TherapyDiagram() {
       {/* ── The apparatus ── */}
       <div className="flex flex-col items-center lg:items-start">
         <Apparatus />
+        {/* The bag's own figures sit BELOW it, not inside it. With the level
+            falling they would be crossed by the fluid surface, and a label a
+            liquid line wipes through is worse than a label placed once,
+            clearly, out of the way. */}
         <span
-          className="font-['Outfit'] text-[10px] uppercase mt-4 text-center lg:text-left"
+          className="font-['Outfit'] text-[12px] font-semibold mt-3 text-center lg:text-left"
+          style={{ color: 'var(--mf-ink)' }}
+        >
+          100 mL bag &middot; 10 mg/mL
+        </span>
+        <span
+          className="font-['Outfit'] text-[10px] uppercase mt-2 text-center lg:text-left"
           style={{ letterSpacing: '0.14em', color: 'var(--mf-muted)' }}
         >
           Schematic &middot; not a real device
