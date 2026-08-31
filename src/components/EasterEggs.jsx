@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLocation } from "react-router-dom";
 import { SnakeGame } from "./SnakeGame";
 
 // ─────────────────────────────────────────────
@@ -185,13 +186,15 @@ function IdleToast() {
 // ─────────────────────────────────────────────
 // Tab Title Change
 // ─────────────────────────────────────────────
+const TEASER_TITLE = "Come back... 👀";
+
 function TabTitleChange() {
   useEffect(() => {
     const originalTitle = document.title;
 
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        document.title = "Come back... 👀";
+        document.title = TEASER_TITLE;
       } else {
         document.title = originalTitle;
       }
@@ -200,7 +203,11 @@ function TabTitleChange() {
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      document.title = originalTitle;
+      // Only undo OUR OWN change. This used to restore `originalTitle`
+      // unconditionally, which meant unmounting on a route that sets its own
+      // title (the unlisted case studies) reset the tab to the homepage's
+      // title a beat after that route had correctly set its own.
+      if (document.title === TEASER_TITLE) document.title = originalTitle;
     };
   }, []);
 
@@ -234,8 +241,25 @@ function ConsoleEasterEgg() {
 // ─────────────────────────────────────────────
 // Master Export
 // ─────────────────────────────────────────────
+// ─────────────────────────────────────────────
+// Routes the eggs stay off
+//
+// The unlisted application studies are documents sent to a named reader, not
+// parts of the site. An idle toast reading "Still reading? I appreciate that"
+// popping up over a medical-device safety case study — or a hijacked tab title,
+// or a custom right-click menu offering a game — reads as a lapse in judgement
+// to exactly the audience those pages exist for.
+//
+// This gates only the VISIBLE eggs. The console message is left on every route:
+// it costs nothing, it is invisible unless you go looking, and anyone who opens
+// devtools on a portfolio has opted in.
+// ─────────────────────────────────────────────
+const NO_EGG_ROUTES = ["/chanel-wfj", "/telaverge-medflow"];
+
 export function EasterEggs() {
   const [gameOpen, setGameOpen] = useState(false);
+  const location = useLocation();
+  const quiet = NO_EGG_ROUTES.includes(location.pathname);
 
   // Lets the footer trigger open the game without prop drilling
   useEffect(() => {
@@ -244,13 +268,30 @@ export function EasterEggs() {
     return () => window.removeEventListener("open-snake-game", open);
   }, []);
 
+  // A game left open when the reader navigates onto a quiet route unmounts with
+  // the rest of the eggs, but `gameOpen` would stay true and spring it back the
+  // moment they navigated off again.
+  //
+  // Adjusted during render rather than in an effect: this is React's documented
+  // pattern for "reset some state when a prop changes", and it avoids the extra
+  // render pass an effect would cost.
+  const [lastQuiet, setLastQuiet] = useState(quiet);
+  if (lastQuiet !== quiet) {
+    setLastQuiet(quiet);
+    if (quiet && gameOpen) setGameOpen(false);
+  }
+
   return (
     <>
       <ConsoleEasterEgg />
-      <TabTitleChange />
-      <IdleToast />
-      <ContextMenu onPlayGame={() => setGameOpen(true)} gameOpen={gameOpen} />
-      <SnakeGame isOpen={gameOpen} onClose={() => setGameOpen(false)} />
+      {!quiet && (
+        <>
+          <TabTitleChange />
+          <IdleToast />
+          <ContextMenu onPlayGame={() => setGameOpen(true)} gameOpen={gameOpen} />
+          <SnakeGame isOpen={gameOpen} onClose={() => setGameOpen(false)} />
+        </>
+      )}
     </>
   );
 }
