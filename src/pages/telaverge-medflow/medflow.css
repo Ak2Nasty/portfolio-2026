@@ -975,33 +975,17 @@
 }
 
 /* ─── Therapy diagram ────────────────────────────────────────────────────────
-   The one place besides the progress bar where motion carries meaning. An
-   infusion is DEFINED by being continuous, and a still picture of a pump shows
-   a box — the thing separating an infusion from an injection is precisely what
-   a still cannot show.
+   The drip chamber, which is the one place on this page where motion carries
+   meaning rather than decorating. An infusion is DEFINED by being continuous —
+   a still picture of a pump shows a box, and the thing that separates an
+   infusion from an injection is precisely the part a still picture cannot show.
 
-   Three movements, one system, all on the same 2.8s period so they read as one
-   fluid path rather than three loops that happen to share a diagram:
+   One droplet, on a slow loop, falling inside the chamber. It is not a
+   simulation and it is not tied to the 5 mL/hr figure; it is the visual
+   shorthand every drip chamber in the world already uses.
 
-     1. a drop forms and falls in the chamber      (no delay)
-     2. a bolus travels chamber → pump             (delayed 0.9s)
-     3. a bolus travels pump → patient             (delayed 1.6s)
-
-   The staggered delays are what make it a sequence rather than three things
-   blinking together: fluid leaves the chamber, reaches the pump, then reaches
-   the patient, in that order.
-
-   Fourth and much slower: the bag drains, 26s for the whole bag, so the loop's
-   single reset is rare enough to read as a diagram restarting rather than as a
-   bag refilling itself.
-
-   ── Why a bolus and not a dashed line ──
-   The first attempt animated stroke-dashoffset along the tube. A moving dash
-   pattern on a 1.5px line does not read as fluid; it reads as a dashed border
-   somebody forgot to make solid. A single rounded capsule travelling the length
-   reads as something moving through a tube, which is the thing being depicted. */
-
-/* ── The drop in the chamber ── */
+   transform-box: fill-box so the translate is relative to the droplet's own
+   box rather than the SVG user space. */
 @keyframes mdf-drip {
   0%   { transform: translateY(0);     opacity: 0; }
   8%   { transform: translateY(0);     opacity: 1; }
@@ -1015,80 +999,17 @@
   animation: mdf-drip 2.8s cubic-bezier(0.5, 0, 0.85, 0.45) infinite;
 }
 
-/* ── The fluid in the chamber answers the drop ──
-   The drop was landing on a surface that never moved, so the two read as two
-   separate things sharing a box rather than as one event. Measured: the drop's
-   lower edge finishes at y=131.2 and the collected fluid's surface sits at
-   y=131 — it lands exactly on the surface, and then nothing happened.
-
-   The rise peaks at 56%, immediately after the drop arrives at 48% and fades
-   between 48 and 54%. Same 2.8s clock, so the swell can never drift out of
-   phase with the drop that causes it. Anchored to the bottom edge, so the
-   surface rises and the base stays put. */
-@keyframes mdf-chamber-fluid {
-  0%,  46%  { transform: scaleY(1); }
-  56%       { transform: scaleY(1.22); }
-  74%, 100% { transform: scaleY(1); }
-}
-.mdf .mf-chamberfluid {
-  transform-box: fill-box;
-  transform-origin: center bottom;
-  animation: mdf-chamber-fluid 2.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-}
-
-/* ── Boluses travelling the two tube runs ──
-   Distances match the paths exactly: 22px chamber-to-pump, 34px
-   pump-to-patient. Linear easing, because fluid under a pump does not
-   accelerate — it is metered, which is the entire point of the device. */
-@keyframes mdf-flow-short {
-  0%   { transform: translateY(0);    opacity: 0; }
-  14%  { opacity: 0.9; }
-  86%  { opacity: 0.9; }
-  100% { transform: translateY(22px); opacity: 0; }
-}
-@keyframes mdf-flow-long {
-  0%   { transform: translateY(0);    opacity: 0; }
-  10%  { opacity: 0.9; }
-  90%  { opacity: 0.9; }
-  100% { transform: translateY(34px); opacity: 0; }
-}
-.mdf .mf-flow-a,
-.mdf .mf-flow-b { transform-box: fill-box; transform-origin: center; }
-.mdf .mf-flow-a { animation: mdf-flow-short 2.8s linear 0.9s infinite; }
-.mdf .mf-flow-b { animation: mdf-flow-long  2.8s linear 1.6s infinite; }
-
-/* ── The bag emptying ──
-   scaleY anchored to the bottom edge, so the surface falls and the base stays
-   put — which is how a bag actually empties. The drawn surface line rides down
-   with it on the same clock. */
-@keyframes mdf-drain      { from { transform: scaleY(1); }      to { transform: scaleY(0.3); } }
-@keyframes mdf-drain-line { from { transform: translateY(0); }  to { transform: translateY(35px); } }
-.mdf .mf-bagfluid {
-  transform-box: fill-box;
-  transform-origin: center bottom;
-  animation: mdf-drain 26s linear infinite;
-}
-.mdf .mf-bagline {
-  transform-box: fill-box;
-  animation: mdf-drain-line 26s linear infinite;
-}
-
-/* The global reduced-motion rule collapses durations to 0.001ms, which would
-   freeze each of these on its FINAL keyframe — an empty bag, a vanished drop,
-   invisible boluses. Restored explicitly to a sensible still: a full bag, a
-   drop in the chamber, no boluses. Nothing here carries information the static
-   state loses. */
+/* The global reduced-motion rule below collapses every animation to 0.001ms,
+   which would freeze the droplet on its final keyframe — opacity 0, invisible.
+   This restores it as a static droplet sitting in the chamber, so the diagram
+   still reads as a drip rather than as an empty tube. !important because the
+   global rule uses it too. */
 @media (prefers-reduced-motion: reduce) {
   .mdf .mf-drop {
     animation: none !important;
     opacity: 1 !important;
     transform: translateY(10px);
   }
-  .mdf .mf-flow-a,
-  .mdf .mf-flow-b { animation: none !important; opacity: 0 !important; }
-  .mdf .mf-bagfluid,
-  .mdf .mf-bagline,
-  .mdf .mf-chamberfluid { animation: none !important; transform: none !important; }
 }
 
 /* ─── Prototype console ──────────────────────────────────────────────────────
