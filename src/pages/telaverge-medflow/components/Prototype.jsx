@@ -59,7 +59,7 @@ const FLOW = [
   { id: 'configure', label: 'Configure', note: 'The rate field is pre-filled with 50 mL/hr — a deliberate ten-fold entry slip.' },
   { id: 'discrepancy', label: 'Discrepancy', note: 'Progression is blocked. The entered rate does not match the order.' },
   { id: 'confirm', label: 'Confirm', note: 'A dedicated review stage immediately before a safety-significant action.' },
-  { id: 'active', label: 'Monitor', note: 'Infusion running. State, therapy and rate are all visible at once. Pause and detail are the device’s; the alarm is not, so it is raised from the control below.' },
+  { id: 'active', label: 'Monitor', note: 'Infusion running. State, therapy and rate are all visible at once. Two things can happen next — it is interrupted, or it finishes — and both are raised below, because neither is something the nurse does.' },
   { id: 'alert', label: 'Alert', note: 'An occlusion has interrupted the infusion. Four signals, before colour is counted.' },
   { id: 'complete', label: 'Complete', note: 'Finished, and visibly distinct from paused or interrupted — its own state, glyph, and delivery summary.' },
 ];
@@ -187,6 +187,15 @@ export function Prototype() {
            detects, so the control that raises it is labelled as the prototype's
            and sits beside the device rather than on it. */
         case 'active':
+          /* TWO WAYS OUT OF THE MONITOR SCREEN, and they are the two things that
+             can actually happen to a running infusion: something interrupts it,
+             or it finishes. Before this there was only the alarm, which made the
+             interrupted path compulsory and left no way to see a therapy simply
+             run to term. */
+          if (action === 'finish') {
+            setEvent('Infusion ran to term without interruption. 100 mL delivered.');
+            return advance('complete');
+          }
           if (action !== 'event') return undefined;
           setEvent('Occlusion detected. The device has stopped delivery and raised an alarm.');
           return advance('alert');
@@ -550,19 +559,36 @@ export function Prototype() {
                     >
                       Walkthrough control
                     </span>
-                    <button
-                      type="button"
-                      onClick={() => onAction('event')}
-                      className="mf-btn mf-btn--secondary w-full"
-                      style={{ fontSize: 12 }}
-                    >
-                      <Icon name="bell-alert" size={13} />
-                      Simulate an occlusion alarm
-                    </button>
+                    {/* The two things that can happen to a running infusion.
+                        Both are events rather than actions, which is why they
+                        are here and not on the device: a nurse cannot press a
+                        button to cause an occlusion, and she cannot press one to
+                        make the last 82 mL arrive early either. */}
+                    <div className="flex flex-col gap-2">
+                      <button
+                        type="button"
+                        onClick={() => onAction('event')}
+                        className="mf-btn mf-btn--secondary w-full"
+                        style={{ fontSize: 12 }}
+                      >
+                        <Icon name="bell-alert" size={13} />
+                        Simulate an occlusion alarm
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => onAction('finish')}
+                        className="mf-btn mf-btn--secondary w-full"
+                        style={{ fontSize: 12 }}
+                      >
+                        <Icon name="clipboard-check" size={13} />
+                        Let it run to completion
+                      </button>
+                    </div>
                     <p className="font-['Outfit'] text-[12px] leading-[1.5] mt-2.5 m-0" style={{ color: 'var(--mf-muted)' }}>
                       The device&rsquo;s own buttons pause the infusion and open its detail view.
-                      Neither of them can raise an alarm, because an occlusion is something the
-                      pump detects rather than something the nurse does.
+                      Neither of them can raise an alarm or finish a therapy, because both are
+                      things that happen to an infusion rather than things a nurse does. Take
+                      either branch &mdash; the flow reaches the completion screen through both.
                     </p>
                   </div>
                 )}
