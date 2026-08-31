@@ -310,7 +310,7 @@ export function Prototype() {
                     onClick={() => prevId && review(prevId)}
                     disabled={!prevId}
                     className="mf-btn mf-btn--secondary flex-1"
-                    style={{ minHeight: 42, fontSize: 12 }}
+                    style={{ fontSize: 12 }}
                   >
                     <Icon name="arrow-left" size={13} />
                     Back
@@ -320,7 +320,7 @@ export function Prototype() {
                     onClick={() => nextId && review(nextId)}
                     disabled={!nextId}
                     className="mf-btn mf-btn--secondary flex-1"
-                    style={{ minHeight: 42, fontSize: 12 }}
+                    style={{ fontSize: 12 }}
                   >
                     Forward
                     <Icon name="arrow-right" size={13} />
@@ -337,8 +337,8 @@ export function Prototype() {
                   <button
                     type="button"
                     onClick={reset}
-                    className="inline-flex items-center gap-2 font-['Outfit'] text-[11px] font-semibold uppercase py-2 pl-2"
-                    style={{ letterSpacing: '0.14em', color: 'var(--mf-accent)', minHeight: 32 }}
+                    className="mf-ref inline-flex items-center gap-2 font-['Outfit'] text-[11px] font-semibold uppercase pl-2"
+                    style={{ letterSpacing: '0.14em', color: 'var(--mf-accent)' }}
                   >
                     <Icon name="refresh" size={13} />
                     Start over

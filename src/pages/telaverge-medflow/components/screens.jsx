@@ -350,8 +350,8 @@ function PrescriberField({ live }) {
       >
         <span className="flex items-center gap-2.5 min-w-0">
           <span
-            className="grid place-items-center shrink-0 text-[9.5px] font-semibold"
-            style={{ width: 24, height: 24, borderRadius: 999, background: 'var(--mf-accent-bg)', color: 'var(--mf-accent)' }}
+            className="grid place-items-center shrink-0 text-[10.5px] font-semibold"
+            style={{ width: 26, height: 26, borderRadius: 999, background: 'var(--mf-accent-bg)', color: 'var(--mf-accent)' }}
           >
             EC
           </span>
@@ -642,7 +642,7 @@ function Verify({ live, onAction, state }) {
       </ScreenTitle>
 
       <div className="px-[18px] py-4 flex flex-col gap-3">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="mf-pair grid grid-cols-2 gap-3">
           <Prescribed label="Date of birth" value={P.dob} />
           <Prescribed label="Patient ID" value={P.id} />
         </div>
@@ -701,7 +701,7 @@ function Order({ live, onAction }) {
 
       <div className="px-[18px] py-4 flex flex-col gap-3">
         <Prescribed label="Medication" value={ORDER.medication} />
-        <div className="grid grid-cols-2 gap-3">
+        <div className="mf-pair grid grid-cols-2 gap-3">
           <Prescribed label="Concentration" value="10" unit="mg/mL" />
           <Prescribed label="Prescribed rate" value="5" unit="mL/hr" />
         </div>
@@ -730,14 +730,14 @@ function Configure({ live, onAction, state, setState }) {
       <ScreenTitle sub="Enter the infusion parameters for this order.">Configure infusion</ScreenTitle>
 
       <div className="px-[18px] py-4 flex flex-col gap-4">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="mf-pair grid grid-cols-2 gap-3">
           <Prescribed label="Medication" value={ORDER.medication} />
           <Prescribed label="Concentration" value="10" unit="mg/mL" />
         </div>
 
         <div style={{ height: 1, background: 'var(--mf-line)' }} />
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="mf-pair grid grid-cols-2 gap-3">
           <NumericField
             id="mf-rate"
             label="Infusion rate"
@@ -818,9 +818,15 @@ function Discrepancy({ live, onAction, state }) {
       {/* Side by side, same scale, same units, aligned baselines. The
           comparison is the interface's job, not the reader's. */}
       <div className="px-[18px] py-4">
+        {/* NOT .mf-pair — this comparison stays side by side at every width.
+            Stacking the ordered value above the entered one destroys the
+            comparison the screen exists to make. */}
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-[4px] p-3.5" style={{ background: 'var(--mf-bg-alt)', border: '1px solid var(--mf-line)' }}>
-            <span className="text-[10px] font-semibold uppercase block" style={{ letterSpacing: '0.14em', color: 'var(--mf-muted)' }}>
+            {/* Tracking lives in CSS (.mf-cmp-label), not inline — an inline
+                letter-spacing outranks the container query that tightens it at
+                the narrowest screen sizes. */}
+            <span className="mf-cmp-label" style={{ color: 'var(--mf-muted)' }}>
               Order
             </span>
             <span className="mf-value mt-2">
@@ -832,7 +838,7 @@ function Discrepancy({ live, onAction, state }) {
             className="rounded-[4px] p-3.5"
             style={{ background: 'var(--mf-crit-bg)', border: '1.5px solid var(--mf-crit-line)' }}
           >
-            <span className="text-[10px] font-semibold uppercase block" style={{ letterSpacing: '0.14em', color: 'var(--mf-crit)' }}>
+            <span className="mf-cmp-label" style={{ color: 'var(--mf-crit)' }}>
               Entered
             </span>
             <span className="mf-value mt-2" style={{ color: 'var(--mf-crit)' }}>
@@ -876,7 +882,7 @@ function Confirm({ live, onAction, state }) {
       <ScreenTitle sub="These settings will be applied when you start.">Review before starting</ScreenTitle>
 
       <div className="px-[18px] py-4 flex flex-col gap-3">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="mf-pair grid grid-cols-2 gap-3">
           <Prescribed label="Medication" value={ORDER.medication} />
           <Prescribed label="Volume" value={volume} unit="mL" />
         </div>

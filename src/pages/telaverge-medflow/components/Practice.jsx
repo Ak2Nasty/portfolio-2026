@@ -61,7 +61,7 @@ export function CrossFunctional() {
                 </span>
                 {f.self && (
                   <span
-                    className="font-['Outfit'] text-[9.5px] font-semibold uppercase px-2 py-1 rounded-[3px] shrink-0"
+                    className="font-['Outfit'] text-[10.5px] font-semibold uppercase px-2 py-1 rounded-[3px] shrink-0"
                     style={{ letterSpacing: '0.13em', color: 'var(--mf-accent)', border: '1px solid var(--mf-accent-line)' }}
                   >
                     This role

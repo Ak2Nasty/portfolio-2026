@@ -157,12 +157,11 @@ export function CaseStudyHeader() {
         <div className="flex items-center gap-2 md:gap-3 shrink-0 h-full">
           <a
             href="#prototype"
-            className="inline-flex items-center gap-2 font-['Outfit'] text-[10.5px] font-semibold uppercase px-3 py-2.5 rounded-[4px] transition-colors duration-200"
+            className="mf-tap inline-flex items-center gap-2 font-['Outfit'] text-[10.5px] font-semibold uppercase px-3 py-2.5 rounded-[4px] transition-colors duration-200"
             style={{
               letterSpacing: '0.13em',
               color: 'var(--mf-accent)',
               border: '1px solid var(--mf-accent-line)',
-              minHeight: 38,
             }}
           >
             <Icon name="pump" size={13} />
@@ -303,8 +302,8 @@ export function CaseStudyFooter() {
             href="https://akshathdayansuresh.com/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 font-['Outfit'] text-[11px] font-semibold uppercase py-2"
-            style={{ letterSpacing: '0.14em', color: 'var(--mf-accent)', minHeight: 32 }}
+            className="mf-tap inline-flex items-center gap-2 font-['Outfit'] text-[11px] font-semibold uppercase py-2"
+            style={{ letterSpacing: '0.14em', color: 'var(--mf-accent)' }}
           >
             akshathdayansuresh.com
             <Icon name="external" size={12} />

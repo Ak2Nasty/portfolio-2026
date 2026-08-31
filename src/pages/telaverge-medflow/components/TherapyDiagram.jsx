@@ -29,7 +29,7 @@ function Apparatus() {
       viewBox="0 0 190 320"
       role="img"
       aria-label="Schematic of an infusion setup: a bag of fluid hangs above a drip chamber, which feeds a pump that controls the rate, which feeds a line into the patient's arm."
-      className="w-full h-auto"
+      className="mf-apparatus w-full h-auto"
       style={{ maxWidth: 190 }}
       fill="none"
       strokeWidth="1.5"
@@ -46,7 +46,7 @@ function Apparatus() {
       <text x="95" y="60" textAnchor="middle" fontSize="11" fontWeight="600" fill={accent} fontFamily="Outfit, sans-serif">
         100 mL
       </text>
-      <text x="95" y="74" textAnchor="middle" fontSize="8.5" fill={accent} fontFamily="Outfit, sans-serif" opacity="0.85">
+      <text x="95" y="74" textAnchor="middle" fontSize="9.5" fill={accent} fontFamily="Outfit, sans-serif" opacity="0.85">
         10 mg/mL
       </text>
 
@@ -72,7 +72,7 @@ function Apparatus() {
       </text>
       <circle cx="127" cy="176" r="3" fill={accent} opacity="0.5" />
       <circle cx="127" cy="190" r="3" fill={accent} opacity="0.5" />
-      <text x="95" y="210" textAnchor="middle" fontSize="8" fontWeight="600" fill={accent} fontFamily="Outfit, sans-serif" letterSpacing="1.2">
+      <text x="95" y="210" textAnchor="middle" fontSize="9" fontWeight="600" fill={accent} fontFamily="Outfit, sans-serif" letterSpacing="1.2">
         PUMP
       </text>
 
@@ -83,7 +83,7 @@ function Apparatus() {
       <path d="M40 262h110a12 12 0 010 24H40a12 12 0 010-24z" stroke={line} fill="var(--mf-bg-alt)" />
       <path d="M95 250v12" stroke={line} />
       <circle cx="95" cy="274" r="3.5" fill={accent} />
-      <text x="95" y="306" textAnchor="middle" fontSize="8.5" fontWeight="600" fill={ink} fontFamily="Outfit, sans-serif" letterSpacing="1.2">
+      <text x="95" y="306" textAnchor="middle" fontSize="9.5" fontWeight="600" fill={ink} fontFamily="Outfit, sans-serif" letterSpacing="1.2">
         PATIENT
       </text>
     </svg>

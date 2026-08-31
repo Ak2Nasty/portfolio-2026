@@ -223,6 +223,18 @@
   .mdf .mf-gallery .mf-screen { height: 592px; }
 }
 
+/* The ORDER / ENTERED labels on the discrepancy screen. Their tracking is a
+   class rather than an inline style so the narrow-container rule above can
+   tighten it — inline styles outrank every stylesheet rule, which is how
+   "ENTERED" stayed 4px over its box through a fix that was aimed at it. */
+.mdf .mf-cmp-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
 /* ─── Device frame ───────────────────────────────────────────────────────────
    A frame, not a product shot. No glass, no glow, no reflection, no rotated
    3D perspective — every one of those makes the screen harder to read, and the
@@ -551,6 +563,13 @@
   /* Positioned, so in-screen overlays (the escalation confirmation) resolve
      against the screen rather than escaping to the page. */
   position: relative;
+  /* A CONTAINER, so the screen's contents respond to the SCREEN's width rather
+     than the viewport's. This is the only query that can be correct here: the
+     same screen renders at 359px in the hero, ~324px in the desktop gallery,
+     306px in the mobile prototype and 264px in the mobile gallery. A viewport
+     query cannot tell those apart — it would stack the desktop gallery's fields
+     to fix the mobile prototype's, or fix neither. */
+  container-type: inline-size;
   background: var(--mf-surface);
   color: var(--mf-ink);
   font-family: 'Outfit', system-ui, sans-serif;
@@ -714,8 +733,16 @@
   font-size: 14px;
   font-weight: 500;
   color: var(--mf-ink-2);
-  padding: 0 14px 0 6px;
+  padding: 0 12px 0 6px;
   white-space: nowrap;
+  /* THE UNIT IS NEVER THE THING THAT GETS CUT.
+     Without this it shared the shortfall with the input and, because the field
+     clips its overflow, "mL/hr" rendered as "mL/h" — a unit silently truncated
+     on an infusion rate field, which is the precise failure UN-03 exists to
+     prevent. A number that has lost part of its unit is worse than no unit at
+     all, because it still looks complete. If something has to give, it is the
+     digits box, which has a visible caret and a minimum. */
+  flex-shrink: 0;
 }
 
 /* Prescribed values are visually distinct from anything editable — UN-02.
@@ -1060,7 +1087,11 @@
 /* The section readout. Monospaced digits so the number does not jitter as it
    counts up while scrolling. */
 .mdf .mf-header__pos {
-  display: inline-flex;
+  /* NO `display` here. The element carries Tailwind's `hidden sm:inline-flex`,
+     and `.mdf .mf-header__pos` (0,2,0) outranks `.hidden` (0,1,0) — so setting
+     display here silently defeated it and the pill showed on mobile, squeezed
+     to 51px, crowding a 375px bar that already holds the wordmark and the
+     prototype CTA. Tailwind owns display; this rule owns everything else. */
   align-items: baseline;
   gap: 8px;
   padding: 5px 11px;
@@ -1128,6 +1159,115 @@
   color: var(--mf-accent);
   border-left-color: var(--mf-accent);
   font-weight: 600;
+}
+
+/* ─── Cross-reference link ───────────────────────────────────────────────────
+   26px on a pointer, 44px under a thumb. WCAG 2.5.8 sets a 24px floor and
+   these cleared it, but "legal" and "hittable while holding a phone one-handed"
+   are different bars, and there are thirty-five of them. */
+.mdf .mf-ref {
+  min-height: 26px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+
+/* ── Field pairs ─────────────────────────────────────────────────────────────
+   Two fields side by side need roughly 168px each once the digits, the unit and
+   the padding are counted. Below that they do not shrink gracefully — the field
+   clips, and what gets clipped is the end of the unit.
+
+   380px is the measured threshold: at 306px of screen the pair gave each field
+   129px against the ~165px it needed, a 30px shortfall. Under it they stack and
+   each field gets the full width.
+
+   The discrepancy screen's ORDER / ENTERED comparison is deliberately NOT a
+   .mf-pair. Those two must stay side by side at every width — putting the
+   ordered value above the entered one instead of beside it is exactly the
+   comparison the screen exists to make. They hold because they carry no input
+   chrome, only a number and a unit. */
+@container (max-width: 380px) {
+  .mdf .mf-pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* At the narrowest the screen ever gets — 209px, a gallery card on a 320px
+   phone — wide tracking stops paying for itself. Letter-spacing appends space
+   AFTER the final character, so a label that exactly fits still overflows by
+   the width of one gap: "ENTERED" needed 55px in a 51px box, and 4px of that
+   was phantom space with no glyph in it. Tightened only here, so the labels
+   everywhere else keep the spacing the rest of the page is set in. */
+@container (max-width: 280px) {
+  .mdf .mf-screen .uppercase,
+  .mdf .mf-cmp-label {
+    letter-spacing: 0.09em;
+  }
+}
+
+/* ─── Touch ──────────────────────────────────────────────────────────────────
+   TARGET SIZE KEYS OFF THE INPUT DEVICE, NOT THE VIEWPORT WIDTH.
+
+   This was written as `max-width: 767px` and that was the wrong axis. A 1024px
+   tablet is a thumb and needs 44px; a 700px desktop window is a mouse and does
+   not. Sizing by width gave the tablet 26px targets and a narrow desktop window
+   oversized ones — wrong in both directions.
+
+   `pointer: coarse` asks the question that actually matters. It also sidesteps
+   a boundary problem found while testing: at an emulated 767px viewport the
+   width query evaluated as 768 and every mobile rule silently switched off,
+   which is the kind of off-by-one that only shows up on one device.
+
+   Anything carrying .mf-tap is a control whose comfortable size differs between
+   pointer and thumb. Sized here rather than inline, because an inline
+   minHeight outranks any stylesheet rule — which is exactly how the header CTA,
+   the footer link and the prototype's Back/Forward buttons each stayed stuck at
+   32–42px through a breakpoint that was trying to raise them. */
+@media (pointer: coarse) {
+  .mdf .mf-tap,
+  .mdf .mf-header a,
+  .mdf footer a,
+  .mdf .mf-btn,
+  .mdf .mf-ref {
+    min-height: 44px;
+  }
+  .mdf .mf-ref {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+  /* The escalation stays chip-sized on purpose — its hit area is already padded
+     past 44px by its ::after, and growing the drawn mark would break its
+     alignment with the status chip beside it. */
+  .mdf .mf-escalate { min-height: 0; }
+}
+
+/* ─── Small screens ──────────────────────────────────────────────────────────
+   Layout and type, which genuinely are about width rather than input device.
+
+   The type floor matters more here than on desktop. 8px on a diagram label is
+   a squint at arm's length and unreadable at phone distance in ward lighting —
+   which is, pointedly, the use environment section 04 describes. */
+/* Legibility follows the DEVICE as well as the width. 9.5px on a 767px tablet
+   held at arm's length is no more readable than 9.5px on a phone, so the floor
+   lifts for any coarse pointer as well as for any narrow screen. */
+@media (pointer: coarse), (max-width: 767px) {
+  .mdf .mf-statusbar {
+    font-size: 10.5px;
+    padding: 2px 6px 9px;
+  }
+}
+
+/* The apparatus scales up rather than having its labels re-specified: the SVG
+   is one coordinate system, so widening the frame lifts every label in it
+   proportionally and keeps the drawing's internal proportions intact.
+
+   Keyed to 1023px, not 767: below the lg breakpoint the diagram is a full-width
+   block with room to spare, and only at lg does it move into the 220px column
+   that the 190px cap was sized for. */
+@media (max-width: 1023px) {
+  .mdf .mf-apparatus {
+    max-width: 268px !important;
+  }
 }
 
 /* ─── Reduced motion ─────────────────────────────────────────────────────────

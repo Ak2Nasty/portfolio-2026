@@ -207,14 +207,11 @@ export function Ref({ children, href, className = '' }) {
      links in table cells and card footers — they are exactly the case the
      exemption does not cover. The padding is vertical only so the reference
      still sits on the text baseline it belongs to. */
-  const cls = `inline-flex items-center gap-1.5 font-['Outfit'] text-[10.5px] font-semibold uppercase tabular-nums ${className}`;
-  const style = {
-    letterSpacing: '0.12em',
-    color: 'var(--mf-accent)',
-    minHeight: 26,
-    paddingTop: 4,
-    paddingBottom: 4,
-  };
+  /* Sizing lives in CSS (.mf-ref) rather than inline, so the mobile breakpoint
+     can raise these to a 44px touch target. Thirty-five of them sat at 26px —
+     legal under WCAG 2.5.8's 24px floor, and genuinely fiddly under a thumb. */
+  const cls = `mf-ref inline-flex items-center gap-1.5 font-['Outfit'] text-[10.5px] font-semibold uppercase tabular-nums ${className}`;
+  const style = { letterSpacing: '0.12em', color: 'var(--mf-accent)' };
   if (!href) return <span className={cls} style={style}>{content}</span>;
   return (
     <a className={`${cls} mf-underline`} style={style} href={href}>
