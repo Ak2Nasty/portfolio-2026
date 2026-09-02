@@ -1393,6 +1393,10 @@ function Complete({ live, onAction, state }) {
   const rate = state?.rate ?? SCENARIO.correctRate;
   const volume = state?.volume ?? '100';
   const [summary, setSummary] = useState(false);
+  /* Acknowledging is a record, and a record with no receipt is indistinguishable
+     from a button that did nothing. */
+  const [acked, setAcked] = useState(false);
+  const uid = useId();
   return (
     <div className="mf-screen">
       <IdentityBar live={live} />
@@ -1453,8 +1457,65 @@ function Complete({ live, onAction, state }) {
             handler with "Acknowledge", so reading the record cleared it — and in
             the prototype, reset the whole walkthrough. */}
         <Btn variant="secondary" live={live} onClick={() => setSummary(true)}>View summary</Btn>
-        <Btn variant="primary" live={live} onClick={() => onAction('next')}>Acknowledge</Btn>
+        <Btn variant="primary" live={live} onClick={() => setAcked(true)}>Acknowledge</Btn>
       </Actions>
+
+      {/* ── The receipt ──────────────────────────────────────────────────────
+          Acknowledging used to do its work silently and then reset the
+          prototype, which read as the button having thrown the reader out
+          rather than having recorded anything. An acknowledgement is a record —
+          it says a clinician saw this and took it on — and a record the user
+          never sees the confirmation of is one they have no reason to trust.
+
+          What it states is deliberately bounded: the acknowledgement was
+          recorded, the responsible clinician was notified, and what was
+          delivered. It does not say anything happened to the patient, that any
+          clinical decision followed, or that the line was removed. Those are
+          things the device has no way to know. */}
+      {acked && (
+        <div className="mf-overlay" role="dialog" aria-modal="true" aria-labelledby={`${uid}-ack`}>
+          <div className="mf-overlay__panel">
+            <span className="flex items-center gap-2.5 mb-3">
+              <span style={{ color: 'var(--mf-run)' }}><StatusGlyph shape="check" size={16} /></span>
+              <span id={`${uid}-ack`} className="text-[15px] font-semibold" style={{ color: 'var(--mf-run)' }}>
+                Completion acknowledged
+              </span>
+            </span>
+
+            <p aria-live="polite" className="text-[13px] leading-[1.6] m-0 mb-4" style={{ color: 'var(--mf-ink-2)' }}>
+              {DOC.short} has been notified that the infusion for {P.name} finished at{' '}
+              {TIMING.finishedAt}. The acknowledgement is recorded against this patient with the
+              delivery summary attached.
+            </p>
+
+            <dl
+              className="flex flex-col gap-1.5 m-0 mb-5 pt-3"
+              style={{ borderTop: '1px solid var(--mf-line)' }}
+            >
+              {[
+                ['Delivered', `${volume} of ${volume} mL`],
+                ['Acknowledged by', SCENARIO.user.name],
+                ['Notified', `${DOC.full} · ${DOC.contact}`],
+              ].map(([k, v]) => (
+                <div key={k} className="flex items-baseline justify-between gap-3">
+                  <dt className="text-[10px] uppercase shrink-0" style={{ letterSpacing: '0.1em', color: 'var(--mf-muted)' }}>{k}</dt>
+                  <dd className="text-[12.5px] font-medium m-0 text-right" style={{ color: 'var(--mf-ink)' }}>{v}</dd>
+                </div>
+              ))}
+            </dl>
+
+            <button
+              type="button"
+              className="mf-btn mf-btn--primary w-full"
+              style={{ minHeight: 40, fontSize: 12 }}
+              tabIndex={live ? 0 : -1}
+              onClick={live ? () => { setAcked(false); onAction('next'); } : undefined}
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      )}
 
       {summary && (
         <DetailSheet
