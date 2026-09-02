@@ -3,7 +3,7 @@
    rather than restating anything, which is the only reliable way to stop a
    twenty-section document from contradicting itself: the workflow, the risk
    analysis, the traceability chain and the proposed test protocol all describe
-   the SAME ten steps and the SAME seven user needs, because they all read the
+   the SAME eleven steps and the SAME ten user needs, because they all read the
    same arrays.
 
    ─────────────────────────────────────────────────────────────────────────

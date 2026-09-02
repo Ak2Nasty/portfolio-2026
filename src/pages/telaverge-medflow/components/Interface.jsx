@@ -245,7 +245,7 @@ export function Wireframes() {
 }
 
 /* ─── 09 · Final interface ───────────────────────────────────────────────────
-   Eight screens, each with the rationale that produced it and a link back to
+   Nine interface states, each with the rationale that produced it and a link back to
    the user need it satisfies. The rationale is not a caption — it is the
    argument, and it is set at body size rather than as small print.
 
@@ -328,10 +328,10 @@ export function FinalInterface() {
           n="09"
           label="Final interface"
           heading="The MedFlow experience"
-          lead="Eight screens. Each one carries the reasoning that produced it, and each links back to the user need it exists to satisfy."
+          lead="Nine interface states. Each one carries the reasoning that produced it, and each links back to the user need it exists to satisfy."
         >
           <div className="mt-6">
-            <ConceptTag>All eight screens are conceptual &middot; every value is fictional</ConceptTag>
+            <ConceptTag>All nine states are conceptual &middot; every value is fictional</ConceptTag>
           </div>
         </SectionHead>
 

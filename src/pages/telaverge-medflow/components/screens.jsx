@@ -4,7 +4,7 @@ import { Icon, StatusGlyph } from './icons';
 import { SCENARIO, WARD, ESCALATION, TIMING } from '../data/caseStudyData';
 
 /* ─── The MedFlow screens ────────────────────────────────────────────────────
-   Eight screens, built ONCE and rendered in three places: the hero preview,
+   Nine interface states, built ONCE and rendered in three places: the hero preview,
    the gallery in section 09, and the interactive prototype in section 10.
 
    That reuse is the reason the prototype can be genuinely clickable rather
@@ -22,7 +22,7 @@ import { SCENARIO, WARD, ESCALATION, TIMING } from '../data/caseStudyData';
 
    ── `live` ──
    When false the screen renders as a picture: controls are inert and removed
-   from the tab order, so the eight static screens in section 09 do not put
+   from the tab order, so the nine static screens in section 09 do not put
    forty phantom tab stops between the reader and the rest of the page. When
    true it is a working interface.
 

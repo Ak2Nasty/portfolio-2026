@@ -24,7 +24,7 @@ export function UserNeeds() {
           n="05"
           label="User needs"
           heading="Defining the user needs"
-          lead="Seven conceptual needs, each written so that a later design decision can be traced back to exactly one of them."
+          lead="Ten conceptual user needs, each written so that a later design decision can be traced back to exactly one of them."
         />
 
         <motion.div variants={fadeUp} className="mb-8">
@@ -71,12 +71,12 @@ export function UserNeeds() {
 }
 
 /* ─── 06 · Task and workflow analysis ────────────────────────────────────────
-   Ten steps, five of them marked safety-significant. The marking is the point:
-   an undifferentiated list of ten steps says nothing, and the whole argument
+   Eleven steps, six of them selected for focused analysis. The selection is the
+   point: an undifferentiated list of eleven steps says nothing, and the argument
    for the interface that follows is that attention was spent unevenly, on
    purpose, where a use error would cost most.
 
-   Safety-significant steps carry a diamond AND a heavier border AND a label.
+   Selected steps carry a diamond AND a heavier border AND a label.
    Three signals, so the distinction survives greyscale — the same rule the
    interface itself follows. */
 
@@ -97,13 +97,13 @@ export function WorkflowAnalysis() {
           {/* ── The chain ── */}
           <motion.div {...chainReveal}>
             <motion.div variants={stepIn} className="flex items-center justify-between gap-4 mb-5">
-              <Label>Workflow &mdash; 10 steps</Label>
+              <Label>Workflow &mdash; 11 steps</Label>
               <span
                 className="font-['Outfit'] text-[10.5px] font-semibold uppercase inline-flex items-center gap-2"
                 style={{ letterSpacing: '0.14em', color: 'var(--mf-accent)' }}
               >
                 <Icon name="diamond" size={11} />
-                {criticalCount} safety-significant
+                {criticalCount} selected for focused analysis
               </span>
             </motion.div>
 
@@ -129,7 +129,7 @@ export function WorkflowAnalysis() {
                       style={{ color: s.critical ? 'var(--mf-accent)' : 'var(--mf-ink-2)' }}
                     >
                       {s.label}
-                      {s.critical && <span className="sr-only"> — safety-significant interaction</span>}
+                      {s.critical && <span className="sr-only"> — selected for focused analysis</span>}
                     </span>
                   </div>
                 </motion.li>
@@ -199,7 +199,7 @@ export function RiskAnalysis() {
           n="07"
           label="Use-related risk"
           heading="Designing for foreseeable use errors"
-          lead="Five potential use errors, each traced to the interface decision it produced. Reading a row left to right is reading the reason a screen looks the way it does."
+          lead="Seven potential use-related issues, each traced to the design response it produced. Reading a row left to right is reading the reason a screen looks the way it does."
         />
 
         <motion.div variants={fadeUp} className="mb-8">

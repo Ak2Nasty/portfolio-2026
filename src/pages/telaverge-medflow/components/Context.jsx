@@ -89,7 +89,7 @@ export function WhyThisStudy() {
 }
 
 /* ─── 03 · The scenario ──────────────────────────────────────────────────────
-   Everything downstream — the workflow, the risk rows, the eight screens, the
+   Everything downstream — the workflow, the risk rows, the nine screens, the
    proposed test protocol — describes this one situation. Fixing it precisely
    here is what stops the rest of the document from being generic.
 
