@@ -1046,6 +1046,7 @@ function Discrepancy({ live, onAction, state }) {
 function Confirm({ live, onAction, state }) {
   const rate = state?.rate ?? SCENARIO.correctRate;
   const volume = state?.volume ?? '100';
+  const matches = String(rate).trim() === SCENARIO.correctRate;
   return (
     <div className="mf-screen">
       <IdentityBar live={live} />
@@ -1078,15 +1079,41 @@ function Confirm({ live, onAction, state }) {
               : 'Patient identity verified by scan'}
           </span>
           <span className="flex items-center gap-2.5 text-[12.5px]" style={{ color: 'var(--mf-ink-2)' }}>
-            <span style={{ color: 'var(--mf-run)' }}><StatusGlyph shape="check" size={13} /></span>
-            Order reviewed
+            <span style={{ color: matches ? 'var(--mf-run)' : 'var(--mf-crit)' }}>
+              <StatusGlyph shape={matches ? 'check' : 'octagon'} size={13} />
+            </span>
+            {matches ? 'Order reviewed — entered rate matches' : `Entered rate does not match the order of ${ORDER.rate}`}
           </span>
         </div>
+
+        {/* ── THE GUARD, ON THE CONTROL RATHER THAN ON THE ROUTE ──
+            The workflow used to be the only way here, so reaching this screen
+            was itself proof the rate had been checked. The prototype's rail is
+            now open — any step can be opened in any order — which means a reader
+            can arrive holding a value that never passed the check.
+
+            So the check is made here too. Defence that depends on the user not
+            finding another way round is a maze, not a safeguard, and a real
+            device is not navigated in one direction either: the last control
+            before delivery should refuse a value that does not match the order
+            no matter how the screen was reached. */}
+        {!matches && (
+          <p
+            id="mf-confirm-why"
+            className="text-[12px] leading-[1.5] mt-4 m-0"
+            style={{ color: 'var(--mf-crit)' }}
+          >
+            Starting is unavailable while the entered rate differs from the order. Go back and
+            correct it, or resolve the discrepancy.
+          </p>
+        )}
       </div>
 
       <Actions>
         <Btn variant="secondary" live={live} onClick={() => onAction('back')}>Back</Btn>
-        <Btn variant="primary" live={live} onClick={() => onAction('next')}>Start infusion</Btn>
+        <Btn variant="primary" live={live} disabled={!matches} onClick={() => onAction('next')}>
+          Start infusion
+        </Btn>
       </Actions>
     </div>
   );

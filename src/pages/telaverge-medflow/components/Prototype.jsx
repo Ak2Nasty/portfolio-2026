@@ -36,15 +36,22 @@ import { SCENARIO } from '../data/caseStudyData';
                        past the discrepancy is to go back and fix the value.
                        No override exists.
 
-     REVIEW          — the rail, the prev/next controls, the arrow keys. Moves
-                       freely among steps ALREADY REACHED, and cannot enter one
-                       that has not been legitimately reached. Reviewing a
-                       record is not the same act as performing the workflow,
-                       and the interface says so.
+     NAVIGATION      — the rail, the prev/next controls, the arrow keys. Opens
+                       any screen at any time, in any order. Nothing is locked.
 
-   `reached` is the set of steps the workflow has actually granted. Review
-   navigation is bounded by it; the workflow is what grows it. A locked step
-   states why it is locked rather than simply not responding.
+   Navigation used to be bounded by `reached`, and that boundary was doing the
+   guard's job: you could not see Confirm without passing the check, so the
+   check could not be skipped. Opening the rail took that away, so the guard
+   moved rather than vanished — "Start infusion" is now disabled on the confirm
+   screen itself whenever the entered rate does not match the order, and it says
+   why. A safeguard that only works while the user cannot find another route is
+   not a safeguard; a control that refuses a wrong value however you arrived at
+   it is.
+
+   `reached` still records which steps the workflow itself granted. It marks
+   them with a tick, because a screen you drove the device to and a screen you
+   clicked open are different things worth telling apart. It is a note now, not
+   a gate.
    ═════════════════════════════════════════════════════════════════════════
 
    ── What this is NOT ──
@@ -97,49 +104,39 @@ export function Prototype() {
     setEvent('Prototype reset to the beginning.');
   }, []);
 
-  /* Review movement. Bounded by `reached` — it can never grant a step. */
-  const review = useCallback(
-    (id) => {
-      if (!reached.includes(id)) return;
-      setStepId(id);
-      setEvent(null);
-    },
-    [reached],
+  /* ── Navigation is free. The GUARD is not. ──────────────────────────────────
+     Every step is reachable from the rail, from Back and Forward, and from the
+     arrow keys, whether or not the workflow has been through it. Nothing is
+     locked.
+
+     That is a real change to how this section defends itself, so the defence
+     moved rather than disappeared. Navigation used to be the thing enforcing
+     the discrepancy block: you could not reach Confirm without passing the
+     check, so the check could not be skipped. With the rail open, a reader can
+     land on Confirm with 50 still in the rate field — and if "Start infusion"
+     there were live, the block would be decorative after all.
+
+     So the guard now lives on the CONTROL instead of on the route. "Start
+     infusion" is disabled wherever the entered rate does not match the order,
+     and it says why. That is the stronger arrangement anyway: a safeguard that
+     depends on the user not finding another way round is a maze, not a
+     safeguard, and real devices are not navigated in one direction either.
+
+     What `reached` still records is which steps the WORKFLOW itself granted —
+     useful as a record of what actually happened, no longer a gate on where you
+     may look. */
+  const review = useCallback((id) => {
+    setStepId(id);
+    setEvent(null);
+  }, []);
+
+  const neighbour = useCallback(
+    (dir) => FLOW[stepIndex + dir]?.id ?? null,
+    [stepIndex],
   );
 
-  const reviewableNeighbour = useCallback(
-    (dir) => {
-      const next = FLOW[stepIndex + dir];
-      if (!next || !reached.includes(next.id)) return null;
-      return next.id;
-    },
-    [stepIndex, reached],
-  );
-
-  const prevId = reviewableNeighbour(-1);
-  const nextId = reviewableNeighbour(1);
-
-  /* ── The one place Forward may do more than review ──────────────────────────
-     REVIEW NEVER GRANTS A STEP. That rule is what makes the discrepancy block a
-     block: if the rail or these controls could move you forward, the guard
-     would be decorative and the whole section's argument would collapse.
-
-     The monitoring screen is the single exception, and it is an exception
-     because of what is on the other side of it rather than as a convenience.
-     Every other forward transition on this page is GUARDED — configure only
-     advances if the entered rate matches, discrepancy only exits backwards,
-     confirm only proceeds from a deliberate press. The two transitions out of
-     Monitor are not guarded and are not decisions: an infusion is interrupted,
-     or it finishes. Neither is something a nurse chooses, which is why they are
-     raised from the walkthrough controls beside the device in the first place.
-
-     So at Monitor, and nowhere else, Forward runs the therapy to completion —
-     the same 'finish' the walkthrough button sends, through the same state
-     machine. It cannot skip a guard because there is no guard here to skip.
-
-     Anywhere else, a Forward that has nothing reviewable ahead of it stays
-     disabled, exactly as before. */
-  const forwardCompletes = stepId === 'active' && !nextId;
+  const prevId = neighbour(-1);
+  const nextId = neighbour(1);
 
   /* ── The workflow state machine ──
      One place, so the routing rules read as a list. Every transition here is
@@ -246,10 +243,7 @@ export function Prototype() {
   const onKeyDown = (e) => {
     if (e.target instanceof HTMLInputElement) return;
     if (e.key === 'ArrowLeft' && prevId) { e.preventDefault(); review(prevId); }
-    if (e.key === 'ArrowRight') {
-      if (nextId) { e.preventDefault(); review(nextId); }
-      else if (forwardCompletes) { e.preventDefault(); onAction('finish'); }
-    }
+    if (e.key === 'ArrowRight' && nextId) { e.preventDefault(); review(nextId); }
   };
 
   return (
@@ -384,12 +378,8 @@ export function Prototype() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => {
-                      if (nextId) return review(nextId);
-                      if (forwardCompletes) return onAction('finish');
-                      return undefined;
-                    }}
-                    disabled={!nextId && !forwardCompletes}
+                    onClick={() => nextId && review(nextId)}
+                    disabled={!nextId}
                     className="mf-btn mf-btn--secondary flex-1"
                     style={{ fontSize: 12 }}
                   >
@@ -451,29 +441,33 @@ export function Prototype() {
                   className="font-['Outfit'] text-[10.5px] uppercase"
                   style={{ letterSpacing: '0.13em', color: 'var(--mf-muted)' }}
                 >
-                  {reached.length} of {FLOW.length} unlocked
+                  {reached.length} of {FLOW.length} reached
                 </span>
               </div>
 
               <ol ref={railRef} className="flex flex-col gap-1 m-0 p-0 list-none">
+                {/* EVERY ROW IS A BUTTON. There is no locked state and no
+                    padlock: any step can be opened at any time, in any order.
+
+                    A tick still marks a step the workflow itself has been
+                    through, because that is worth recording — it is the
+                    difference between a screen you have read and a screen you
+                    have actually driven the device to. It is a note, not a
+                    gate. */}
                 {FLOW.map((f, i) => {
                   const isCurrent = f.id === stepId;
-                  const isReached = reached.includes(f.id);
-                  const isPast = isReached && i < stepIndex;
-                  const locked = !isReached;
+                  const isDone = reached.includes(f.id) && !isCurrent;
 
                   const inner = (
                     <>
                       <span
                         className="font-['Outfit'] text-[11px] font-semibold tabular-nums shrink-0 pt-[3px] flex items-center justify-center"
                         style={{
-                          color: isCurrent ? 'var(--mf-accent)' : locked ? 'var(--mf-off)' : 'var(--mf-muted)',
+                          color: isCurrent ? 'var(--mf-accent)' : 'var(--mf-muted)',
                           minWidth: 18,
                         }}
                       >
-                        {locked ? (
-                          <Icon name="lock" size={11} />
-                        ) : isPast ? (
+                        {isDone ? (
                           <span style={{ color: 'var(--mf-run)' }}><StatusGlyph shape="check" size={11} /></span>
                         ) : (
                           String(i + 1).padStart(2, '0')
@@ -483,17 +477,11 @@ export function Prototype() {
                       <span className="flex flex-col min-w-0 text-left">
                         <span
                           className="font-['Outfit'] text-[14px] font-semibold leading-tight"
-                          style={{
-                            color: isCurrent
-                              ? 'var(--mf-accent)'
-                              : locked
-                                ? 'var(--mf-off)'
-                                : 'var(--mf-ink-2)',
-                          }}
+                          style={{ color: isCurrent ? 'var(--mf-accent)' : 'var(--mf-ink-2)' }}
                         >
                           {f.label}
                           {isCurrent && <span className="sr-only"> — current step</span>}
-                          {locked && <span className="sr-only"> — not yet reached in the workflow</span>}
+                          {isDone && <span className="sr-only"> — reached in the workflow</span>}
                         </span>
 
                         {isCurrent && (
@@ -508,36 +496,21 @@ export function Prototype() {
                     </>
                   );
 
-                  const boxStyle = {
-                    background: isCurrent ? 'var(--mf-accent-bg)' : 'transparent',
-                    borderColor: isCurrent ? 'var(--mf-accent-line)' : 'transparent',
-                    minHeight: 44,
-                  };
-
                   return (
                     <li key={f.id}>
-                      {locked ? (
-                        /* Not a button. A locked step is not a thing you can
-                           press and have ignore you — it states why. */
-                        <div
-                          className="flex items-start gap-3.5 px-4 py-3 rounded-[4px] border w-full"
-                          style={boxStyle}
-                          aria-disabled="true"
-                          title="Reach this step through the workflow to unlock it"
-                        >
-                          {inner}
-                        </div>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => review(f.id)}
-                          aria-current={isCurrent ? 'step' : undefined}
-                          className="mf-row-hover flex items-start gap-3.5 px-4 py-3 rounded-[4px] border w-full"
-                          style={boxStyle}
-                        >
-                          {inner}
-                        </button>
-                      )}
+                      <button
+                        type="button"
+                        onClick={() => review(f.id)}
+                        aria-current={isCurrent ? 'step' : undefined}
+                        className="mf-row-hover flex items-start gap-3.5 px-4 py-3 rounded-[4px] border w-full"
+                        style={{
+                          background: isCurrent ? 'var(--mf-accent-bg)' : 'transparent',
+                          borderColor: isCurrent ? 'var(--mf-accent-line)' : 'transparent',
+                          minHeight: 44,
+                        }}
+                      >
+                        {inner}
+                      </button>
                     </li>
                   );
                 })}
