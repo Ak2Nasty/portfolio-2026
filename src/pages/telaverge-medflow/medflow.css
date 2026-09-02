@@ -489,6 +489,23 @@
 .mdf .mf-bar__fill--complete {
   animation: mdf-fill-complete 1400ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+
+/* ── Paused ──────────────────────────────────────────────────────────────────
+   GREEN IS RUNNING. A pump that has stopped delivering must not keep drawing a
+   green bar: the bar had already stopped moving when paused, which removed the
+   motion cue and left the colour saying the opposite of the chip directly above
+   it. Whatever is furthest from the reader wins that argument at a glance, and
+   at ward distance that is the colour.
+
+   Grey, and specifically the off tone rather than a desaturated green, because
+   the same tone carries the paused chip and the paused glyph beside it — one
+   colour for one state, on all three signals. The progress made is still shown;
+   the claim that it is progressing is what is withdrawn. */
+.mdf .mf-bar__fill--paused {
+  background: var(--mf-off);
+  animation: mdf-seek-in 1500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition: background-color 260ms ease;
+}
 @keyframes mdf-fill-complete {
   from { width: var(--mf-from, 18%); }
   to   { width: 100%; }

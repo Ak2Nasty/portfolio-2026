@@ -1149,13 +1149,13 @@ function Active({ live, state }) {
         <div
           className="mf-bar"
           role="img"
-          aria-label={`${TIMING.percentDelivered} percent delivered. ${TIMING.remainingMl} millilitres remaining of ${TIMING.volume} millilitres.`}
+          aria-label={`${paused ? 'Paused. ' : ''}${TIMING.percentDelivered} percent delivered. ${TIMING.remainingMl} millilitres remaining of ${TIMING.volume} millilitres.`}
         >
           {/* The bar stops moving when the infusion is paused, and so does the
               countdown below it. A pump that keeps animating flow while it has
               stopped delivering is telling the room something untrue. */}
           <div
-            className={`mf-bar__fill ${live && !paused ? 'mf-bar__fill--live' : ''}`}
+            className={`mf-bar__fill ${paused ? 'mf-bar__fill--paused' : ''} ${live && !paused ? 'mf-bar__fill--live' : ''}`}
             style={{ '--mf-p': `${TIMING.percentDelivered}%`, '--mf-p2': `${TIMING.percentDelivered + 9}%` }}
           >
             {live && !paused && <span className="mf-bar__flow" aria-hidden="true" />}

@@ -59,7 +59,7 @@ const FLOW = [
   { id: 'configure', label: 'Configure', note: 'The rate field is pre-filled with 50 mL/hr — a deliberate ten-fold entry slip.' },
   { id: 'discrepancy', label: 'Discrepancy', note: 'Progression is blocked. The entered rate does not match the order.' },
   { id: 'confirm', label: 'Confirm', note: 'A dedicated review stage immediately before a safety-significant action.' },
-  { id: 'active', label: 'Monitor', note: 'Infusion running. State, therapy and rate are all visible at once. Two things can happen next — it is interrupted, or it finishes — and both are raised below, because neither is something the nurse does.' },
+  { id: 'active', label: 'Monitor', note: 'Infusion running. State, therapy and rate are all visible at once. Two things can happen next: it is interrupted, or it runs to term. Neither is something the nurse does, so neither sits on the device.' },
   { id: 'alert', label: 'Alert', note: 'An occlusion has interrupted the infusion. Four signals, before colour is counted.' },
   { id: 'complete', label: 'Complete', note: 'Finished, and visibly distinct from paused or interrupted — its own state, glyph, and delivery summary.' },
 ];
@@ -118,6 +118,28 @@ export function Prototype() {
 
   const prevId = reviewableNeighbour(-1);
   const nextId = reviewableNeighbour(1);
+
+  /* ── The one place Forward may do more than review ──────────────────────────
+     REVIEW NEVER GRANTS A STEP. That rule is what makes the discrepancy block a
+     block: if the rail or these controls could move you forward, the guard
+     would be decorative and the whole section's argument would collapse.
+
+     The monitoring screen is the single exception, and it is an exception
+     because of what is on the other side of it rather than as a convenience.
+     Every other forward transition on this page is GUARDED — configure only
+     advances if the entered rate matches, discrepancy only exits backwards,
+     confirm only proceeds from a deliberate press. The two transitions out of
+     Monitor are not guarded and are not decisions: an infusion is interrupted,
+     or it finishes. Neither is something a nurse chooses, which is why they are
+     raised from the walkthrough controls beside the device in the first place.
+
+     So at Monitor, and nowhere else, Forward runs the therapy to completion —
+     the same 'finish' the walkthrough button sends, through the same state
+     machine. It cannot skip a guard because there is no guard here to skip.
+
+     Anywhere else, a Forward that has nothing reviewable ahead of it stays
+     disabled, exactly as before. */
+  const forwardCompletes = stepId === 'active' && !nextId;
 
   /* ── The workflow state machine ──
      One place, so the routing rules read as a list. Every transition here is
@@ -224,7 +246,10 @@ export function Prototype() {
   const onKeyDown = (e) => {
     if (e.target instanceof HTMLInputElement) return;
     if (e.key === 'ArrowLeft' && prevId) { e.preventDefault(); review(prevId); }
-    if (e.key === 'ArrowRight' && nextId) { e.preventDefault(); review(nextId); }
+    if (e.key === 'ArrowRight') {
+      if (nextId) { e.preventDefault(); review(nextId); }
+      else if (forwardCompletes) { e.preventDefault(); onAction('finish'); }
+    }
   };
 
   return (
@@ -359,8 +384,12 @@ export function Prototype() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => nextId && review(nextId)}
-                    disabled={!nextId}
+                    onClick={() => {
+                      if (nextId) return review(nextId);
+                      if (forwardCompletes) return onAction('finish');
+                      return undefined;
+                    }}
+                    disabled={!nextId && !forwardCompletes}
                     className="mf-btn mf-btn--secondary flex-1"
                     style={{ fontSize: 12 }}
                   >
@@ -559,36 +588,31 @@ export function Prototype() {
                     >
                       Walkthrough control
                     </span>
-                    {/* The two things that can happen to a running infusion.
-                        Both are events rather than actions, which is why they
-                        are here and not on the device: a nurse cannot press a
-                        button to cause an occlusion, and she cannot press one to
-                        make the last 82 mL arrive early either. */}
-                    <div className="flex flex-col gap-2">
-                      <button
-                        type="button"
-                        onClick={() => onAction('event')}
-                        className="mf-btn mf-btn--secondary w-full"
-                        style={{ fontSize: 12 }}
-                      >
-                        <Icon name="bell-alert" size={13} />
-                        Simulate an occlusion alarm
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => onAction('finish')}
-                        className="mf-btn mf-btn--secondary w-full"
-                        style={{ fontSize: 12 }}
-                      >
-                        <Icon name="clipboard-check" size={13} />
-                        Let it run to completion
-                      </button>
-                    </div>
+                    {/* ONE control, not two. The occlusion is the branch worth a
+                        button of its own: it is the thing this section exists to
+                        show, and it is the one an occlusion alarm is genuinely
+                        raised BY the device rather than chosen by the nurse.
+
+                        Running to term needed no button. It is what happens when
+                        nothing interrupts, so it belongs on Forward — the
+                        control that already means "carry on" — rather than on a
+                        second walkthrough button that made the two outcomes look
+                        equally deliberate. */}
+                    <button
+                      type="button"
+                      onClick={() => onAction('event')}
+                      className="mf-btn mf-btn--secondary w-full"
+                      style={{ fontSize: 12 }}
+                    >
+                      <Icon name="bell-alert" size={13} />
+                      Simulate an occlusion alarm
+                    </button>
                     <p className="font-['Outfit'] text-[12px] leading-[1.5] mt-2.5 m-0" style={{ color: 'var(--mf-muted)' }}>
-                      The device&rsquo;s own buttons pause the infusion and open its detail view.
-                      Neither of them can raise an alarm or finish a therapy, because both are
-                      things that happen to an infusion rather than things a nurse does. Take
-                      either branch &mdash; the flow reaches the completion screen through both.
+                      The device&rsquo;s own buttons pause the infusion and open its detail view;
+                      neither can raise an alarm, because an occlusion is something the pump
+                      detects rather than something the nurse does. Leave the infusion alone and
+                      press <span style={{ color: 'var(--mf-accent)', fontWeight: 600 }}>Forward</span>{' '}
+                      to let it run to term instead.
                     </p>
                   </div>
                 )}
