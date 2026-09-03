@@ -9,8 +9,12 @@ import { WORK_SECTIONS } from "../pages/work-sample/components/Portfolio23";
    only ever see dead weight. */
 
 const EMAIL = "akshath4000@gmail.com";
-const RESUME_FILE = "/Akshathdayan_Suresh_Resume_1Page_2026V2.pdf";
-const RESUME_NAME = "Akshathdayan_Suresh_Resume_1Page_2026.pdf";
+/* One file, one name. These used to disagree: the href served the V2 file
+   while the download attribute renamed it to the NON-V2 filename on the way
+   out, so anyone who downloaded the resume got the current document saved
+   under the name of the previous one. */
+const RESUME_FILE = "/Akshathdayan-Suresh-Resume.pdf";
+const RESUME_NAME = "Akshathdayan-Suresh-Resume.pdf";
 
 // Numbers match the section labels already on screen (ABOUT / 01, CONTACT / 05)
 const SECTIONS = [

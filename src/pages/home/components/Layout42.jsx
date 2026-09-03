@@ -142,8 +142,8 @@ export function Layout42() {
 
             {/* Resume Button */}
             <a 
-              href="/Akshathdayan_Suresh_Resume_1Page_2026V2.pdf"
-              download="Akshathdayan_Suresh_Resume_1Page_2026.pdf"
+              href="/Akshathdayan-Suresh-Resume.pdf"
+              download="Akshathdayan-Suresh-Resume.pdf"
               onClick={() => setHasDownloaded(true)}
               onPointerDown={() => setHasDownloaded(true)}
               className={`mt-10 md:mt-14 inline-flex items-center justify-center px-10 md:px-12 py-3.5 md:py-4 rounded-full font-['Outfit'] font-bold text-[11px] md:text-[12px] tracking-[0.2em] uppercase transition-all duration-300 min-w-[200px] md:min-w-[240px] ${hasDownloaded ? 'bg-[#22c55e] text-[#0C0C0B] shadow-[0_0_15px_rgba(34,197,94,0.3)]' : 'bg-[#e8e8e8] text-[#050505] shadow-[0_0_15px_rgba(232,232,232,0.25)] hover:shadow-[0_0_20px_rgba(255,255,255,0.4)] hover:bg-white hover:-translate-y-[2px]'}`}
