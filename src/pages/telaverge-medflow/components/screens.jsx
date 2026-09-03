@@ -2,6 +2,7 @@ import { useState, useId, useEffect } from 'react';
 import { Chip } from './primitives';
 import { Icon, StatusGlyph } from './icons';
 import { SCENARIO, WARD, ESCALATION, TIMING } from '../data/caseStudyData';
+import { playCue } from './sound';
 
 /* ─── The MedFlow screens ────────────────────────────────────────────────────
    Nine interface states, built ONCE and rendered in three places: the hero preview,
@@ -616,7 +617,17 @@ function Actions({ children }) {
 }
 
 function Btn({ variant = 'primary', children, onClick, live, disabled, className = '', full }) {
-  return (
+  /* A DISABLED CONTROL THAT IS PRESSED SHOULD SAY SO. A dead button that
+     absorbs a press silently is its own recovery failure — the user cannot tell
+     whether the control is broken, the press missed, or the action was refused.
+     The screen already answers that in text beside the button; this adds the
+     same answer in the auditory channel, in a cue that is deliberately low and
+     falling so it cannot be mistaken for a confirmation.
+
+     Raised on pointerdown rather than click, because a disabled button fires no
+     click event at all — which is exactly why the silence happens. The wrapper
+     span is inert otherwise and carries no role of its own. */
+  const button = (
     <button
       type="button"
       className={`mf-btn mf-btn--${variant} ${full ? 'col-span-2' : ''} ${className}`}
@@ -627,6 +638,16 @@ function Btn({ variant = 'primary', children, onClick, live, disabled, className
     >
       {children}
     </button>
+  );
+
+  if (!disabled || !live) return button;
+  return (
+    <span
+      className={full ? 'col-span-2 contents' : 'contents'}
+      onPointerDown={() => playCue('deny')}
+    >
+      {button}
+    </span>
   );
 }
 
@@ -1234,7 +1255,10 @@ function Active({ live, state }) {
         <Btn
           variant="secondary"
           live={live}
-          onClick={() => (paused ? setPaused(false) : setConfirmPause(true))}
+          onClick={() => {
+            if (paused) { setPaused(false); playCue('confirm'); return; }
+            setConfirmPause(true);
+          }}
         >
           {paused ? 'Resume infusion' : 'Pause infusion'}
         </Btn>
@@ -1269,7 +1293,7 @@ function Active({ live, state }) {
                 className="mf-btn mf-btn--critical"
                 style={{ minHeight: 40, fontSize: 12 }}
                 tabIndex={live ? 0 : -1}
-                onClick={live ? () => { setPaused(true); setConfirmPause(false); } : undefined}
+                onClick={live ? () => { setPaused(true); setConfirmPause(false); playCue('pause'); } : undefined}
               >
                 Pause infusion
               </button>
@@ -1352,7 +1376,7 @@ function Alert({ live, onAction }) {
             record that a clinician saw it and took it on; a read-only sheet is
             not that, and the two must never share a control. */}
         <Btn variant="secondary" live={live} onClick={() => setDetails(true)}>View details</Btn>
-        <Btn variant="critical" live={live} onClick={() => onAction('next')}>Acknowledge alert</Btn>
+        <Btn variant="critical" live={live} onClick={() => { playCue('ack'); onAction('next'); }}>Acknowledge alert</Btn>
       </Actions>
 
       {details && (
@@ -1457,7 +1481,7 @@ function Complete({ live, onAction, state }) {
             handler with "Acknowledge", so reading the record cleared it — and in
             the prototype, reset the whole walkthrough. */}
         <Btn variant="secondary" live={live} onClick={() => setSummary(true)}>View summary</Btn>
-        <Btn variant="primary" live={live} onClick={() => setAcked(true)}>Acknowledge</Btn>
+        <Btn variant="primary" live={live} onClick={() => { setAcked(true); playCue('ack'); }}>Acknowledge</Btn>
       </Actions>
 
       {/* ── The receipt ──────────────────────────────────────────────────────

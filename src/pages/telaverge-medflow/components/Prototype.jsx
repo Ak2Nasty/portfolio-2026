@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useRef } from 'react';
+import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   Section, SectionHead, Prose, Label, ScopeNote, Chip,
@@ -7,6 +7,7 @@ import { fadeUp, revealProps } from './motion';
 import { Icon, StatusGlyph } from './icons';
 import { MedFlowScreen, DeviceFrame } from './screens';
 import { SCENARIO } from '../data/caseStudyData';
+import { playCue, isSoundEnabled, setSoundEnabled, subscribeSound } from './sound';
 
 /* ─── 10 · Interaction prototype ─────────────────────────────────────────────
    A genuinely clickable walkthrough, running the same screen components that
@@ -80,6 +81,12 @@ export function Prototype() {
   /* Steps the WORKFLOW has granted. Review navigation may not leave this set. */
   const [reached, setReached] = useState(['dashboard']);
   const railRef = useRef(null);
+
+  /* Audio is OFF until the reader asks for it, and the flag lives in the sound
+     module rather than here so the screens can read it without prop-drilling.
+     This mirrors it into state only so the toggle re-renders. */
+  const [sound, setSound] = useState(isSoundEnabled);
+  useEffect(() => subscribeSound(setSound), []);
 
   const step = useMemo(() => FLOW.find((f) => f.id === stepId) ?? FLOW[0], [stepId]);
   const stepIndex = FLOW.findIndex((f) => f.id === stepId);
@@ -157,10 +164,12 @@ export function Prototype() {
         case 'verify':
           if (action === 'verify') {
             setState((s) => ({ ...s, verified: 'scan' }));
+            playCue('confirm');
             return setEvent('Wristband scanned. Patient identity verified.');
           }
           if (action === 'verify-manual') {
             setState((s) => ({ ...s, verified: 'manual' }));
+            playCue('confirm');
             return setEvent(
               'Identity confirmed by manual read-back. Recorded as a manual check, not a scan.',
             );
@@ -182,6 +191,10 @@ export function Prototype() {
                distinction this section is built on: reviewing a record is not
                the same act as performing the workflow. */
             setState((s) => ({ ...s, flaggedRate: s.rate }));
+            /* Falling, three pulses. Serious, and audibly NOT the occlusion —
+               a block the user caused and a fault the device found should not
+               sound alike. */
+            playCue('block');
             setEvent('Entered rate does not match the order. Progression blocked.');
             return advance('discrepancy');
           }
@@ -193,6 +206,7 @@ export function Prototype() {
 
         case 'confirm':
           if (action === 'back') return setStepId('configure');
+          playCue('start');
           setEvent('Simulated infusion started.');
           return advance('active');
 
@@ -212,10 +226,13 @@ export function Prototype() {
              interrupted path compulsory and left no way to see a therapy simply
              run to term. */
           if (action === 'finish') {
+            playCue('complete');
             setEvent('Infusion ran to term without interruption. 100 mL delivered.');
             return advance('complete');
           }
           if (action !== 'event') return undefined;
+          /* The longest pattern on the page, and the only one that repeats. */
+          playCue('alarm');
           setEvent('Occlusion detected. The device has stopped delivery and raised an alarm.');
           return advance('alert');
 
@@ -224,6 +241,7 @@ export function Prototype() {
              term. Previously this reset the prototype, which meant the one
              state a reader never reached was the one where nothing went
              wrong. */
+          playCue('complete');
           setEvent('Alert acknowledged. Infusion resumed and ran to completion.');
           return advance('complete');
 
@@ -297,6 +315,30 @@ export function Prototype() {
                 {String(stepIndex + 1).padStart(2, '0')} / {FLOW.length}
               </span>
             </span>
+
+            {/* ── Sound, off by default ──
+                A case-study page that plays an infusion alarm at whatever
+                volume the reader's laptop happens to be at is hostile, and
+                browsers refuse to start audio before a gesture anyway. So it is
+                opt-in, the control says which state it is in rather than which
+                state it would move to, and nothing in the prototype requires it:
+                every cue accompanies a state already carried by a word, a glyph
+                and a colour. */}
+            <button
+              type="button"
+              onClick={() => { const next = !sound; setSoundEnabled(next); if (next) playCue('confirm'); }}
+              aria-pressed={sound}
+              className="mf-tap inline-flex items-center gap-2 font-['Outfit'] text-[10.5px] font-semibold uppercase px-2.5 py-1.5 rounded-[3px] transition-colors duration-200"
+              style={{
+                letterSpacing: '0.13em',
+                color: sound ? 'var(--mf-accent)' : 'var(--mf-muted)',
+                border: `1px solid ${sound ? 'var(--mf-accent-line)' : 'var(--mf-line-strong)'}`,
+                background: sound ? 'var(--mf-accent-bg)' : 'transparent',
+              }}
+            >
+              <Icon name={sound ? 'bell-alert' : 'bell-off'} size={12} />
+              {sound ? 'Sound on' : 'Sound off'}
+            </button>
 
             {/* Segmented meter. Filled = reached, outlined = current,
                 empty = not yet granted by the workflow. */}

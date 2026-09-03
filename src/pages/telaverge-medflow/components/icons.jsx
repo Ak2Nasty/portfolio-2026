@@ -121,6 +121,19 @@ export function Icon({ name, className = '', size = 16 }) {
         </svg>
       );
 
+    /* The same bell with a stroke through it. A muted state drawn as a
+       DIFFERENT glyph rather than as the same glyph greyed out — the toggle has
+       to be readable at a glance and in greyscale, which is the rule the rest of
+       this interface follows. */
+    case 'bell-off':
+      return (
+        <svg {...p}>
+          <path d="M8 2a4 4 0 014 4v3l1.5 2.5h-11L4 9V6a4 4 0 014-4z" />
+          <path d="M6.5 13a1.5 1.5 0 003 0" />
+          <path d="M3 3l10 10" />
+        </svg>
+      );
+
     /* ── Human factors triad ────────────────────────────────────────────── */
 
     case 'user':

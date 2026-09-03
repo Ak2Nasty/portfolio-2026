@@ -4,6 +4,7 @@ import {
 } from './primitives';
 import { fadeUp, revealProps } from './motion';
 import { StatusGlyph } from './icons';
+import { CUE_SPEC } from './sound';
 import {
   TYPE_SCALE, INPUT_STATES, ALERT_TIERS, STATUS_TIERS, COMPONENTS, A11Y,
 } from '../data/caseStudyData';
@@ -258,6 +259,76 @@ export function Accessibility() {
               </p>
             </Card>
           ))}
+        </motion.div>
+
+        {/* ── The auditory channel ────────────────────────────────────────
+            Sound is the one modality a screenshot cannot show, so it gets a
+            table rather than a sentence. The cues are real and audible in the
+            prototype, and the table is generated from the same definitions that
+            play them, so the description cannot drift from the behaviour.
+
+            The limits paragraph is not boilerplate. Alarm signals for medical
+            electrical equipment are the subject of IEC 60601-1-8, which
+            specifies sound pressure levels at stated distances on characterised
+            hardware — none of which a web page has, and all of which would be
+            invented if this section claimed conformance. */}
+        <motion.div variants={fadeUp} className="mt-14 md:mt-20 pt-10" style={{ borderTop: '1px solid var(--mf-line-strong)' }}>
+          <Label tone="accent" className="mb-3">Auditory signals</Label>
+          <h3
+            className="font-['Outfit'] font-semibold leading-[1.2] text-[21px] sm:text-[24px] md:text-[27px] max-w-[26ch] m-0 mb-4"
+            style={{ color: 'var(--mf-ink)', letterSpacing: '-0.015em' }}
+          >
+            Sound is the fourth signal, never the first
+          </h3>
+          <p className="font-['Outfit'] text-[14.5px] leading-[1.7] max-w-[72ch] m-0 mb-7" style={{ color: 'var(--mf-ink-2)' }}>
+            Every cue in the prototype accompanies a state already carried by a word, a glyph, a
+            position and a colour. Turn the sound off and nothing is lost &mdash; which is the test,
+            because the volume may be down, the room may be loud, and the user may be deaf or hard
+            of hearing. Priority is carried by pattern rather than by loudness: the occlusion is ten
+            pulses in two falling bursts, a blocked progression is three, a deliberate pause is two
+            flat tones. Alarms fall and completions rise, because a confirmation that sounds like an
+            alarm teaches people to ignore alarms.
+          </p>
+
+          <div style={{ border: '1px solid var(--mf-line)', borderRadius: 4, overflow: 'hidden' }}>
+            <table className="mf-table">
+              <thead>
+                <tr>
+                  <th scope="col" style={{ width: '26%' }}>Cue</th>
+                  <th scope="col" style={{ width: '30%' }}>Pattern</th>
+                  <th scope="col" style={{ width: '44%' }}>Raised when</th>
+                </tr>
+              </thead>
+              <tbody>
+                {CUE_SPEC.map((c) => (
+                  <tr key={c.id}>
+                    <td data-label="Cue">
+                      <span className="inline-flex items-center gap-2.5 font-medium" style={{ color: 'var(--mf-ink)' }}>
+                        <span aria-hidden="true" className={`mf-chip mf-chip--${c.tone === 'done' ? 'run' : c.tone}`} style={{ padding: 0, border: 0, background: 'transparent' }}>
+                          <StatusGlyph shape={c.tone === 'crit' ? 'octagon' : c.tone === 'attn' ? 'triangle' : c.tone === 'off' ? 'pause' : c.tone === 'info' ? 'dot' : 'play'} size={11} />
+                        </span>
+                        {c.label}
+                      </span>
+                    </td>
+                    <td data-label="Pattern" style={{ color: 'var(--mf-muted)' }}>{c.shape}</td>
+                    <td data-label="Raised when">{c.use}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="mt-6">
+            <ScopeNote>
+              These are conceptual cues, not compliant alarm signals, and they could not be. Alarm
+              signals for medical electrical equipment fall under IEC 60601-1-8 rather than IEC
+              62366, and that standard specifies sound pressure level at a stated distance,
+              verified acoustic output, and behaviour under alarm-off and audio-paused states. The
+              volume here is whatever the reader&rsquo;s device is set to, through speakers nobody
+              specified, in a room nobody characterised. Nothing on this page has been tested
+              against any standard.
+            </ScopeNote>
+          </div>
         </motion.div>
 
         <motion.div variants={fadeUp} className="mt-8">
