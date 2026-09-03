@@ -136,6 +136,21 @@ const CUES = {
     pulses: 4, bursts: 1, notes: [523, 659, 784, 1047],
     dur: 0.11, gap: 0.05, rest: 0, gain: 0.085, type: 'sine',
   },
+  /* The clinician has been paged. ALTERNATING TWO-TONE, which is the one
+     contour nothing else in this set uses — everything else rises, falls or
+     holds flat. That is deliberate: this is not the device reporting a fault
+     and it is not a check passing, it is a call going out to a person, and the
+     alternating pair is the convention a call already has.
+
+     Explicitly NOT the occlusion cue. The two are the most urgent things that
+     happen on this device and they are opposite in origin: one is the pump
+     telling the nurse something, the other is the nurse telling a clinician
+     something. Giving them the same sound would make the most important
+     distinction on the device the one the audio channel throws away. */
+  escalate: {
+    pulses: 4, bursts: 1, notes: [880, 659, 880, 659],
+    dur: 0.14, gap: 0.03, rest: 0, gain: 0.11, type: 'triangle',
+  },
   /* A record was written. Quiet and singular: it confirms receipt, it is not
      news. */
   ack: {
@@ -198,6 +213,7 @@ export const CUE_SPEC = [
   { id: 'confirm', label: 'Check passed', shape: '2 tones, rising', use: 'Identity verified, infusion resumed', tone: 'run' },
   { id: 'start', label: 'Therapy started', shape: '3 tones, rising', use: 'Simulated infusion initiated', tone: 'run' },
   { id: 'complete', label: 'Infusion complete', shape: '4 tones, rising to the octave', use: 'Therapy ran to term', tone: 'run' },
+  { id: 'escalate', label: 'Clinician paged', shape: '4 tones, alternating pair', use: 'Urgent escalation sent from the bell', tone: 'crit' },
   { id: 'ack', label: 'Record written', shape: '1 tone', use: 'Alarm or completion acknowledged', tone: 'info' },
   { id: 'deny', label: 'Control refused', shape: '2 tones, falling, low', use: 'A disabled control was pressed', tone: 'crit' },
 ];

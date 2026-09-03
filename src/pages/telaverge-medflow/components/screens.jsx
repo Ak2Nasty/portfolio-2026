@@ -138,17 +138,29 @@ function EscalateControl({ live, disabled = false }) {
 
   return (
     <>
-      <button
-        type="button"
-        className="mf-escalate"
-        aria-label={disabled ? 'Alert clinician — select a patient first' : 'Alert the responsible clinician'}
-        aria-describedby={disabled ? `${uid}-why` : undefined}
-        disabled={disabled}
-        tabIndex={live && !disabled ? 0 : -1}
-        onClick={live && !disabled ? () => setPhase('confirm') : undefined}
+      {/* The bell is disabled on the dashboard, where there is no patient for an
+          alert to be about. A dead control that absorbs a press in silence
+          leaves the user unable to tell whether it is broken, whether the press
+          missed, or whether it was refused — so the refusal is audible too, on
+          pointerdown, because a disabled button fires no click at all. The
+          reason is already stated for a screen reader in the sr-only note
+          below. */}
+      <span
+        className="contents"
+        onPointerDown={disabled && live ? () => playCue('deny') : undefined}
       >
-        <Icon name="bell-alert" size={14} />
-      </button>
+        <button
+          type="button"
+          className="mf-escalate"
+          aria-label={disabled ? 'Alert clinician — select a patient first' : 'Alert the responsible clinician'}
+          aria-describedby={disabled ? `${uid}-why` : undefined}
+          disabled={disabled}
+          tabIndex={live && !disabled ? 0 : -1}
+          onClick={live && !disabled ? () => setPhase('confirm') : undefined}
+        >
+          <Icon name="bell-alert" size={14} />
+        </button>
+      </span>
 
       {phase !== 'idle' && (
         <div className="mf-overlay" role="dialog" aria-modal="true" aria-labelledby={`${uid}-t`}>
@@ -177,7 +189,7 @@ function EscalateControl({ live, disabled = false }) {
                     type="button"
                     className="mf-btn mf-btn--critical"
                     tabIndex={live ? 0 : -1}
-                    onClick={live ? () => setPhase('sent') : undefined}
+                    onClick={live ? () => { setPhase('sent'); playCue('escalate'); } : undefined}
                   >
                     {U.confirmAction}
                   </button>
