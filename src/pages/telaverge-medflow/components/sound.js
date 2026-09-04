@@ -107,6 +107,16 @@ const CUES = {
     pulses: 5, bursts: 2, notes: [988, 880, 784, 698, 622],
     dur: 0.11, gap: 0.07, rest: 0.34, gain: 0.14, type: 'triangle',
   },
+  /* A device condition that has NOT stopped delivery — battery low, and its
+     kind. Three pulses like the high-priority burst, but one burst instead of
+     two and a narrower fall: audibly the same family as the occlusion, audibly
+     less of it. That relationship is the whole design. Two unrelated sounds
+     would make the reader learn two sounds; a shortened version of the same one
+     makes the ranking audible without anything to memorise. */
+  alarmMed: {
+    pulses: 3, bursts: 1, notes: [880, 830, 784],
+    dur: 0.12, gap: 0.06, rest: 0, gain: 0.11, type: 'triangle',
+  },
   /* Progression blocked at the discrepancy. Serious, not an emergency: one
      burst of three, falling. */
   block: {
@@ -208,6 +218,7 @@ export function playCue(name) {
    drift out of date. */
 export const CUE_SPEC = [
   { id: 'alarm', label: 'Occlusion alarm', shape: '2 bursts of 5, falling', use: 'Delivery stopped by the device', tone: 'crit' },
+  { id: 'alarmMed', label: 'Attention required', shape: '1 burst of 3, narrow fall', use: 'A device condition that has not stopped delivery', tone: 'attn' },
   { id: 'block', label: 'Progression blocked', shape: '1 burst of 3, falling', use: 'Entered rate does not match the order', tone: 'attn' },
   { id: 'pause', label: 'Paused', shape: '2 flat tones, low', use: 'Delivery stopped by the nurse', tone: 'off' },
   { id: 'confirm', label: 'Check passed', shape: '2 tones, rising', use: 'Identity verified, infusion resumed', tone: 'run' },

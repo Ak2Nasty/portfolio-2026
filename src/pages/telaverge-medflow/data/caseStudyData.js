@@ -588,6 +588,73 @@ export const RISKS = [
 
 /* ─── 08 · Wireframes ──────────────────────────────────────────────────────── */
 
+/* ─── Device conditions ──────────────────────────────────────────────────────
+   FOUR CONDITIONS AT TWO PRIORITIES, because an alarm system is not one alarm.
+
+   The prototype used to raise a single occlusion, which demonstrated that the
+   interface could show AN alarm. It did not demonstrate the thing that actually
+   matters in alarm design: that different conditions are told apart, ranked
+   against each other, and given responses proportionate to what they mean.
+
+   ── The ranking ──
+   The split here is between conditions where delivery has STOPPED and the
+   patient is not receiving therapy, and conditions where delivery continues but
+   something needs attention before it does not. That is the distinction a nurse
+   walking up to the device has to make in about a second, so it is carried by
+   the state word, the glyph, the border weight, the colour AND the audio
+   pattern — five signals, no single point of failure.
+
+   ── What is deliberately absent ──
+   No numeric priority levels, no alarm-limit configuration, no escalation
+   timers, no distributed-alarm behaviour. Those belong to IEC 60601-1-8 and to
+   a hazard analysis this study has not done. What is here is the interface
+   question: can you tell these apart, and do you know which one to walk to
+   first. Nothing about the conditions themselves is clinical — an occlusion, an
+   empty reservoir, air in the line and a low battery are properties of the
+   equipment, not of the patient. */
+export const CONDITIONS = [
+  {
+    id: 'occlusion',
+    label: 'Occlusion',
+    chip: 'Infusion interrupted',
+    heading: 'Occlusion detected',
+    body: 'Check the infusion line and patient according to established clinical procedure.',
+    priority: 'Delivery stopped',
+    delivering: false,
+    cue: 'alarm',
+  },
+  {
+    id: 'air',
+    label: 'Air in line',
+    chip: 'Infusion interrupted',
+    heading: 'Air detected in the line',
+    body: 'Delivery has stopped. Inspect the line according to established clinical procedure before resuming.',
+    priority: 'Delivery stopped',
+    delivering: false,
+    cue: 'alarm',
+  },
+  {
+    id: 'empty',
+    label: 'Reservoir empty',
+    chip: 'Infusion interrupted',
+    heading: 'Reservoir empty',
+    body: 'The programmed volume has not been delivered. Delivery has stopped.',
+    priority: 'Delivery stopped',
+    delivering: false,
+    cue: 'alarm',
+  },
+  {
+    id: 'battery',
+    label: 'Battery low',
+    chip: 'Attention required',
+    heading: 'Battery low',
+    body: 'Delivery is continuing. Connect the device to mains power.',
+    priority: 'Still delivering',
+    delivering: true,
+    cue: 'alarmMed',
+  },
+];
+
 export const WIREFRAMES = [
   { id: 'dashboard', title: 'Patient dashboard', note: 'Make the patient requiring action scannable first.' },
   { id: 'verify', title: 'Patient verification', note: 'Keep patient identity persistent.' },

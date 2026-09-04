@@ -6,7 +6,7 @@ import {
 import { fadeUp, revealProps } from './motion';
 import { Icon, StatusGlyph } from './icons';
 import { MedFlowScreen, DeviceFrame } from './screens';
-import { SCENARIO } from '../data/caseStudyData';
+import { SCENARIO, CONDITIONS } from '../data/caseStudyData';
 import { playCue, isSoundEnabled, setSoundEnabled, subscribeSound } from './sound';
 
 /* ─── 10 · Interaction prototype ─────────────────────────────────────────────
@@ -68,7 +68,7 @@ const FLOW = [
   { id: 'discrepancy', label: 'Discrepancy', note: 'Progression is blocked. The entered rate does not match the order.' },
   { id: 'confirm', label: 'Confirm', note: 'A dedicated review stage immediately before a safety-significant action.' },
   { id: 'active', label: 'Monitor', note: 'Infusion running. State, therapy and rate are all visible at once. Two things can happen next: it is interrupted, or it runs to term. Neither is something the nurse does, so neither sits on the device.' },
-  { id: 'alert', label: 'Alert', note: 'An occlusion has interrupted the infusion. Four signals, before colour is counted.' },
+  { id: 'alert', label: 'Alert', note: 'A device condition has been raised. Whether delivery stopped is the first thing the screen answers — carried by the state word, the glyph, the border and the audio pattern before colour is counted.' },
   { id: 'complete', label: 'Complete', note: 'Finished, and visibly distinct from paused or interrupted — its own state, glyph, and delivery summary.' },
 ];
 
@@ -87,6 +87,7 @@ export function Prototype() {
      This mirrors it into state only so the toggle re-renders. */
   const [sound, setSound] = useState(isSoundEnabled);
   useEffect(() => subscribeSound(setSound), []);
+
 
   const step = useMemo(() => FLOW.find((f) => f.id === stepId) ?? FLOW[0], [stepId]);
   const stepIndex = FLOW.findIndex((f) => f.id === stepId);
@@ -230,11 +231,22 @@ export function Prototype() {
             setEvent('Infusion ran to term without interruption. 100 mL delivered.');
             return advance('complete');
           }
-          if (action !== 'event') return undefined;
-          /* The longest pattern on the page, and the only one that repeats. */
-          playCue('alarm');
-          setEvent('Occlusion detected. The device has stopped delivery and raised an alarm.');
-          return advance('alert');
+          /* `action` now carries WHICH condition was raised, so one branch
+             handles all four rather than four near-identical branches. */
+          {
+            const c = CONDITIONS.find((x) => x.id === action);
+            if (!c) return undefined;
+            setState((s) => ({ ...s, condition: c.id }));
+            /* The audio ranks it too: two bursts for a stopped delivery, one
+               for a condition that has not stopped it. */
+            playCue(c.cue);
+            setEvent(
+              c.delivering
+                ? `${c.heading}. Delivery is continuing; the device is asking for attention rather than reporting a stoppage.`
+                : `${c.heading}. The device has stopped delivery and raised an alarm.`,
+            );
+            return advance('alert');
+          }
 
         case 'alert':
           /* Acknowledging the alert resolves it; the infusion then runs to
@@ -603,30 +615,51 @@ export function Prototype() {
                     >
                       Walkthrough control
                     </span>
-                    {/* ONE control, not two. The occlusion is the branch worth a
-                        button of its own: it is the thing this section exists to
-                        show, and it is the one an occlusion alarm is genuinely
-                        raised BY the device rather than chosen by the nurse.
+                    {/* FOUR CONDITIONS, GROUPED BY WHAT THEY MEAN, because an
+                        alarm system is not one alarm. Three have stopped
+                        delivery; one has not, and that is the distinction a
+                        nurse has to make in about a second when several devices
+                        are sounding at once.
 
-                        Running to term needed no button. It is what happens when
-                        nothing interrupts, so it belongs on Forward — the
-                        control that already means "carry on" — rather than on a
-                        second walkthrough button that made the two outcomes look
-                        equally deliberate. */}
-                    <button
-                      type="button"
-                      onClick={() => onAction('event')}
-                      className="mf-btn mf-btn--secondary w-full"
-                      style={{ fontSize: 12 }}
-                    >
-                      <Icon name="bell-alert" size={13} />
-                      Simulate an occlusion alarm
-                    </button>
-                    <p className="font-['Outfit'] text-[12px] leading-[1.5] mt-2.5 m-0" style={{ color: 'var(--mf-muted)' }}>
+                        They sit here rather than on the device for the same
+                        reason as before: none of these is an action a nurse
+                        performs. A pump detects an occlusion, air in the line,
+                        an empty reservoir and a failing battery — nobody presses
+                        a button to cause one. */}
+                    <div className="flex flex-col gap-3">
+                      {[
+                        ['Stops delivery', CONDITIONS.filter((c) => !c.delivering), 'var(--mf-crit)'],
+                        ['Delivery continues', CONDITIONS.filter((c) => c.delivering), 'var(--mf-attn)'],
+                      ].map(([heading, list, tone]) => (
+                        <div key={heading}>
+                          <span
+                            className="font-['Outfit'] text-[10px] font-semibold uppercase flex items-center gap-2 mb-2"
+                            style={{ letterSpacing: '0.13em', color: tone }}
+                          >
+                            <StatusGlyph shape={tone === 'var(--mf-crit)' ? 'octagon' : 'triangle'} size={10} />
+                            {heading}
+                          </span>
+                          <div className="flex flex-wrap gap-2">
+                            {list.map((c) => (
+                              <button
+                                key={c.id}
+                                type="button"
+                                onClick={() => onAction(c.id)}
+                                className="mf-btn mf-btn--secondary"
+                                style={{ fontSize: 11.5, flex: '1 1 auto', minWidth: 0 }}
+                              >
+                                {c.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="font-['Outfit'] text-[12px] leading-[1.5] mt-3 m-0" style={{ color: 'var(--mf-muted)' }}>
                       The device&rsquo;s own buttons pause the infusion and open its detail view;
-                      neither can raise an alarm, because an occlusion is something the pump
-                      detects rather than something the nurse does. Leave the infusion alone and
-                      press <span style={{ color: 'var(--mf-accent)', fontWeight: 600 }}>Forward</span>{' '}
+                      none of them can raise a condition, because a pump detects these rather than
+                      a nurse causing them. Leave the infusion alone and press{' '}
+                      <span style={{ color: 'var(--mf-accent)', fontWeight: 600 }}>Forward</span>{' '}
                       to let it run to term instead.
                     </p>
                   </div>
@@ -641,6 +674,7 @@ export function Prototype() {
                   </div>
                 )}
               </div>
+
             </div>
           </div>
         </motion.div>

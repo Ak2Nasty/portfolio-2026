@@ -1,7 +1,7 @@
 import { useState, useId, useEffect } from 'react';
 import { Chip } from './primitives';
 import { Icon, StatusGlyph } from './icons';
-import { SCENARIO, WARD, ESCALATION, TIMING } from '../data/caseStudyData';
+import { SCENARIO, WARD, ESCALATION, TIMING, CONDITIONS } from '../data/caseStudyData';
 import { playCue } from './sound';
 
 /* ─── The MedFlow screens ────────────────────────────────────────────────────
@@ -1344,17 +1344,27 @@ function Active({ live, state }) {
    The copy deliberately stops at "check the line and patient according to
    established clinical procedure". Inventing troubleshooting steps would be
    inventing clinical guidance, which this study has no basis to do. */
-function Alert({ live, onAction }) {
+function Alert({ live, onAction, state }) {
   const [details, setDetails] = useState(false);
+  /* The screen is now driven by WHICH condition was raised rather than
+     hard-coded to the occlusion. Falls back to the occlusion so the static
+     render in section 09 still shows the screen this study talks about.
+
+     `delivering` is the distinction that matters at a glance: a condition that
+     has stopped delivery and a condition that has not are different emergencies,
+     and the whole point of ranking them is that a nurse can tell in about a
+     second which one to walk to first. */
+  const c = CONDITIONS.find((x) => x.id === (state?.condition ?? 'occlusion')) ?? CONDITIONS[0];
+  const stopped = !c.delivering;
   return (
     <div className="mf-screen">
       <IdentityBar live={live} />
 
       <div className="px-[18px] pt-[18px] pb-4">
-        <Chip tone="crit">Infusion interrupted</Chip>
+        <Chip tone={stopped ? 'crit' : 'attn'}>{c.chip}</Chip>
 
         <h3 className="text-[19px] font-semibold mt-3.5 m-0 leading-tight" style={{ color: 'var(--mf-ink)', letterSpacing: '-0.01em' }}>
-          Occlusion detected
+          {c.heading}
         </h3>
 
         <div className="flex items-baseline gap-2.5 mt-2.5">
@@ -1364,19 +1374,23 @@ function Alert({ live, onAction }) {
       </div>
 
       <div className="px-[18px] pb-4 flex flex-col gap-3">
-        <div className="mf-alert mf-alert--crit">
-          <span className="shrink-0 mt-[2px]" style={{ color: 'var(--mf-crit)' }}>
-            <StatusGlyph shape="octagon" size={15} />
+        <div className={`mf-alert ${stopped ? 'mf-alert--crit' : 'mf-alert--attn'}`}>
+          <span className="shrink-0 mt-[2px]" style={{ color: stopped ? 'var(--mf-crit)' : 'var(--mf-attn)' }}>
+            <StatusGlyph shape={stopped ? 'octagon' : 'triangle'} size={15} />
           </span>
           <div>
-            {/* "Delivery stopped by the device", not "Infusion paused". The
-                monitor screen now has a real user-initiated pause, and the whole
-                point of that state is that it is not this one — reusing the word
-                here would put the same label on the thing the nurse did and the
-                thing the device did to her. */}
-            <p className="text-[13px] font-semibold m-0" style={{ color: 'var(--mf-crit)' }}>Delivery stopped by the device</p>
-            <p className="text-[12.5px] leading-[1.55] mt-1 m-0" style={{ color: 'var(--mf-crit)' }}>
-              Check the infusion line and patient according to established clinical procedure.
+            {/* The state line is the RANKING, in words. "Delivery stopped by the
+                device" and "delivery is continuing" are the two facts a nurse
+                needs before anything else, and they are deliberately not
+                "Infusion paused" — the monitor screen has a real user-initiated
+                pause, and putting the same label on the thing the nurse did and
+                the thing the device did to her would collapse the distinction
+                the whole state model rests on. */}
+            <p className="text-[13px] font-semibold m-0" style={{ color: stopped ? 'var(--mf-crit)' : 'var(--mf-attn)' }}>
+              {stopped ? 'Delivery stopped by the device' : 'Delivery continuing — attention required'}
+            </p>
+            <p className="text-[12.5px] leading-[1.55] mt-1 m-0" style={{ color: stopped ? 'var(--mf-crit)' : 'var(--mf-attn)' }}>
+              {c.body}
             </p>
           </div>
         </div>
@@ -1388,21 +1402,21 @@ function Alert({ live, onAction }) {
             record that a clinician saw it and took it on; a read-only sheet is
             not that, and the two must never share a control. */}
         <Btn variant="secondary" live={live} onClick={() => setDetails(true)}>View details</Btn>
-        <Btn variant="critical" live={live} onClick={() => { playCue('ack'); onAction('next'); }}>Acknowledge alert</Btn>
+        <Btn variant={stopped ? 'critical' : 'primary'} live={live} onClick={() => { playCue('ack'); onAction('next'); }}>Acknowledge alert</Btn>
       </Actions>
 
       {details && (
         <DetailSheet
           title="Alarm detail"
           icon="bell-alert"
-          tone="var(--mf-crit)"
+          tone={stopped ? 'var(--mf-crit)' : 'var(--mf-attn)'}
           live={live}
           onClose={() => setDetails(false)}
           rows={[
-            ['Condition', 'Occlusion detected'],
+            ['Condition', c.heading],
             ['Patient', P.name],
             ['Medication', ORDER.medication],
-            ['Delivery', 'Stopped'],
+            ['Delivery', stopped ? 'Stopped' : 'Continuing'],
             ['Delivered', `${TIMING.deliveredMl} of ${TIMING.volume} mL`],
             ['Detected', TIMING.nowAt],
           ]}
