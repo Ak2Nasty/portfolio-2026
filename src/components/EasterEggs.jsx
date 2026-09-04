@@ -254,7 +254,7 @@ function ConsoleEasterEgg() {
 // it costs nothing, it is invisible unless you go looking, and anyone who opens
 // devtools on a portfolio has opted in.
 // ─────────────────────────────────────────────
-const NO_EGG_ROUTES = ["/chanel-wfj", "/telaverge-medflow"];
+const NO_EGG_ROUTES = ["/telaverge-medflow"];
 
 export function EasterEggs() {
   const [gameOpen, setGameOpen] = useState(false);

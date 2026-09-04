@@ -5,9 +5,9 @@
    Every selector in this file is scoped beneath `.mdf`, a class that exists on
    exactly one element in the entire application — the route root in index.jsx.
    Vite bundles CSS globally, so these rules are PRESENT on every route; scoping
-   means they can MATCH nothing anywhere else. That is the same contract the
-   CHANEL study runs on, and it is what makes it safe to ship a second page with
-   a completely different palette without touching the live homepage.
+   means they can MATCH nothing anywhere else. That is what makes it safe to
+   ship a page with a completely different palette from the rest of the site
+   without touching the live homepage.
 
    THE GROUND
    Clinical paper. #F6F6F4, not white — white is a screen, paper is a document,
@@ -41,9 +41,9 @@
   /* ── Ink ────────────────────────────────────────────────────────────────
      17.58 / 11.72 / 5.59 against #f6f6f4. --mf-muted is the floor: it is used
      for real text (labels, captions, metadata), so it has to clear 4.5:1 on
-     its own. There is deliberately no fainter step — the CHANEL page shipped
-     a 3.62:1 token and then had to be audited to find everywhere it had
-     leaked into running text. */
+     its own. There is deliberately no fainter step: an earlier page on this
+     site shipped a 3.62:1 token and then had to be audited to find everywhere
+     it had leaked out of decoration and into running text. */
   --mf-ink: #101010;
   --mf-ink-2: #33332f;
   --mf-muted: #63635c;

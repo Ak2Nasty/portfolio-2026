@@ -30,7 +30,7 @@ export default function NotFound() {
         </div>
         
         <p className="font-['Outfit'] text-[12px] md:text-[14px] text-[#666] mb-12 max-w-md">
-          If issues persist, please email <a href="mailto:akshath400@gmail.com" className="text-[#a3a3a3] hover:text-white transition-colors border-b border-transparent hover:border-white">akshath400@gmail.com</a>
+          If issues persist, please email <a href="mailto:akshath4000@gmail.com" className="text-[#a3a3a3] hover:text-white transition-colors border-b border-transparent hover:border-white">akshath4000@gmail.com</a>
         </p>
 
         <Link 

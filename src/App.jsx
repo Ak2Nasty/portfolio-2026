@@ -4,7 +4,6 @@ import { ReactLenis } from 'lenis/react';
 import Home from "./pages/home";
 import WorkSample from "./pages/work-sample";
 import NotFound from "./pages/NotFound";
-import ChanelWFJ from "./pages/chanel-wfj";
 import MedFlow from "./pages/telaverge-medflow";
 import { Loader } from "./components/Loader";
 import { EasterEggs } from "./components/EasterEggs";
@@ -74,7 +73,6 @@ function App() {
               archive and the homepage, and it sets its own noindex/nofollow
               while mounted. vercel.json already rewrites every path to
               index.html, so a direct load and a refresh both resolve here. */}
-          <Route path="/chanel-wfj" element={<ChanelWFJ />} />
           {/* Unlisted conceptual case study. Same contract as the route above:
               reachable by direct URL only, absent from the navbar, the command
               palette, the work archive and the homepage, and it sets its own

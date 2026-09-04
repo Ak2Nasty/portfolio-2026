@@ -33,7 +33,9 @@ const DESCRIPTION =
    this hook created (remove it) and one that already existed (restore its
    previous value), because those are different repairs.
 
-   This is the same contract /chanel-wfj runs on, deliberately unchanged. */
+   The contract was written for an earlier unlisted case study on this site and
+   is deliberately unchanged here: the whole point of it is that a second page
+   with its own title, description and robots tag cannot leak into the first. */
 function useCaseStudyMetadata() {
   useEffect(() => {
     const previousTitle = document.title;
