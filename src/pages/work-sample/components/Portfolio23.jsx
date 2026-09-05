@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SecureFileViewer } from "./SecureFileViewer";
 import { Image as ImageIcon, Terminal } from "lucide-react";
@@ -6,6 +6,7 @@ import { useLocation, Link } from "react-router-dom";
 import { useLenis } from "lenis/react";
 import { ScrambleLabel } from "../../../components/ScrambleLabel";
 import { ArchiveTicker } from "./ArchiveTicker";
+import { MedFlowScreen, DeviceFrame } from "../../telaverge-medflow/components/screens";
 
 /* Card thumbnails come from pre-rendered WebPs (see scripts/generate-pdf-thumbs.mjs).
    Rendering them with react-pdf meant downloading every source PDF — ~19MB+ — just
@@ -18,6 +19,85 @@ const thumbFor = (url) =>
     .replace(/\.pdf$/i, "")
     .replace(/[^a-z0-9]+/gi, "-")
     .toLowerCase() + ".webp";
+
+/* ── The MedFlow tile's thumbnail is the real device ─────────────────────────
+   Not a screenshot. It mounts the same MedFlowScreen component the case study's
+   hero renders, at the same monitoring screen, scaled to fit the card.
+
+   A screenshot would have been one more asset to regenerate every time that
+   interface changes, and it HAS changed repeatedly — the paused bar, the
+   identity bar, the countdown. A picture of a component that no longer looks
+   like that is worse than no picture. This cannot drift, because it is the
+   component.
+
+   It costs nothing to include: the app is a single bundle, so those components
+   already ship whether this page imports them or not.
+
+   `.mdf` is required. Every MedFlow rule is scoped beneath that class and the
+   stylesheet is global, so the device renders correctly anywhere the class
+   appears — the isolation contract that page was built on, used here for the
+   first time outside it.
+
+   ── Why the scale is measured rather than written down ──
+   The thumbnail well is 214x91 in the three-column desktop grid and 332x179 in
+   the two-column one. A fixed scale that fits the small well leaves the large
+   one two-thirds empty, and one that fills the large well is clipped in the
+   small one. So the device keeps its 380px design width and the scale is
+   derived from whatever width the card actually has.
+
+   IT MUST KEEP THAT WIDTH. Letting the card squeeze the element instead would
+   take the screen under the 300px container query it uses, which stacks the
+   field pairs and pushes it from 592px to 664px — the thumbnail would be
+   showing a layout that exists nowhere else on the site.
+
+   The crop is the band that reads at this size: state chip, medication, and the
+   rate set at 44px. A whole device scaled to fit a 91px strip would be 107px
+   wide and unreadable at every point. */
+const DEVICE_W = 380;   // the device's design width
+const CROP_TOP = 130;   // px into the device where the state chip begins
+
+const MedFlowThumbnail = () => {
+  const wellRef = useRef(null);
+  const [scale, setScale] = useState(0);
+
+  useEffect(() => {
+    const el = wellRef.current;
+    if (!el) return undefined;
+    const measure = () => setScale(el.clientWidth / DEVICE_W);
+    measure();
+    if (typeof ResizeObserver === "undefined") return undefined;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={wellRef}
+      aria-hidden="true"
+      className="mdf absolute inset-0 overflow-hidden pointer-events-none"
+      style={{ background: "var(--mf-bg-alt)" }}
+    >
+      {/* Hidden until measured, so the first paint is never a 380px device
+          overflowing a 214px card. */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: DEVICE_W,
+          transform: `scale(${scale}) translateY(${-CROP_TOP}px)`,
+          transformOrigin: "top left",
+          opacity: scale ? 1 : 0,
+        }}
+      >
+        <DeviceFrame>
+          <MedFlowScreen id="active" />
+        </DeviceFrame>
+      </div>
+    </div>
+  );
+};
 
 const ImageThumbnail = ({ src, alt }) => {
   const [loaded, setLoaded] = useState(false);
@@ -36,8 +116,8 @@ const ImageThumbnail = ({ src, alt }) => {
   );
 };
 
-const TYPE_LABEL = { pdf: "DOCUMENT", meta: "SYSTEM", gallery: "GALLERY", image: "IMAGE" };
-const TYPE_PLURAL = { DOCUMENT: "DOCUMENTS", SYSTEM: "SYSTEMS", GALLERY: "GALLERIES", IMAGE: "IMAGES" };
+const TYPE_LABEL = { pdf: "DOCUMENT", meta: "SYSTEM", gallery: "GALLERY", image: "IMAGE", route: "CASE STUDY" };
+const TYPE_PLURAL = { DOCUMENT: "DOCUMENTS", SYSTEM: "SYSTEMS", GALLERY: "GALLERIES", IMAGE: "IMAGES", "CASE STUDY": "CASE STUDIES" };
 const labelFor = (type) => TYPE_LABEL[type] || "IMAGE";
 
 function countFiles(files) {
@@ -61,6 +141,16 @@ export const WORK_SECTIONS = [
     context: "A highly interactive, cinematic project built from the ground up to showcase my journey and technical capabilities.",
     files: [
       { id: "meta-1", title: "My Newest Project", type: "meta", url: "self" },
+    ]
+  },
+  {
+    id: "telaverge",
+    company: "MedFlow",
+    role: "UI/UX & Human Factors — Independent Concept Study",
+    metadata: "SELF-DIRECTED • SAFETY-CRITICAL UX • 2026",
+    context: "A conceptual infusion-pump interface exploring how design can support error detection and recovery in a safety-critical workflow. Nine interface states, a clickable prototype that blocks a ten-fold rate entry, a use-related risk analysis, and a proposed formative evaluation. Not a validated medical device.",
+    files: [
+      { id: "telaverge-1", title: "MedFlow — Full Case Study", type: "route", url: "/telaverge-medflow" },
     ]
   },
   {
@@ -390,7 +480,13 @@ export function Portfolio23() {
                         hidden: { opacity: 0, y: 26 },
                         visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
                       }}
+                      /* A `route` tile is a link to a page on this site, not a
+                         file to open in the viewer. It is rendered as a real
+                         anchor further down so it keeps middle-click, open-in-
+                         new-tab and the keyboard behaviour an anchor has for
+                         free; this handler simply leaves it alone. */
                       onClick={() => {
+                        if (file.type === "route") return;
                         if (file.type === "meta") {
                           triggerMetaGlitch();
                         } else {
@@ -399,6 +495,22 @@ export function Portfolio23() {
                       }}
                       className="group relative bg-[#121211]/40 backdrop-blur-md border border-[#222] hover:border-[#444] rounded-xl overflow-hidden cursor-pointer transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex flex-col aspect-[4/3]"
                     >
+                      {/* A REAL ANCHOR, stretched over the whole card.
+                          The tile is a div because every other file type opens
+                          a viewer rather than navigating. Giving the route type
+                          an absolutely-positioned link instead of an onClick
+                          costs nothing visually and buys back everything an
+                          anchor does that a click handler does not: middle-click
+                          to a new tab, cmd-click, "copy link address", a real
+                          focus stop, and a status-bar preview of where it goes. */}
+                      {file.type === "route" && (
+                        <Link
+                          to={file.url}
+                          aria-label={`${file.title} — open the case study`}
+                          className="absolute inset-0 z-30 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+                        />
+                      )}
+
                       {/* Thumbnail Area */}
                       <div className="flex-1 bg-[#1a1a1a] flex items-center justify-center relative overflow-hidden">
                         {/* Placeholder graphic based on type */}
@@ -407,7 +519,9 @@ export function Portfolio23() {
                         {/* Frosted Glass Overlay */}
                         <div className="absolute inset-0 bg-[#0C0C0B]/20 backdrop-blur-[2px] group-hover:backdrop-blur-0 group-hover:bg-transparent transition-all duration-700 z-10 pointer-events-none" />
 
-                        {file.type === "meta" ? (
+                        {file.type === "route" ? (
+                          <MedFlowThumbnail />
+                        ) : file.type === "meta" ? (
                           <Terminal className="w-12 h-12 text-green-500/50 group-hover:text-green-400 transition-colors z-10" />
                         ) : (
                           <ImageThumbnail
