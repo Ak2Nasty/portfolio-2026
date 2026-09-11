@@ -114,10 +114,16 @@ export default function MedFlowPage() {
   /* Lenis persists scroll position across route changes, so arriving here from
      another route can land mid-page. Immediate, not animated — this is arrival,
      not navigation. Skipped when the URL carries a hash, because that is a
-     deliberate request for a specific section. */
+     deliberate request for a specific section.
+
+     `force` is required. Child effects run before parent effects, so by the
+     time this runs PowerOnSelfTest has already called lenis.stop() to lock the
+     page behind its panel — and a stopped Lenis silently ignores scrollTo. The
+     scroll never happened, and the page opened wherever the previous route had
+     been left. A direct load never showed it, because it starts at 0 anyway. */
   useEffect(() => {
     if (window.location.hash) return;
-    if (lenis) lenis.scrollTo(0, { immediate: true });
+    if (lenis) lenis.scrollTo(0, { immediate: true, force: true });
     else window.scrollTo({ top: 0, behavior: 'instant' });
   }, [lenis]);
 
