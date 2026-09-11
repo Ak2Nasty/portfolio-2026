@@ -72,10 +72,13 @@ body::after {
 }
 
 
-/* Hide navbar during glitch animation */
-body.is-glitching nav,
-body.is-glitching header {
-  display: none !important;
+/* Terminal caret — the "My Newest Project" card and its boot screen. A hard
+   on/off at about once a second, the rate a real caret blinks at: well under
+   the three-per-second flash limit, and stepped rather than faded because a
+   caret that fades reads as loading, not as waiting for input. */
+@keyframes caret-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
 }
 
 /* ── Experience cards ───────────────────────────────────────────────────────

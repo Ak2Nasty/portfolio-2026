@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { SecureFileViewer } from "./SecureFileViewer";
-import { Image as ImageIcon, Terminal } from "lucide-react";
-import { useLocation, Link } from "react-router-dom";
+import { Image as ImageIcon } from "lucide-react";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useLenis } from "lenis/react";
 import { ScrambleLabel } from "../../../components/ScrambleLabel";
+import { replayIntro } from "../../../components/Loader";
 import { ArchiveTicker } from "./ArchiveTicker";
+import { ExecuteTransition, TerminalGlyph } from "./ExecuteTransition";
 import { MedFlowScreen, DeviceFrame } from "../../telaverge-medflow/components/screens";
 
 /* Card thumbnails come from pre-rendered WebPs (see scripts/generate-pdf-thumbs.mjs).
@@ -323,23 +325,41 @@ const ARCHIVE_INDEX = WORK_SECTIONS
   .filter((s) => s.id !== "portfolio-meta")
   .map((s) => TICKER_ALIAS[s.id] || s.company.toUpperCase());
 
+// For the boot log, which reports them — counted, so it cannot go stale.
+const ARCHIVE_COUNTS = (() => {
+  const archives = WORK_SECTIONS.filter((s) => s.id !== "portfolio-meta");
+  return {
+    archives: archives.length,
+    files: archives.reduce((n, s) => n + s.files.length, 0),
+  };
+})();
+
 export function Portfolio23() {
   const [selectedFile, setSelectedFile] = useState(null);
   const location = useLocation();
+  const navigate = useNavigate();
   const lenis = useLenis();
-  const [isGlitching, setIsGlitching] = useState(false);
+  // The thumbnail's on-screen rect while the boot transition runs; null otherwise.
+  const [execOrigin, setExecOrigin] = useState(null);
 
-  const triggerMetaGlitch = () => {
-    setIsGlitching(true);
-    document.body.classList.add('is-glitching');
-    setTimeout(() => {
-      window.location.href = '/';
-    }, 2500);
+  const runPortfolioExe = (card) => {
+    if (execOrigin) return;
+    const well = card.querySelector("[data-thumb-well]") || card;
+    setExecOrigin(well.getBoundingClientRect());
   };
 
-  // Lock scroll when glitch animation is playing
+  /* Replay the loader BEFORE navigating. Both updates land in one commit, so
+     the loader is covering the screen on the same frame this page unmounts,
+     and the homepage mounts behind it reading "intro not ready" — its entrance
+     then plays as the loader lifts, exactly as on a fresh visit. */
+  const finishPortfolioExe = () => {
+    replayIntro();
+    navigate("/");
+  };
+
+  // Lock scroll while the transition is playing
   useEffect(() => {
-    if (isGlitching) {
+    if (execOrigin) {
       document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
     } else {
@@ -350,7 +370,7 @@ export function Portfolio23() {
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
     };
-  }, [isGlitching]);
+  }, [execOrigin]);
 
   /* Routed through Lenis, like the navbar. A native scrollTo sets the browser's
      position, but Lenis keeps its own and restores it on the next frame — so a
@@ -485,10 +505,10 @@ export function Portfolio23() {
                          anchor further down so it keeps middle-click, open-in-
                          new-tab and the keyboard behaviour an anchor has for
                          free; this handler simply leaves it alone. */
-                      onClick={() => {
+                      onClick={(e) => {
                         if (file.type === "route") return;
                         if (file.type === "meta") {
-                          triggerMetaGlitch();
+                          runPortfolioExe(e.currentTarget);
                         } else {
                           setSelectedFile(file);
                         }
@@ -512,7 +532,7 @@ export function Portfolio23() {
                       )}
 
                       {/* Thumbnail Area */}
-                      <div className="flex-1 bg-[#1a1a1a] flex items-center justify-center relative overflow-hidden">
+                      <div data-thumb-well className="flex-1 bg-[#1a1a1a] flex items-center justify-center relative overflow-hidden">
                         {/* Placeholder graphic based on type */}
                         <div className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-300 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white/10 to-transparent" />
                         
@@ -522,7 +542,12 @@ export function Portfolio23() {
                         {file.type === "route" ? (
                           <MedFlowThumbnail />
                         ) : file.type === "meta" ? (
-                          <Terminal className="w-12 h-12 text-green-500/50 group-hover:text-green-400 transition-colors z-10" />
+                          /* The caret blinks on hover: a prompt waiting for
+                             input, which is what clicking gives it. */
+                          <TerminalGlyph
+                            className="w-12 h-12 text-green-500/50 group-hover:text-green-400 transition-colors z-10"
+                            caretClassName="group-hover:animate-[caret-blink_1.06s_steps(1,end)_infinite] motion-reduce:group-hover:animate-none"
+                          />
                         ) : (
                           <ImageThumbnail
                             src={
@@ -561,39 +586,13 @@ export function Portfolio23() {
         file={selectedFile} 
         onClose={() => setSelectedFile(null)} 
       />
-      <AnimatePresence>
-        {isGlitching && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="fixed inset-0 z-[999999] flex flex-col items-center justify-center bg-black"
-            onContextMenu={(e) => e.preventDefault()}
-            onWheel={(e) => e.stopPropagation()}
-            data-lenis-prevent="true"
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: [0, 1, 0.5, 1], x: [0, -5, 5, -2, 2, 0] }}
-              transition={{ duration: 0.2, times: [0, 0.2, 0.4, 0.6, 0.8, 1], repeat: Infinity, repeatType: "mirror" }}
-            >
-              <h1 className="font-['Outfit'] font-bold text-[20px] md:text-[30px] text-green-500 tracking-[0.2em] uppercase">
-                Executing Portfolio.exe...
-              </h1>
-            </motion.div>
-            <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] z-10 opacity-70" />
-            <motion.div 
-              animate={{ y: [0, -20, 10, -50, 0], opacity: [0, 0.5, 0, 0.8, 0] }}
-              transition={{ duration: 1, repeat: Infinity }}
-              className="absolute top-1/4 left-1/4 w-32 h-2 bg-green-500/20"
-            />
-            <motion.div 
-              animate={{ y: [0, 40, -10, 60, 0], opacity: [0, 0.8, 0, 0.5, 0] }}
-              transition={{ duration: 0.8, repeat: Infinity, delay: 0.2 }}
-              className="absolute bottom-1/3 right-1/4 w-64 h-1 bg-green-500/20"
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {execOrigin && (
+        <ExecuteTransition
+          origin={execOrigin}
+          counts={ARCHIVE_COUNTS}
+          onDone={finishPortfolioExe}
+        />
+      )}
     </>
   );
 }

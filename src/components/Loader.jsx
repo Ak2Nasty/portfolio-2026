@@ -16,6 +16,28 @@ function markIntroReady() {
   window.dispatchEvent(new CustomEvent(INTRO_EVENT));
 }
 
+/* Runs the intro again without a page load — the "My Newest Project" card uses
+   it to hand its own boot sequence straight to WELCOME. Clearing the flag first
+   matters: the next page mounts behind the loader, and it has to read "not
+   ready" at mount or its entrance plays out unseen underneath. Components that
+   are already mounted keep their state, which is why the caller replays BEFORE
+   it navigates. */
+const REPLAY_EVENT = "intro-replay";
+
+export function replayIntro() {
+  introReady = false;
+  window.dispatchEvent(new CustomEvent(REPLAY_EVENT));
+}
+
+const LOADING_TEXTS = [
+  "INITIALIZING KERNEL...",
+  "LOADING ASSETS...",
+  "DECRYPTING DATA...",
+  "COMPILING BUNDLE...",
+  "ESTABLISHING CONNECTION...",
+  "ACCESS GRANTED."
+];
+
 export function useIntroReady() {
   const [ready, setReady] = useState(introReady);
 
@@ -34,11 +56,24 @@ export function Loader() {
   const validRoutes = ["/", "/work-sample"];
   const is404 = !validRoutes.includes(location.pathname);
   const [isLoading, setIsLoading] = useState(!is404);
-  const [loadingText, setLoadingText] = useState("INITIALIZING KERNEL...");
+  const [loadingText, setLoadingText] = useState(LOADING_TEXTS[0]);
+  // Bumped by replayIntro(); re-running the effect below restarts the intro.
+  const [run, setRun] = useState(0);
 
   useEffect(() => {
-    // 404 shows no loader, so nothing is ever covered up
-    if (is404) {
+    const onReplay = () => {
+      setLoadingText(LOADING_TEXTS[0]);
+      setIsLoading(true);
+      setRun((n) => n + 1);
+    };
+    window.addEventListener(REPLAY_EVENT, onReplay);
+    return () => window.removeEventListener(REPLAY_EVENT, onReplay);
+  }, []);
+
+  useEffect(() => {
+    // 404 shows no loader, so nothing is ever covered up. A replay always
+    // shows it: it is asked for, and it is heading to the homepage.
+    if (is404 && run === 0) {
       markIntroReady();
       return;
     }
@@ -55,19 +90,11 @@ export function Loader() {
       markIntroReady();
     }, 2000);
 
-    const texts = [
-      "INITIALIZING KERNEL...",
-      "LOADING ASSETS...",
-      "DECRYPTING DATA...",
-      "COMPILING BUNDLE...",
-      "ESTABLISHING CONNECTION...",
-      "ACCESS GRANTED."
-    ];
     let step = 0;
     const interval = setInterval(() => {
       step++;
-      if (step < texts.length) {
-        setLoadingText(texts[step]);
+      if (step < LOADING_TEXTS.length) {
+        setLoadingText(LOADING_TEXTS[step]);
       } else {
         clearInterval(interval);
       }
@@ -78,7 +105,10 @@ export function Loader() {
       clearInterval(interval);
       document.body.style.overflow = "auto";
     };
-  }, [is404]);
+    // `is404` is read only for the first run; after a replay, a later route
+    // change must not restart the intro, so it does not re-trigger by itself.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [run]);
 
   return (
     <AnimatePresence onExitComplete={markIntroReady}>
