@@ -136,8 +136,11 @@ function countFiles(files) {
 
 export const WORK_SECTIONS = [
   {
+    /* The one section that is not a client. The title withholds on purpose —
+       the answer arrives when the card is opened and the site restarts itself,
+       so naming it here would spend the payoff before the click. */
     id: "portfolio-meta",
-    company: "Akshathdayan",
+    company: "Localhost",
     role: "Lead Developer & Designer",
     metadata: "127.0.0.1 • INDEPENDENT PROJECT • PRESENT",
     context: "A highly interactive, cinematic project built from the ground up to showcase my journey and technical capabilities.",
