@@ -182,7 +182,7 @@ export function CaseStudyHeader() {
           </a>
 
           <a
-            href="https://akshathdayansuresh.com/"
+            href="https://www.akshathdayansuresh.com/"
             target="_blank"
             rel="noopener noreferrer"
             className="mf-underline hidden lg:inline-flex items-center gap-2 font-['Outfit'] text-[10.5px] font-semibold uppercase py-2"
@@ -337,7 +337,7 @@ export function CaseStudyFooter() {
             &copy; {new Date().getFullYear()} Akshathdayan Suresh
           </span>
           <a
-            href="https://akshathdayansuresh.com/"
+            href="https://www.akshathdayansuresh.com/"
             target="_blank"
             rel="noopener noreferrer"
             className="mf-tap inline-flex items-center gap-2 font-['Outfit'] text-[11px] font-semibold uppercase py-2"

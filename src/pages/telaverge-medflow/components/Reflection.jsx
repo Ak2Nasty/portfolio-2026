@@ -202,7 +202,7 @@ export function Closing() {
               animation plays from the beginning rather than the router
               swapping the page in behind it. */}
           <a
-            href="https://akshathdayansuresh.com/"
+            href="https://www.akshathdayansuresh.com/"
             target="_blank"
             rel="noopener noreferrer"
             className="mf-btn mf-btn--secondary"
