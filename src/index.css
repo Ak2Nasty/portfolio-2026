@@ -1,4 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+/* Noto Sans Tamil carries the Tamil glyphs Outfit does not have — without it the browser
+   substitutes whatever Tamil font the device happens to ship, which looks nothing like the
+   rest of the page. Google serves it as its own unicode-range subset, so it is only
+   downloaded by visitors who actually render Tamil text. */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Noto+Sans+Tamil:wght@400;500&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;

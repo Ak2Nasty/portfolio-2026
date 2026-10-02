@@ -72,11 +72,15 @@ const softSkills = [
   "AI Fluency",
 ];
 
+/* `native` is the language's own name for itself, shown beside the English one.
+   English is left without one: "English" twice reads as a mistake, not a flourish.
+   `code` tags the text with its language so browsers pick the right font and
+   screen readers switch pronunciation instead of reading Tamil as English. */
 const languages = [
   { name: "English", level: 5 },
-  { name: "Tamil",   level: 5 },
-  { name: "French",  level: 2 },
-  { name: "Spanish", level: 2 },
+  { name: "Tamil",   level: 5, native: "தமிழ்",   code: "ta" },
+  { name: "French",  level: 2, native: "Français", code: "fr" },
+  { name: "Spanish", level: 2, native: "Español",  code: "es" },
 ];
 
 /* ─────────────────────────────────────────────
@@ -104,7 +108,7 @@ const fadeUp = {
    LANGUAGE METER
 ───────────────────────────────────────────── */
 
-const LanguageMeter = ({ language, level }) => {
+const LanguageMeter = ({ language, level, native, code }) => {
   const ref = useRef(null);
   // Extremely narrow band to ensure only ONE item is active at a time
   const isActive = useInView(ref, { margin: "-48% 0px -48% 0px" });
@@ -126,12 +130,31 @@ const LanguageMeter = ({ language, level }) => {
           : "hover:bg-[#0a0a0a] hover:-translate-y-[2px] hover:shadow-lg hover:border-transparent"
       }`}
     >
-      <span 
-        className={`font-['Outfit'] text-[12px] md:text-[13px] tracking-[0.12em] uppercase transition-colors duration-300 ${
-          isActive ? "text-[#f4f4f4]" : "text-[#c2c2c2] group-hover:text-[#f4f4f4]"
-        }`}
-      >
-        {language}
+      {/* Stacked: the language's own name sits under the English one. Keeps the English
+          names in a clean column to scan, and gives every native name the same start. */}
+      <span className="flex flex-col gap-[5px] min-w-0">
+        <span
+          className={`font-['Outfit'] text-[12px] md:text-[13px] tracking-[0.12em] uppercase transition-colors duration-300 ${
+            isActive ? "text-[#f4f4f4]" : "text-[#c2c2c2] group-hover:text-[#f4f4f4]"
+          }`}
+        >
+          {language}
+        </span>
+        {native && (
+          /* The language's own name, dimmer so it reads as a companion rather than a
+             second entry. Tamil sits a step larger: its glyphs are optically smaller
+             than Latin ones at the same size. */
+          <span
+            lang={code}
+            className={`leading-none truncate transition-colors duration-300 ${
+              code === "ta"
+                ? "font-['Noto_Sans_Tamil'] text-[13px] md:text-[14px]"
+                : "font-['Outfit'] text-[11px] md:text-[12px]"
+            } ${isActive ? "text-[#8a8a8a]" : "text-[#5f5f5f] group-hover:text-[#8a8a8a]"}`}
+          >
+            {native}
+          </span>
+        )}
       </span>
       <div className="flex gap-[7px] items-center">
         {[...Array(5)].map((_, i) => (
@@ -467,7 +490,13 @@ export function SkillsSection() {
               <SectionLabel>Linguistic Proficiency</SectionLabel>
               <div className="flex flex-col">
                 {languages.map((lang) => (
-                  <LanguageMeter key={lang.name} language={lang.name} level={lang.level} />
+                  <LanguageMeter
+                    key={lang.name}
+                    language={lang.name}
+                    level={lang.level}
+                    native={lang.native}
+                    code={lang.code}
+                  />
                 ))}
               </div>
             </motion.div>
