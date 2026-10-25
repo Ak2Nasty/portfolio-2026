@@ -408,7 +408,11 @@ export function Header88() {
               ))}
             </motion.div>
             <motion.p variants={itemVariants} className="font-['Outfit'] text-[10px] lg:text-[12px] leading-[1.8] text-gray-300 uppercase tracking-widest max-w-[620px]">
-              BUSINESS MANAGEMENT GRADUATE WITH EXPERIENCE ACROSS DIGITAL MARKETING, GLOBAL EVENTS, DIGITAL CAMPAIGNS, MARKETING ANALYTICS, UI/UX, AND BRAND STRATEGY.
+              {/* Kept to two lines on purpose: the name above is auto-sized from the height
+                  this block leaves, so a third line eats into it. DIGITAL CAMPAIGNS went
+                  rather than UI/UX — it nearly repeats the DIGITAL MARKETING that opens
+                  the same sentence. */}
+              BUSINESS MANAGEMENT GRADUATE WITH EXPERIENCE ACROSS DIGITAL MARKETING, GLOBAL EVENTS, MARKETING ANALYTICS, UI/UX, AND BRAND STRATEGY.
             </motion.p>
             <motion.div variants={itemVariants} className="font-['Outfit'] text-[10px] lg:text-[11px] tracking-[0.2em] text-gray-200 uppercase flex items-center gap-2">
               BASED IN TORONTO, CANADA
