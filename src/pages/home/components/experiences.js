@@ -3,6 +3,27 @@
    entries that use them. */
 export const experiences = [
     {
+      company: "Telaverge",
+      /* Wordmark keyed off its white field into real alpha and cropped to the ink.
+         The ink-area rule the other marks follow (~39.9k px²) wants scale-[1.35]
+         here, but this lockup is 4.7:1 — at that size it runs off both sides of
+         the card and the T and GE get cut. A clipped icon still reads as a mark;
+         a clipped wordmark reads as a bug — scaled up, this one lost its T off the
+         left. So it sits unscaled: the mark reads whole, with only the tail of
+         COMMUNICATIONS bleeding past the corner the way the other marks do. */
+      brandColor: "#ED1D25",
+      metric: "90", metricSuffix: "-DAY", metricLabel: "LAUNCH PLAN",
+      logo: "/telaverge-logo.png",
+      role: "Forward Deployment Designer",
+      summary: [
+        "Built the <strong class=\"font-medium text-[#f4f4f4]\">go-to-market strategy</strong> for a university 5G upskilling programme — decision matrix, unit economics, and break-even modelling in a 34-slide leadership deck.",
+        "Turned 5G adoption targets and telecom skills-gap projections into a <strong class=\"font-medium text-[#f4f4f4]\">sourced positioning narrative</strong>.",
+        "Directed a <strong class=\"font-medium text-[#f4f4f4]\">2-minute AI-produced launch film</strong> for IIT/NIT-level faculty, from script through animation and final edit."
+      ],
+      metadata: "REMOTE • GO-TO-MARKET STRATEGY • SEP 2026 - PRESENT",
+      link: null
+    },
+    {
       company: "D2L",
       frontLogoScale: "scale-[1.07]",
       logoScale: "scale-[1.14]",

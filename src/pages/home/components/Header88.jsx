@@ -299,7 +299,7 @@ export function Header88() {
 
         {/* Roles */}
         <motion.div variants={itemVariants} className="px-5 mt-4 font-['Outfit'] text-[9px] tracking-[0.22em] text-gray-300 uppercase leading-[2.1]">
-          DIGITAL MARKETING • EVENT OPERATIONS<br />BRAND STRATEGY
+          DIGITAL MARKETING • EVENT OPERATIONS<br />BRAND STRATEGY • UI/UX
         </motion.div>
 
         {/* Location */}
@@ -398,10 +398,17 @@ export function Header88() {
         <div ref={deskBottomRef} className="mt-6 lg:mt-7 flex flex-row justify-between items-end gap-10">
           <div className="flex flex-col gap-4 lg:gap-5 max-w-[54%]">
             <motion.div variants={itemVariants} className="font-['Outfit'] text-[10px] lg:text-[11px] tracking-[0.25em] text-gray-300 uppercase">
-              DIGITAL MARKETING • EVENT OPERATIONS • BRAND STRATEGY
+              {/* Each discipline is kept whole: with four of them the line wraps on mid-width
+                  screens, and a plain string breaks inside a phrase ("BRAND / STRATEGY"). */}
+              {["DIGITAL MARKETING", "EVENT OPERATIONS", "BRAND STRATEGY", "UI/UX"].map((d, i) => (
+                <span key={d} className="whitespace-nowrap">
+                  {i > 0 && <span className="mx-[0.45em]">•</span>}
+                  {d}
+                </span>
+              ))}
             </motion.div>
             <motion.p variants={itemVariants} className="font-['Outfit'] text-[10px] lg:text-[12px] leading-[1.8] text-gray-300 uppercase tracking-widest max-w-[620px]">
-              BUSINESS MANAGEMENT GRADUATE WITH EXPERIENCE ACROSS DIGITAL MARKETING, GLOBAL EVENTS, DIGITAL CAMPAIGNS, MARKETING ANALYTICS, AND BRAND STRATEGY.
+              BUSINESS MANAGEMENT GRADUATE WITH EXPERIENCE ACROSS DIGITAL MARKETING, GLOBAL EVENTS, DIGITAL CAMPAIGNS, MARKETING ANALYTICS, UI/UX, AND BRAND STRATEGY.
             </motion.p>
             <motion.div variants={itemVariants} className="font-['Outfit'] text-[10px] lg:text-[11px] tracking-[0.2em] text-gray-200 uppercase flex items-center gap-2">
               BASED IN TORONTO, CANADA
@@ -435,8 +442,8 @@ export function Header88() {
       {/* Marquee Ticker */}
       <motion.div variants={itemVariants} className="relative w-full border-y border-white/[0.08] py-2.5 md:py-3 overflow-hidden flex bg-[#0C0C0B] group">
         <div className="flex font-['Outfit'] text-[9px] md:text-[11px] tracking-[0.25em] text-gray-400 uppercase animate-marquee whitespace-nowrap w-max group-hover:[animation-play-state:paused]">
-          <span>INTEGRATED MARKETING • EVENT OPERATIONS • DIGITAL CAMPAIGNS • MARKETING ANALYTICS • BRAND STRATEGY • SOCIAL MEDIA MARKETING • CONTENT STRATEGY • POWER BI • GOOGLE ANALYTICS • EVENT COORDINATION • STAKEHOLDER COMMUNICATION • CONSUMER INSIGHTS • SEO/SEM • CAMPAIGN STRATEGY • CROSS-FUNCTIONAL COLLABORATION • CREATIVE EXECUTION • PROJECT COORDINATION • COPYWRITING • CONTENT MARKETING • MARKETING COMMUNICATIONS •&nbsp;</span>
-          <span>INTEGRATED MARKETING • EVENT OPERATIONS • DIGITAL CAMPAIGNS • MARKETING ANALYTICS • BRAND STRATEGY • SOCIAL MEDIA MARKETING • CONTENT STRATEGY • POWER BI • GOOGLE ANALYTICS • EVENT COORDINATION • STAKEHOLDER COMMUNICATION • CONSUMER INSIGHTS • SEO/SEM • CAMPAIGN STRATEGY • CROSS-FUNCTIONAL COLLABORATION • CREATIVE EXECUTION • PROJECT COORDINATION • COPYWRITING • CONTENT MARKETING • MARKETING COMMUNICATIONS •&nbsp;</span>
+          <span>INTEGRATED MARKETING • EVENT OPERATIONS • DIGITAL CAMPAIGNS • MARKETING ANALYTICS • BRAND STRATEGY • UI/UX • SOCIAL MEDIA MARKETING • CONTENT STRATEGY • POWER BI • GOOGLE ANALYTICS • EVENT COORDINATION • STAKEHOLDER COMMUNICATION • CONSUMER INSIGHTS • SEO/SEM • CAMPAIGN STRATEGY • CROSS-FUNCTIONAL COLLABORATION • CREATIVE EXECUTION • PROJECT COORDINATION • COPYWRITING • CONTENT MARKETING • MARKETING COMMUNICATIONS •&nbsp;</span>
+          <span>INTEGRATED MARKETING • EVENT OPERATIONS • DIGITAL CAMPAIGNS • MARKETING ANALYTICS • BRAND STRATEGY • UI/UX • SOCIAL MEDIA MARKETING • CONTENT STRATEGY • POWER BI • GOOGLE ANALYTICS • EVENT COORDINATION • STAKEHOLDER COMMUNICATION • CONSUMER INSIGHTS • SEO/SEM • CAMPAIGN STRATEGY • CROSS-FUNCTIONAL COLLABORATION • CREATIVE EXECUTION • PROJECT COORDINATION • COPYWRITING • CONTENT MARKETING • MARKETING COMMUNICATIONS •&nbsp;</span>
         </div>
       </motion.div>
     </motion.section>

@@ -62,6 +62,7 @@ const techCategories = [
 
 const softSkills = [
   "Content Strategy",
+  "UI/UX",
   "Campaign Execution",
   "Social Media Marketing",
   "Copywriting",
